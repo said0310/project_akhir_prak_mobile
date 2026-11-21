@@ -1,14 +1,10 @@
 import 'dart:convert';
 import 'package:crypto/crypto.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:wijibumi/core/services/location_service.dart';
-import 'package:wijibumi/data/models/product_model.dart';
-import 'package:wijibumi/data/models/address_model.dart';
-import 'package:wijibumi/data/models/cart_item_model.dart';
-import 'package:wijibumi/data/providers/api_service.dart';
-import 'package:wijibumi/data/repositories/order_repository.dart';
-import 'package:wijibumi/data/repositories/product_repository.dart';
-import 'package:wijibumi/modules/product/controllers/product_controller.dart';
+import 'package:wijibumi/services/location_service.dart';
+import 'package:wijibumi/models/models.dart';
+import 'package:wijibumi/services/api_service.dart';
+import 'package:wijibumi/controllers/shop_controller.dart';
 
 void main() {
   group('Aturan Bisnis & Logika Wiji Bumi (PRD v1.0)', () {

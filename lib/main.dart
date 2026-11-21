@@ -1,52 +1,43 @@
+import 'dart:io' show Platform;
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/date_symbol_data_local.dart';
-import 'core/constants/app_constants.dart';
-import 'core/theme/app_theme.dart';
-import 'core/services/notification_service.dart';
-import 'storage/pref_service.dart';
-import 'storage/hive_service.dart';
-import 'app/bindings/initial_binding.dart';
-import 'app/routes/app_pages.dart';
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
+import 'app.dart';
+import 'services/api_service.dart';
+import 'services/database_helper.dart';
+import 'services/notification_service.dart';
 
 void main() async {
   // 1. Pastikan Flutter Binding terinisialisasi
   WidgetsFlutterBinding.ensureInitialized();
 
-  // 2. Inisialisasi Lokalisasi Tanggal (id_ID)
+  // 2. Inisialisasi sqflite FFI untuk Windows/Linux/macOS desktop
+  if (!kIsWeb && (Platform.isWindows || Platform.isLinux || Platform.isMacOS)) {
+    sqfliteFfiInit();
+    databaseFactory = databaseFactoryFfi;
+  }
+
+  // 3. Inisialisasi Lokalisasi Tanggal (id_ID)
   try {
     await initializeDateFormatting('id_ID', null);
   } catch (e) {
     debugPrint('Date formatting init note: $e');
   }
 
-  // 3. Inisialisasi SharedPreferences (Modul VI)
+  // 4. Inisialisasi SharedPreferences (Sesi Pengguna)
   final prefService = await PrefService().init();
   Get.put<PrefService>(prefService, permanent: true);
 
-  // 4. Inisialisasi Hive & TypeAdapters (Modul VI)
-  await HiveService.init();
+  // 5. Inisialisasi SQLite Database & Tabel
+  await DatabaseHelper.init();
 
-  // 5. Inisialisasi Local Notification & Timezone (Modul VII-A)
-  await NotificationService.init();
-
-  // 6. Jalankan Aplikasi
-  runApp(const WijiBumiApp());
-}
-
-class WijiBumiApp extends StatelessWidget {
-  const WijiBumiApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return GetMaterialApp(
-      title: AppConstants.appName,
-      debugShowCheckedModeBanner: false,
-      theme: AppTheme.lightTheme,
-      initialBinding: InitialBinding(),
-      initialRoute: AppPages.INITIAL,
-      getPages: AppPages.routes,
-      defaultTransition: Transition.cupertino,
-    );
+  // 6. Inisialisasi Local Notification & Timezone (hanya di mobile)
+  if (!kIsWeb && (Platform.isAndroid || Platform.isIOS)) {
+    await NotificationService.init();
   }
+
+  // 7. Jalankan Aplikasi
+  runApp(const WijiBumiApp());
 }

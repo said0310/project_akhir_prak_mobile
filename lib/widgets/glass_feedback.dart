@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../core/theme/app_theme.dart';
+import '../app.dart';
 import 'custom_button.dart';
 
 class GlassFeedback {
-  /// Glass Snackbar (PRD Bagian 8)
+  /// Glass Snackbar
   static void showSnackbar({
     required String title,
     required String message,
@@ -49,7 +49,7 @@ class GlassFeedback {
     );
   }
 
-  /// Glass Dialog Konfirmasi (PRD Bagian 8)
+  /// Glass Dialog Konfirmasi
   static Future<bool?> showConfirmDialog({
     required BuildContext context,
     required String title,
@@ -98,37 +98,71 @@ class GlassFeedback {
                   message,
                   style: const TextStyle(
                     fontSize: 13,
-                    color: WijiBumiColors.textSecondary,
+                    fontWeight: FontWeight.w400,
+                    color: Color(0xFF424242),
                     height: 1.4,
                   ),
                 ),
                 const SizedBox(height: 22),
                 Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    Expanded(
-                      child: TextButton(
-                        onPressed: () => Navigator.of(ctx).pop(false),
-                        style: TextButton.styleFrom(
-                          foregroundColor: WijiBumiColors.textMuted,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                        ),
-                        child: Text(
-                          cancelText,
-                          style: const TextStyle(fontWeight: FontWeight.w600),
+                    TextButton(
+                      onPressed: () => Navigator.of(ctx).pop(false),
+                      child: Text(
+                        cancelText,
+                        style: const TextStyle(
+                          color: WijiBumiColors.textMuted,
+                          fontWeight: FontWeight.w600,
+                          fontSize: 13,
                         ),
                       ),
                     ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: CustomButton(
-                        text: confirmText,
-                        height: 42,
-                        onPressed: () => Navigator.of(ctx).pop(true),
-                      ),
+                    const SizedBox(width: 8),
+                    CustomButton(
+                      text: confirmText,
+                      width: 120,
+                      height: 40,
+                      onPressed: () => Navigator.of(ctx).pop(true),
                     ),
                   ],
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  /// Glass Loading Dialog
+  static void showLoadingDialog(BuildContext context, {String message = 'Memproses...'}) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (ctx) {
+        return Dialog(
+          backgroundColor: Colors.transparent,
+          child: Container(
+            padding: const EdgeInsets.all(24),
+            decoration: BoxDecoration(
+              color: Colors.white.withOpacity(0.95),
+              borderRadius: BorderRadius.circular(16),
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const CircularProgressIndicator(
+                  valueColor: AlwaysStoppedAnimation<Color>(WijiBumiColors.deepForest),
+                ),
+                const SizedBox(width: 20),
+                Text(
+                  message,
+                  style: const TextStyle(
+                    fontSize: 14,
+                    color: WijiBumiColors.textPrimary,
+                    fontWeight: FontWeight.w500,
+                  ),
                 ),
               ],
             ),

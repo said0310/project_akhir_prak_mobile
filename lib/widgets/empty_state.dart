@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../core/theme/app_theme.dart';
+import '../app.dart';
 
 class EmptyState extends StatelessWidget {
   final IconData icon;
@@ -65,7 +65,7 @@ class EmptyState extends StatelessWidget {
                 style: const TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w700,
-                  color: WijiBumiColors.textPrimary,
+                  color: WijiBumiColors.textCardDark,
                 ),
               ),
               const SizedBox(height: 8),
@@ -75,7 +75,7 @@ class EmptyState extends StatelessWidget {
                 style: const TextStyle(
                   fontSize: 13,
                   fontWeight: FontWeight.w400,
-                  color: WijiBumiColors.textMuted,
+                  color: WijiBumiColors.textCardDark,
                   height: 1.4,
                 ),
               ),

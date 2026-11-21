@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../core/theme/app_theme.dart';
+import '../app.dart';
 
 class CustomTextField extends StatefulWidget {
   final TextEditingController controller;
@@ -12,6 +12,7 @@ class CustomTextField extends StatefulWidget {
   final ValueChanged<String>? onChanged;
   final int maxLines;
   final bool enabled;
+  final Color textColor;
 
   const CustomTextField({
     super.key,
@@ -25,6 +26,7 @@ class CustomTextField extends StatefulWidget {
     this.onChanged,
     this.maxLines = 1,
     this.enabled = true,
+    this.textColor = WijiBumiColors.textPrimary,
   });
 
   @override
@@ -50,8 +52,8 @@ class _CustomTextFieldState extends State<CustomTextField> {
       onChanged: widget.onChanged,
       maxLines: widget.isPassword ? 1 : widget.maxLines,
       enabled: widget.enabled,
-      style: const TextStyle(
-        color: WijiBumiColors.textPrimary,
+      style: TextStyle(
+        color: widget.textColor,
         fontSize: 14,
         fontWeight: FontWeight.w500,
       ),

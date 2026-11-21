@@ -2,15 +2,15 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import '../core/theme/app_theme.dart';
-import '../data/models/product_model.dart';
-import '../app/routes/app_routes.dart';
+import '../app.dart';
+import '../models/models.dart';
 
 class ProductCard extends StatelessWidget {
   final ProductModel product;
   final VoidCallback? onQuickAdd;
   final double? width;
   final double? height;
+  final String? heroTagPrefix;
 
   const ProductCard({
     super.key,
@@ -18,6 +18,7 @@ class ProductCard extends StatelessWidget {
     this.onQuickAdd,
     this.width,
     this.height,
+    this.heroTagPrefix,
   });
 
   @override
@@ -29,8 +30,6 @@ class ProductCard extends StatelessWidget {
     );
 
     final isOutOfStock = product.stock <= 0;
-    final cardWidth = width ?? 156.0;
-    final cardHeight = height ?? 206.0;
 
     return GestureDetector(
       onTap: () {
@@ -40,8 +39,8 @@ class ProductCard extends StatelessWidget {
         );
       },
       child: Container(
-        width: cardWidth,
-        height: cardHeight,
+        width: width,
+        height: height,
         decoration: DynamicGlassDecoration.glassCard(radius: 20),
         child: ClipRRect(
           borderRadius: BorderRadius.circular(20),
@@ -60,7 +59,7 @@ class ProductCard extends StatelessWidget {
                         ClipRRect(
                           borderRadius: BorderRadius.circular(14),
                           child: Hero(
-                            tag: 'product_img_${product.id}',
+                            tag: '${heroTagPrefix ?? 'product'}_img_${product.id}',
                             child: _buildPlantImage(product.imageUrl),
                           ),
                         ),
