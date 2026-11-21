@@ -150,5 +150,171 @@ void main() {
       controller.toggleFilterStock();
       expect(controller.filterInStockOnly.value, isTrue);
     });
+
+    test('CSV Parsing: Parsing Katalog_WijiBumi dan pemetaan model', () {
+      const sampleCsv = '''
+id;name;image;category;price;unit;stock;description;origin;is_featured
+FRU001;Alpukat;FRU001.jpg;buah;20000;kg;60;Alpukat berdaging lembut;Magelang;1
+FRU002;Anggur;FRU002.jpg;buah;45000;kg;40;Anggur berair;Probolinggo;0
+FLW001;Mawar Merah;FLW001.jpg;bunga;30000;ikat;40;"Mawar merah, indah";Lembang;1
+''';
+
+      final products = ProductModel.fromCsv(sampleCsv);
+      expect(products.length, 3);
+
+      expect(products[0].id, 'FRU001');
+      expect(products[0].name, 'Alpukat');
+      expect(products[0].imageUrl, 'assets/images/products/FRU001.jpg');
+      expect(products[0].categoryId, 'buah');
+      expect(products[0].price, 20000.0);
+      expect(products[0].unit, 'kg');
+      expect(products[0].stock, 60);
+      expect(products[0].origin, 'Magelang');
+      expect(products[0].isFeatured, isTrue);
+
+      expect(products[2].id, 'FLW001');
+      expect(products[2].imageUrl, 'assets/images/products/FLW001.jpg');
+      expect(products[2].description, 'Mawar merah, indah');
+      expect(products[2].isFeatured, isTrue);
+
+      // Resolusi path gambar
+      expect(ProductModel.resolveImagePath('FLW001.jpg'), 'assets/images/products/FLW001.jpg');
+      expect(ProductModel.resolveImagePath('assets/images/products/FLW001.jpg'), 'assets/images/products/FLW001.jpg');
+      expect(ProductModel.resolveImagePath('https://example.com/pic.jpg'), 'https://example.com/pic.jpg');
+
+      // Ekstraksi kategori
+      final categories = CategoryModel.fromProductList(products);
+      expect(categories.any((c) => c.id == 'buah'), isTrue);
+      expect(categories.any((c) => c.id == 'bunga'), isTrue);
+    });
+
+    test('Order & Payment: Pembaruan Metode Pembayaran Pesanan', () async {
+      final apiService = ApiService();
+      final order = await apiService.createOrder({
+        'id': 'ord_test_1',
+        'orderNumber': 'WB-20261121-9999',
+        'userId': 'user_test',
+        'createdAt': DateTime.now().toIso8601String(),
+        'status': 'Menunggu Pembayaran',
+        'paymentMethod': 'Transfer Bank',
+        'address': {
+          'id': 'addr_test',
+          'userId': 'user_test',
+          'recipientName': 'Testing',
+          'phone': '08123456789',
+          'fullAddress': 'Jl. Bunga Melati No. 5',
+          'city': 'Jakarta Selatan',
+          'district': 'Tebet',
+          'latitude': -6.2,
+          'longitude': 106.8,
+        },
+        'subtotal': 50000.0,
+        'shippingCost': 5000.0,
+        'total': 55000.0,
+        'items': [
+          {
+            'productId': 'p1',
+            'name': 'Bayam Hijau',
+            'price': 6500.0,
+            'unit': 'ikat',
+            'quantity': 2,
+            'subtotal': 13000.0,
+          }
+        ],
+      });
+
+      expect(order.paymentMethod, 'Transfer Bank');
+      expect(order.status, 'Menunggu Pembayaran');
+
+      // Perbarui metode pembayaran ke E-Wallet
+      final updated = await apiService.updateOrderPaymentMethod(order.id, 'E-Wallet (GoPay/OVO/ShopeePay)');
+      expect(updated.paymentMethod, 'E-Wallet (GoPay/OVO/ShopeePay)');
+      expect(updated.id, order.id);
+    });
+
+    test('ReminderModel: Serialisasi dengan status isRead dan pesan detail', () {
+      final notif = ReminderModel(
+        id: 'ord_notif_1',
+        userId: 'user_1',
+        title: 'Pesanan Berhasil Dibuat (Menunggu Pembayaran)',
+        message: 'Pesanan No. WB-20261121-1234 berhasil dibuat. Segera selesaikan pembayaran.',
+        scheduledAt: DateTime.now(),
+        isActive: true,
+        isRead: false,
+      );
+
+      final json = notif.toJson();
+      expect(json['is_read'], 0);
+      expect(json['message'], contains('WB-20261121-1234'));
+
+      final copy = ReminderModel.fromJson(json);
+      expect(copy.id, notif.id);
+      expect(copy.isRead, isFalse);
+      expect(copy.message, notif.message);
+
+      final readCopy = copy.copyWith(isRead: true);
+      expect(readCopy.isRead, isTrue);
+    });
+
+    test('SQLite Schema & Model: Tabel Users, Orders, dan Order Items', () {
+      // 1. Validasi UserModel dengan createdAt
+      final user = UserModel(
+        id: 'usr_test_1',
+        name: 'Ahmad Subagyo',
+        email: 'ahmad@example.com',
+        username: 'ahmad_s',
+        passwordHash: 'hash123',
+        phone: '081298765432',
+      );
+      final userJson = user.toJson();
+      expect(userJson['id'], 'usr_test_1');
+      expect(userJson['name'], 'Ahmad Subagyo');
+      expect(userJson['email'], 'ahmad@example.com');
+      expect(userJson['phone'], '081298765432');
+      expect(userJson['created_at'], isNotEmpty);
+
+      // 2. Validasi OrderModel dan OrderItemModel terstruktur
+      final orderItem = OrderItemModel(
+        productId: 'p1',
+        name: 'Bayam Hijau',
+        price: 6500.0,
+        unit: 'ikat',
+        quantity: 3,
+        subtotal: 19500.0,
+      );
+      expect(orderItem.subtotal, 19500.0);
+      expect(orderItem.quantity, 3);
+      final itemJson = orderItem.toJson();
+      expect(itemJson['productId'], 'p1');
+      expect(itemJson['price'], 6500.0);
+
+      // 3. Validasi OrderModel customerName getter
+      final order = OrderModel(
+        id: 'ord_test_99',
+        orderNumber: 'WB-20261121-8888',
+        userId: user.id,
+        createdAt: DateTime.now(),
+        status: 'Menunggu Pembayaran',
+        paymentMethod: 'Transfer Bank',
+        address: AddressModel(
+          id: 'addr_1',
+          userId: user.id,
+          recipientName: 'Ahmad Subagyo',
+          phone: '081298765432',
+          fullAddress: 'Jl. Merdeka No. 10',
+          city: 'Jakarta',
+          district: 'Gambir',
+          latitude: -6.2,
+          longitude: 106.8,
+        ),
+        subtotal: 19500.0,
+        shippingCost: 5000.0,
+        total: 24500.0,
+        items: [orderItem],
+      );
+      expect(order.customerName, 'Ahmad Subagyo');
+      expect(order.items.length, 1);
+      expect(order.items.first.productId, 'p1');
+    });
   });
 }

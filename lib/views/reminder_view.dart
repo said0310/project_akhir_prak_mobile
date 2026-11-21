@@ -190,7 +190,26 @@ class _ReminderViewState extends State<ReminderView> {
     return Scaffold(
       backgroundColor: WijiBumiColors.backgroundCanvas,
       appBar: AppBar(
-        title: const Text('Pengaturan Pengingat'),
+        title: const Text('Notifikasi & Pengingat'),
+        actions: [
+          Obx(() {
+            final unread = notifController.unreadCount;
+            if (unread == 0) return const SizedBox.shrink();
+            return TextButton.icon(
+              icon: const Icon(Icons.done_all_rounded, size: 16, color: WijiBumiColors.freshLeaf),
+              label: const Text(
+                'Tandai Dibaca',
+                style: TextStyle(
+                  color: WijiBumiColors.freshLeaf,
+                  fontSize: 12,
+                  fontWeight: FontWeight.w600,
+                  fontFamily: 'Poppins',
+                ),
+              ),
+              onPressed: notifController.markAllAsRead,
+            );
+          }),
+        ],
       ),
       body: Obx(() {
         final reminders = notifController.reminders;
@@ -198,8 +217,8 @@ class _ReminderViewState extends State<ReminderView> {
         if (reminders.isEmpty) {
           return EmptyState(
             icon: Icons.notifications_none_rounded,
-            title: 'Belum Ada Pengingat',
-            message: 'Atur pengingat belanja sayur rutin agar dapur Anda selalu terisi bahan makanan segar.',
+            title: 'Belum Ada Notifikasi',
+            message: 'Aktivitas pesanan dan jadwal pengingat belanja sayur Anda akan muncul di sini.',
             action: CustomButton(
               text: '+ Tambah Jadwal Pengingat',
               width: 220,
@@ -208,66 +227,245 @@ class _ReminderViewState extends State<ReminderView> {
           );
         }
 
+        final unreadCount = notifController.unreadCount;
+
         return ListView.separated(
           padding: const EdgeInsets.fromLTRB(16, 12, 16, 80),
           physics: const BouncingScrollPhysics(),
-          itemCount: reminders.length,
+          itemCount: reminders.length + (unreadCount > 0 ? 1 : 0),
           separatorBuilder: (_, __) => const SizedBox(height: 12),
           itemBuilder: (context, index) {
-            final item = reminders[index];
-
-            return Container(
-              padding: const EdgeInsets.all(16),
-              decoration: DynamicGlassDecoration.cleanCard(radius: 14),
-              child: Row(
-                children: [
-                  Container(
-                    padding: const EdgeInsets.all(10),
-                    decoration: BoxDecoration(
-                      color: item.isActive ? WijiBumiColors.lightMint : Colors.grey.shade100,
-                      shape: BoxShape.circle,
-                    ),
-                    child: Icon(
-                      item.isActive ? Icons.alarm_on_rounded : Icons.alarm_off_rounded,
-                      color: item.isActive ? WijiBumiColors.deepForest : WijiBumiColors.textMuted,
-                      size: 22,
-                    ),
+            // Header Bar jika ada notifikasi belum dibaca
+            if (unreadCount > 0 && index == 0) {
+              return Container(
+                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                decoration: BoxDecoration(
+                  color: WijiBumiColors.surfaceDark,
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(
+                    color: WijiBumiColors.freshLeaf.withOpacity(0.3),
+                    width: 1.0,
                   ),
-                  const SizedBox(width: 14),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
                       children: [
-                        Text(
-                          item.title,
-                          style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w700,
-                            color: item.isActive ? WijiBumiColors.textPrimary : WijiBumiColors.textMuted,
+                        Container(
+                          width: 8,
+                          height: 8,
+                          decoration: const BoxDecoration(
+                            color: WijiBumiColors.freshLeaf,
+                            shape: BoxShape.circle,
                           ),
                         ),
-                        const SizedBox(height: 4),
+                        const SizedBox(width: 8),
                         Text(
-                          dateFormatter.format(item.scheduledAt),
-                          style: const TextStyle(fontSize: 11, color: WijiBumiColors.textMuted),
+                          '$unreadCount Belum Dibaca',
+                          style: const TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w700,
+                            color: WijiBumiColors.textWhite,
+                          ),
                         ),
                       ],
                     ),
+                    GestureDetector(
+                      onTap: notifController.markAllAsRead,
+                      child: const Text(
+                        'Tandai semua sudah dibaca',
+                        style: TextStyle(
+                          fontSize: 11,
+                          fontWeight: FontWeight.w600,
+                          color: WijiBumiColors.freshLeaf,
+                          decoration: TextDecoration.underline,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            }
+
+            final actualIndex = unreadCount > 0 ? index - 1 : index;
+            final item = reminders[actualIndex];
+            final isOrderNotif = item.id.startsWith('ord_') || item.title.contains('Pesanan');
+            final isUnread = !item.isRead;
+            final messageText = item.message?.isNotEmpty == true
+                ? item.message!
+                : (isOrderNotif ? 'Aktivitas pesanan telah diperbarui.' : 'Jadwal pengingat belanja rutin.');
+
+            return InkWell(
+              onTap: () {
+                if (isUnread) {
+                  notifController.markAsRead(item.id);
+                }
+              },
+              borderRadius: BorderRadius.circular(14),
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 200),
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: isUnread
+                        ? [
+                            Colors.white.withOpacity(0.60),
+                            const Color(0xFFD8EADA).withOpacity(0.44),
+                          ]
+                        : [
+                            Colors.white.withOpacity(0.42),
+                            const Color(0xFFD8EADA).withOpacity(0.28),
+                          ],
                   ),
-                  Switch(
-                    value: item.isActive,
-                    activeColor: WijiBumiColors.freshLeaf,
-                    onChanged: (val) {
-                      notifController.toggleReminder(item.id, val);
-                    },
+                  borderRadius: BorderRadius.circular(14),
+                  border: Border.all(
+                    color: isUnread
+                        ? WijiBumiColors.freshLeaf.withOpacity(0.55)
+                        : Colors.white.withOpacity(0.25),
+                    width: isUnread ? 1.5 : 1.0,
                   ),
-                  IconButton(
-                    icon: const Icon(Icons.delete_outline_rounded, size: 20, color: WijiBumiColors.error),
-                    onPressed: () {
-                      notifController.deleteReminder(item.id);
-                    },
-                  ),
-                ],
+                  boxShadow: [
+                    BoxShadow(
+                      color: isUnread
+                          ? WijiBumiColors.freshLeaf.withOpacity(0.12)
+                          : Colors.black.withOpacity(0.15),
+                      blurRadius: isUnread ? 14 : 10,
+                      offset: const Offset(0, 4),
+                    ),
+                  ],
+                ),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Ikon Notifikasi / Pengingat
+                    Container(
+                      padding: const EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                        color: isUnread
+                            ? WijiBumiColors.lightMint
+                            : (item.isActive ? WijiBumiColors.lightMint : Colors.grey.shade200),
+                        shape: BoxShape.circle,
+                        border: isUnread
+                            ? Border.all(color: WijiBumiColors.freshLeaf, width: 1.2)
+                            : null,
+                      ),
+                      child: Icon(
+                        isOrderNotif
+                            ? Icons.notifications_active_rounded
+                            : (item.isActive ? Icons.alarm_on_rounded : Icons.alarm_off_rounded),
+                        color: isOrderNotif
+                            ? WijiBumiColors.deepForest
+                            : (item.isActive ? WijiBumiColors.deepForest : WijiBumiColors.textMuted),
+                        size: 22,
+                      ),
+                    ),
+                    const SizedBox(width: 14),
+
+                    // Konten: Judul, Isi Pesan Detail, & Waktu
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Expanded(
+                                child: Text(
+                                  item.title,
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: isUnread ? FontWeight.w800 : FontWeight.w600,
+                                    color: WijiBumiColors.textCardDark,
+                                    letterSpacing: -0.2,
+                                  ),
+                                ),
+                              ),
+                              if (isUnread) ...[
+                                const SizedBox(width: 6),
+                                Container(
+                                  width: 8,
+                                  height: 8,
+                                  decoration: const BoxDecoration(
+                                    color: WijiBumiColors.freshLeaf,
+                                    shape: BoxShape.circle,
+                                  ),
+                                ),
+                              ],
+                            ],
+                          ),
+                          const SizedBox(height: 5),
+
+                          // Pesan Detail Notifikasi (Terbaca Jelas)
+                          Text(
+                            messageText,
+                            maxLines: 4,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              fontSize: 12,
+                              fontWeight: isUnread ? FontWeight.w500 : FontWeight.w400,
+                              color: WijiBumiColors.textCardDark.withOpacity(isUnread ? 0.90 : 0.70),
+                              height: 1.35,
+                            ),
+                          ),
+                          const SizedBox(height: 6),
+
+                          // Tanggal & Waktu Notifikasi
+                          Row(
+                            children: [
+                              Icon(
+                                Icons.access_time_rounded,
+                                size: 12,
+                                color: WijiBumiColors.textCardDark.withOpacity(0.55),
+                              ),
+                              const SizedBox(width: 4),
+                              Expanded(
+                                child: Text(
+                                  dateFormatter.format(item.scheduledAt),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(
+                                    fontSize: 11,
+                                    color: WijiBumiColors.textCardDark.withOpacity(0.60),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    // Aksi di sisi kanan:
+                    // Untuk notifikasi pesanan: TIDAK ADA IKON HAPUS (rapi dan standar)
+                    // Untuk pengingat rutin: tetap sediakan switch dan opsi hapus
+                    if (!isOrderNotif) ...[
+                      const SizedBox(width: 8),
+                      Column(
+                        children: [
+                          Switch(
+                            value: item.isActive,
+                            activeColor: WijiBumiColors.freshLeaf,
+                            onChanged: (val) {
+                              notifController.toggleReminder(item.id, val);
+                            },
+                          ),
+                          IconButton(
+                            icon: const Icon(Icons.delete_outline_rounded, size: 20, color: WijiBumiColors.error),
+                            padding: EdgeInsets.zero,
+                            constraints: const BoxConstraints(),
+                            onPressed: () {
+                              notifController.deleteReminder(item.id);
+                            },
+                          ),
+                        ],
+                      ),
+                    ],
+                  ],
+                ),
               ),
             );
           },

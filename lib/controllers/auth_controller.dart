@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 import '../models/models.dart';
 import '../services/api_service.dart';
+import '../services/database_helper.dart';
 import '../widgets/glass_feedback.dart';
 
 class AuthController extends GetxController {
@@ -84,6 +85,19 @@ class AuthController extends GetxController {
         password: password,
         phone: phone?.trim(),
       );
+      try {
+        await DatabaseHelper.saveUser(
+          id: user.id,
+          name: user.name,
+          email: user.email,
+          username: user.username,
+          phone: user.phone,
+          password: password,
+          passwordHash: user.passwordHash,
+          photoUrl: user.photoUrl,
+          createdAt: user.createdAt,
+        );
+      } catch (_) {}
       GlassFeedback.showSnackbar(
         title: 'Registrasi Berhasil',
         message: 'Akun berhasil dibuat untuk ${user.name}. Silakan login.',

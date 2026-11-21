@@ -62,18 +62,28 @@ class _ProfileViewState extends State<ProfileView> {
                         ],
                       ),
                       child: ClipOval(
-                        child: user?.photoUrl.isNotEmpty == true
-                            ? Image.network(
-                                user!.photoUrl,
-                                fit: BoxFit.cover,
-                                errorBuilder: (_, __, ___) => _buildAvatarFallback(),
-                              )
+                        child: user != null && user.photoUrl.isNotEmpty
+                            ? (user.photoUrl.startsWith('http://') || user.photoUrl.startsWith('https://')
+                                ? Image.network(
+                                    user.photoUrl,
+                                    fit: BoxFit.cover,
+                                    errorBuilder: (_, __, ___) => _buildAvatarFallback(),
+                                  )
+                                : Image.asset(
+                                    user.photoUrl.startsWith('assets/')
+                                        ? user.photoUrl
+                                        : 'assets/images/products/${user.photoUrl}',
+                                    fit: BoxFit.cover,
+                                    errorBuilder: (_, __, ___) => _buildAvatarFallback(),
+                                  ))
                             : _buildAvatarFallback(),
                       ),
                     ),
                     const SizedBox(height: 12),
                     Text(
                       name,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                       style: const TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.w800,
@@ -83,6 +93,8 @@ class _ProfileViewState extends State<ProfileView> {
                     const SizedBox(height: 4),
                     Text(
                       email,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                       style: const TextStyle(
                         fontSize: 12,
                         color: WijiBumiColors.textMuted,
@@ -91,6 +103,8 @@ class _ProfileViewState extends State<ProfileView> {
                     const SizedBox(height: 2),
                     Text(
                       phone,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                       style: const TextStyle(
                         fontSize: 12,
                         color: WijiBumiColors.textSecondary,
@@ -132,7 +146,7 @@ class _ProfileViewState extends State<ProfileView> {
                   const Divider(height: 1, indent: 56),
                   _buildMenuItem(
                     icon: Icons.receipt_long_outlined,
-                    title: 'Riwayat Pesanan',
+                    title: 'Pesanan Saya',
                     subtitle: 'Lacak status & transaksi belanja',
                     onTap: () => Get.toNamed(AppRoutes.ORDERS),
                   ),
@@ -161,10 +175,14 @@ class _ProfileViewState extends State<ProfileView> {
                     ),
                     title: const Text(
                       'Simulasi Mode Offline (TC-08 / TC-15)',
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                       style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: WijiBumiColors.textPrimary),
                     ),
                     subtitle: Text(
                       _offlineMode ? 'Mode simulasi mati jaringan aktif' : 'Jaringan online normal',
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                       style: const TextStyle(fontSize: 11, color: WijiBumiColors.textMuted),
                     ),
                     trailing: Switch(
@@ -281,6 +299,8 @@ class _ProfileViewState extends State<ProfileView> {
       ),
       title: Text(
         title,
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
         style: const TextStyle(
           fontSize: 13,
           fontWeight: FontWeight.w600,
@@ -289,6 +309,8 @@ class _ProfileViewState extends State<ProfileView> {
       ),
       subtitle: Text(
         subtitle,
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
         style: const TextStyle(fontSize: 11, color: WijiBumiColors.textMuted),
       ),
       trailing: const Icon(Icons.arrow_forward_ios_rounded, size: 14, color: WijiBumiColors.textMuted),

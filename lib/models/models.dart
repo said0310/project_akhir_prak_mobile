@@ -1,3 +1,5 @@
+import 'package:flutter/services.dart' show rootBundle;
+
 /// ============================================================================
 /// 1. MODEL PENGGUNA (USER)
 /// ============================================================================
@@ -9,6 +11,7 @@ class UserModel {
   final String passwordHash;
   final String phone;
   final String photoUrl;
+  final String createdAt;
 
   UserModel({
     required this.id,
@@ -18,7 +21,8 @@ class UserModel {
     required this.passwordHash,
     this.phone = '',
     this.photoUrl = '',
-  });
+    String? createdAt,
+  }) : createdAt = createdAt ?? DateTime.now().toIso8601String();
 
   factory UserModel.fromJson(Map<String, dynamic> json) {
     return UserModel(
@@ -26,9 +30,10 @@ class UserModel {
       name: json['name']?.toString() ?? '',
       email: json['email']?.toString() ?? '',
       username: json['username']?.toString() ?? '',
-      passwordHash: json['passwordHash']?.toString() ?? '',
+      passwordHash: json['passwordHash']?.toString() ?? json['password_hash']?.toString() ?? '',
       phone: json['phone']?.toString() ?? '',
-      photoUrl: json['photoUrl']?.toString() ?? '',
+      photoUrl: json['photoUrl']?.toString() ?? json['photo_url']?.toString() ?? '',
+      createdAt: json['createdAt']?.toString() ?? json['created_at']?.toString() ?? DateTime.now().toIso8601String(),
     );
   }
 
@@ -41,6 +46,8 @@ class UserModel {
       'passwordHash': passwordHash,
       'phone': phone,
       'photoUrl': photoUrl,
+      'createdAt': createdAt,
+      'created_at': createdAt,
     };
   }
 
@@ -52,6 +59,7 @@ class UserModel {
     String? passwordHash,
     String? phone,
     String? photoUrl,
+    String? createdAt,
   }) {
     return UserModel(
       id: id ?? this.id,
@@ -61,6 +69,7 @@ class UserModel {
       passwordHash: passwordHash ?? this.passwordHash,
       phone: phone ?? this.phone,
       photoUrl: photoUrl ?? this.photoUrl,
+      createdAt: createdAt ?? this.createdAt,
     );
   }
 }
@@ -94,6 +103,41 @@ class CategoryModel {
       'icon': icon,
     };
   }
+
+  /// Mengekstrak daftar kategori unik dari list produk dan memberi nama serta ikon yang sesuai
+  static List<CategoryModel> fromProductList(List<ProductModel> products) {
+    final seen = <String>{};
+    final List<CategoryModel> list = [];
+
+    final categoryMeta = {
+      'buah': {'name': 'Buah', 'icon': 'apple'},
+      'sayur': {'name': 'Sayuran', 'icon': 'grass'},
+      'sayuran': {'name': 'Sayuran', 'icon': 'grass'},
+      'bunga': {'name': 'Bunga', 'icon': 'local_florist'},
+      'tanaman_hias': {'name': 'Bunga', 'icon': 'yard'},
+      'beras&umbi-umbian': {'name': 'Beras & Umbi', 'icon': 'grain'},
+      'rempah-rempah': {'name': 'Rempah', 'icon': 'spa'},
+    };
+
+    for (var product in products) {
+      final rawId = product.categoryId.trim();
+      final catId = rawId.toLowerCase();
+      if (catId.isNotEmpty && seen.add(catId)) {
+        final meta = categoryMeta[catId];
+        final name = meta?['name'] ??
+            (rawId.length > 1
+                ? rawId[0].toUpperCase() + rawId.substring(1)
+                : rawId);
+        final icon = meta?['icon'] ?? 'eco';
+        list.add(CategoryModel(
+          id: rawId,
+          name: name,
+          icon: icon,
+        ));
+      }
+    }
+    return list;
+  }
 }
 
 /// ============================================================================
@@ -113,6 +157,8 @@ class ProductModel {
   final double sellerLat;
   final double sellerLng;
   final double rating;
+  final String origin;
+  final bool isFeatured;
 
   ProductModel({
     required this.id,
@@ -128,6 +174,8 @@ class ProductModel {
     required this.sellerLat,
     required this.sellerLng,
     this.rating = 4.8,
+    this.origin = '',
+    this.isFeatured = false,
   });
 
   factory ProductModel.fromJson(Map<String, dynamic> json) {
@@ -141,10 +189,17 @@ class ProductModel {
       stock: (json['stock'] as num?)?.toInt() ?? 0,
       imageUrl: json['imageUrl']?.toString() ?? '',
       sellerName: json['sellerName']?.toString() ?? 'Kebun Wiji Bumi',
-      sellerLocation: json['sellerLocation']?.toString() ?? 'Jakarta',
+      sellerLocation: json['sellerLocation']?.toString() ??
+          ((json['origin']?.toString().isNotEmpty == true)
+              ? json['origin'].toString()
+              : 'Jakarta'),
       sellerLat: (json['sellerLat'] as num?)?.toDouble() ?? -6.2088,
       sellerLng: (json['sellerLng'] as num?)?.toDouble() ?? 106.8456,
       rating: (json['rating'] as num?)?.toDouble() ?? 4.8,
+      origin: json['origin']?.toString() ?? '',
+      isFeatured: json['isFeatured'] == true ||
+          json['is_featured'] == 1 ||
+          json['is_featured'] == '1',
     );
   }
 
@@ -163,6 +218,9 @@ class ProductModel {
       'sellerLat': sellerLat,
       'sellerLng': sellerLng,
       'rating': rating,
+      'origin': origin,
+      'isFeatured': isFeatured,
+      'is_featured': isFeatured ? 1 : 0,
     };
   }
 
@@ -180,6 +238,8 @@ class ProductModel {
     double? sellerLat,
     double? sellerLng,
     double? rating,
+    String? origin,
+    bool? isFeatured,
   }) {
     return ProductModel(
       id: id ?? this.id,
@@ -195,7 +255,171 @@ class ProductModel {
       sellerLat: sellerLat ?? this.sellerLat,
       sellerLng: sellerLng ?? this.sellerLng,
       rating: rating ?? this.rating,
+      origin: origin ?? this.origin,
+      isFeatured: isFeatured ?? this.isFeatured,
     );
+  }
+
+  /// Memastikan nama gambar produk memiliki prefix assets/images/products/ jika berupa nama file lokal
+  static String resolveImagePath(String image) {
+    final clean = image.trim();
+    if (clean.isEmpty) return '';
+    if (clean.startsWith('http://') || clean.startsWith('https://')) return clean;
+    if (clean.startsWith('assets/')) return clean;
+    return 'assets/images/products/$clean';
+  }
+
+  /// Parser CSV fleksibel: mendukung pemisah kolom koma (,) atau titik koma (;),
+  /// teks di dalam tanda kutip ("..."), escape quote (""), baris baru dalam kutip, serta trimming.
+  static List<List<String>> parseCsvString(String rawCsv, {String? delimiter}) {
+    final cleanInput = rawCsv.replaceAll('\r\n', '\n').replaceAll('\r', '\n');
+    if (cleanInput.trim().isEmpty) return [];
+
+    // Deteksi pemisah otomatis
+    String sep = delimiter ?? ';';
+    if (delimiter == null) {
+      final firstLine = cleanInput.split('\n').firstWhere(
+            (line) => line.trim().isNotEmpty,
+            orElse: () => '',
+          );
+      final semicolonCount = ';'.allMatches(firstLine).length;
+      final commaCount = ','.allMatches(firstLine).length;
+      sep = semicolonCount >= commaCount ? ';' : ',';
+    }
+
+    final List<List<String>> rows = [];
+    List<String> currentRow = [];
+    final StringBuffer currentField = StringBuffer();
+    bool inQuotes = false;
+    int i = 0;
+
+    while (i < cleanInput.length) {
+      final char = cleanInput[i];
+
+      if (inQuotes) {
+        if (char == '"') {
+          if (i + 1 < cleanInput.length && cleanInput[i + 1] == '"') {
+            currentField.write('"');
+            i += 2;
+            continue;
+          } else {
+            inQuotes = false;
+            i++;
+            continue;
+          }
+        } else {
+          currentField.write(char);
+          i++;
+          continue;
+        }
+      } else {
+        if (char == '"') {
+          inQuotes = true;
+          i++;
+          continue;
+        } else if (char == sep) {
+          currentRow.add(currentField.toString().trim());
+          currentField.clear();
+          i++;
+          continue;
+        } else if (char == '\n') {
+          currentRow.add(currentField.toString().trim());
+          currentField.clear();
+          if (currentRow.any((field) => field.isNotEmpty)) {
+            rows.add(currentRow);
+          }
+          currentRow = [];
+          i++;
+          continue;
+        } else {
+          currentField.write(char);
+          i++;
+          continue;
+        }
+      }
+    }
+
+    if (currentField.isNotEmpty || currentRow.isNotEmpty) {
+      currentRow.add(currentField.toString().trim());
+      if (currentRow.any((field) => field.isNotEmpty)) {
+        rows.add(currentRow);
+      }
+    }
+
+    return rows;
+  }
+
+  /// Memetakan string CSV (misal hasil dari rootBundle.loadString) ke struktur List<ProductModel>
+  static List<ProductModel> fromCsv(String rawCsv, {String? delimiter}) {
+    final rows = parseCsvString(rawCsv, delimiter: delimiter);
+    if (rows.isEmpty) return [];
+
+    final headerRow = rows.first;
+    final Map<String, int> headerMap = {};
+    for (int i = 0; i < headerRow.length; i++) {
+      headerMap[headerRow[i].toLowerCase().trim()] = i;
+    }
+
+    final List<ProductModel> products = [];
+    for (int r = 1; r < rows.length; r++) {
+      final row = rows[r];
+      if (row.isEmpty || !row.any((f) => f.isNotEmpty)) continue;
+
+      String getField(String key) {
+        final idx = headerMap[key];
+        if (idx != null && idx < row.length) {
+          return row[idx].trim();
+        }
+        return '';
+      }
+
+      final id = getField('id');
+      if (id.isEmpty) continue;
+
+      final name = getField('name');
+      final image = getField('image');
+      final category = getField('category');
+      final priceStr = getField('price');
+      final unit = getField('unit');
+      final stockStr = getField('stock');
+      final description = getField('description');
+      final origin = getField('origin');
+      final isFeaturedStr = getField('is_featured');
+
+      final cleanPriceStr = priceStr.replaceAll(RegExp(r'[^0-9.]'), '');
+      final price = double.tryParse(cleanPriceStr) ?? 0.0;
+      final cleanStockStr = stockStr.replaceAll(RegExp(r'[^0-9]'), '');
+      final stock = int.tryParse(cleanStockStr) ?? 0;
+      final isFeatured = isFeaturedStr == '1' || isFeaturedStr.toLowerCase() == 'true';
+
+      products.add(ProductModel(
+        id: id,
+        name: name,
+        categoryId: category,
+        description: description,
+        price: price,
+        unit: unit.isNotEmpty ? unit : 'kg',
+        stock: stock,
+        imageUrl: resolveImagePath(image),
+        sellerName: 'Kebun Wiji Bumi',
+        sellerLocation: origin.isNotEmpty ? origin : 'Jakarta',
+        sellerLat: -6.2088,
+        sellerLng: 106.8456,
+        rating: 4.8,
+        origin: origin,
+        isFeatured: isFeatured,
+      ));
+    }
+
+    return products;
+  }
+
+  /// Membaca file CSV dari aset menggunakan rootBundle.loadString dan memetakannya ke List<ProductModel>
+  static Future<List<ProductModel>> loadFromAssets({
+    String path = 'assets/data/Katalog_WijiBumi.csv',
+  }) async {
+    final csvString = await rootBundle.loadString(path);
+    return fromCsv(csvString);
   }
 }
 
@@ -372,15 +596,19 @@ class ReminderModel {
   final String id;
   final String userId;
   final String title;
+  final String? message;
   final DateTime scheduledAt;
   bool isActive;
+  bool isRead;
 
   ReminderModel({
     required this.id,
     required this.userId,
     required this.title,
+    this.message,
     required this.scheduledAt,
     this.isActive = true,
+    this.isRead = false,
   });
 
   factory ReminderModel.fromJson(Map<String, dynamic> json) {
@@ -388,10 +616,14 @@ class ReminderModel {
       id: json['id']?.toString() ?? '',
       userId: json['userId']?.toString() ?? '',
       title: json['title']?.toString() ?? '',
+      message: json['message']?.toString(),
       scheduledAt: json['scheduledAt'] != null
           ? DateTime.tryParse(json['scheduledAt'].toString()) ?? DateTime.now()
-          : DateTime.now(),
-      isActive: json['isActive'] as bool? ?? true,
+          : (json['scheduled_at'] != null
+              ? DateTime.tryParse(json['scheduled_at'].toString()) ?? DateTime.now()
+              : DateTime.now()),
+      isActive: json['isActive'] as bool? ?? (json['is_active'] as int? ?? 1) == 1,
+      isRead: json['isRead'] as bool? ?? (json['is_read'] as int? ?? 0) == 1,
     );
   }
 
@@ -400,8 +632,13 @@ class ReminderModel {
       'id': id,
       'userId': userId,
       'title': title,
+      'message': message,
       'scheduledAt': scheduledAt.toIso8601String(),
+      'scheduled_at': scheduledAt.toIso8601String(),
       'isActive': isActive,
+      'is_active': isActive ? 1 : 0,
+      'isRead': isRead,
+      'is_read': isRead ? 1 : 0,
     };
   }
 
@@ -409,15 +646,19 @@ class ReminderModel {
     String? id,
     String? userId,
     String? title,
+    String? message,
     DateTime? scheduledAt,
     bool? isActive,
+    bool? isRead,
   }) {
     return ReminderModel(
       id: id ?? this.id,
       userId: userId ?? this.userId,
       title: title ?? this.title,
+      message: message ?? this.message,
       scheduledAt: scheduledAt ?? this.scheduledAt,
       isActive: isActive ?? this.isActive,
+      isRead: isRead ?? this.isRead,
     );
   }
 }
@@ -477,6 +718,9 @@ class OrderModel {
   final double shippingCost;
   final double total;
   final List<OrderItemModel> items;
+
+  String get customerName =>
+      address.recipientName.isNotEmpty ? address.recipientName : 'Pengguna Wiji Bumi';
 
   OrderModel({
     required this.id,

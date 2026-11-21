@@ -105,17 +105,23 @@ class CartView extends StatelessWidget {
                               cartController.toggleSelectAll(val ?? false);
                             },
                           ),
-                          const Text(
-                            'Pilih Semua Item',
-                            style: TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w700,
-                              color: WijiBumiColors.textCardDark,
+                          const Expanded(
+                            child: Text(
+                              'Pilih Semua Item',
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w700,
+                                color: WijiBumiColors.textCardDark,
+                              ),
                             ),
                           ),
-                          const Spacer(),
+                          const SizedBox(width: 8),
                           Text(
                             '${items.length} Barang',
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
                             style: const TextStyle(
                               fontSize: 12,
                               fontWeight: FontWeight.w600,
@@ -154,14 +160,7 @@ class CartView extends StatelessWidget {
                           child: SizedBox(
                             width: 64,
                             height: 64,
-                            child: Image.network(
-                              item.imageUrl,
-                              fit: BoxFit.cover,
-                              errorBuilder: (_, __, ___) => Container(
-                                color: WijiBumiColors.lightMint,
-                                child: const Icon(Icons.eco_rounded, color: WijiBumiColors.freshLeaf),
-                              ),
-                            ),
+                            child: _buildItemImage(item.imageUrl),
                           ),
                         ),
                         const SizedBox(width: 12),
@@ -184,6 +183,8 @@ class CartView extends StatelessWidget {
                               const SizedBox(height: 4),
                               Text(
                                 '${currencyFormatter.format(item.price)} /${item.unit}',
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
                                 style: const TextStyle(
                                   fontSize: 13,
                                   fontWeight: FontWeight.w800,
@@ -282,28 +283,36 @@ class CartView extends StatelessWidget {
                       top: false,
                       child: Row(
                         children: [
-                          Column(
-                            mainAxisSize: MainAxisSize.min,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const Text(
-                                'Total Harga:',
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  color: WijiBumiColors.textMutedLight,
+                          Expanded(
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const Text(
+                                  'Total Harga:',
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    color: WijiBumiColors.textMutedLight,
+                                  ),
                                 ),
-                              ),
-                              Text(
-                                currencyFormatter.format(cartController.getTotalPrice()),
-                                style: const TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.w900,
-                                  color: WijiBumiColors.textWhite,
+                                FittedBox(
+                                  fit: BoxFit.scaleDown,
+                                  alignment: Alignment.centerLeft,
+                                  child: Text(
+                                    currencyFormatter.format(cartController.getTotalPrice()),
+                                    style: const TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w900,
+                                      color: WijiBumiColors.textWhite,
+                                    ),
+                                  ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
-                          const Spacer(),
+                          const SizedBox(width: 12),
                           CustomButton(
                             text: 'Checkout (${items.where((i) => i.isSelected).length})',
                             width: 150,
@@ -325,5 +334,32 @@ class CartView extends StatelessWidget {
         );
       }),
     );
+  }
+
+  Widget _buildItemImage(String url) {
+    final cleanUrl = url.trim();
+    final fallback = Container(
+      color: WijiBumiColors.lightMint,
+      child: const Icon(Icons.eco_rounded, color: WijiBumiColors.freshLeaf),
+    );
+
+    if (cleanUrl.isEmpty) return fallback;
+
+    if (cleanUrl.startsWith('http://') || cleanUrl.startsWith('https://')) {
+      return Image.network(
+        cleanUrl,
+        fit: BoxFit.cover,
+        errorBuilder: (_, __, ___) => fallback,
+      );
+    } else {
+      final assetPath = cleanUrl.startsWith('assets/')
+          ? cleanUrl
+          : 'assets/images/products/$cleanUrl';
+      return Image.asset(
+        assetPath,
+        fit: BoxFit.cover,
+        errorBuilder: (_, __, ___) => fallback,
+      );
+    }
   }
 }

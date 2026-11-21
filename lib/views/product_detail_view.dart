@@ -88,16 +88,7 @@ class _ProductDetailViewState extends State<ProductDetailView> {
                     SizedBox(
                       height: 340,
                       width: double.infinity,
-                      child: Image.network(
-                        product.imageUrl,
-                        fit: BoxFit.cover,
-                        errorBuilder: (_, __, ___) => Container(
-                          color: WijiBumiColors.lightMint,
-                          child: const Center(
-                            child: Icon(Icons.eco_rounded, size: 64, color: WijiBumiColors.freshLeaf),
-                          ),
-                        ),
-                      ),
+                      child: _buildDetailImage(product.imageUrl),
                     ),
                     Positioned(
                       bottom: 0,
@@ -467,5 +458,34 @@ class _ProductDetailViewState extends State<ProductDetailView> {
         ],
       ),
     );
+  }
+
+  Widget _buildDetailImage(String url) {
+    final cleanUrl = url.trim();
+    final fallback = Container(
+      color: WijiBumiColors.lightMint,
+      child: const Center(
+        child: Icon(Icons.eco_rounded, size: 64, color: WijiBumiColors.freshLeaf),
+      ),
+    );
+
+    if (cleanUrl.isEmpty) return fallback;
+
+    if (cleanUrl.startsWith('http://') || cleanUrl.startsWith('https://')) {
+      return Image.network(
+        cleanUrl,
+        fit: BoxFit.cover,
+        errorBuilder: (_, __, ___) => fallback,
+      );
+    } else {
+      final assetPath = cleanUrl.startsWith('assets/')
+          ? cleanUrl
+          : 'assets/images/products/$cleanUrl';
+      return Image.asset(
+        assetPath,
+        fit: BoxFit.cover,
+        errorBuilder: (_, __, ___) => fallback,
+      );
+    }
   }
 }

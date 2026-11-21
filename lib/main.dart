@@ -38,6 +38,9 @@ void main() async {
     await NotificationService.init();
   }
 
-  // 7. Jalankan Aplikasi
+  // 7. Muat Katalog Produk & Kategori dari CSV Lokal
+  await ApiService.loadCatalogFromCsv();
+
+  // 8. Jalankan Aplikasi
   runApp(const WijiBumiApp());
 }

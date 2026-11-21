@@ -9,6 +9,8 @@ class NotificationController extends GetxController {
   final RxList<ReminderModel> reminders = <ReminderModel>[].obs;
   final RxBool permissionGranted = false.obs;
 
+  int get unreadCount => reminders.where((r) => !r.isRead).length;
+
   String get _currentUserId {
     if (Get.isRegistered<AuthController>()) {
       return Get.find<AuthController>().currentUser.value?.id ?? 'guest';
@@ -71,6 +73,72 @@ class NotificationController extends GetxController {
       title: 'Pengingat Disimpan',
       message: 'Jadwal belanja rutin berhasil diatur.',
     );
+  }
+
+  /// Menambahkan notifikasi aktivitas pesanan ke database lokal SQLite dan memicu notifikasi visual
+  Future<void> addOrderNotification({
+    required String title,
+    required String status,
+    required String orderNumber,
+    String? message,
+    String? orderId,
+  }) async {
+    final id = 'ord_notif_${DateTime.now().millisecondsSinceEpoch}';
+    final notifTitle = '$title ($status)';
+    final detailBody = message ?? 'Pesanan No. $orderNumber status saat ini: $status.';
+    final reminder = ReminderModel(
+      id: id,
+      userId: _currentUserId,
+      title: notifTitle,
+      message: detailBody,
+      scheduledAt: DateTime.now(),
+      isActive: true,
+      isRead: false,
+    );
+
+    // 1. Simpan ke SQLite dan perbarui state di memori
+    await DatabaseHelper.saveReminder(reminder);
+    await loadReminders();
+
+    // 2. Tampilkan notifikasi segera di bilah status sistem
+    try {
+      final notifId = id.hashCode & 0x7FFFFFFF;
+      await NotificationService.showImmediateNotification(
+        id: notifId,
+        title: title,
+        body: detailBody,
+        payload: orderId,
+      );
+    } catch (_) {}
+  }
+
+  /// Menandai satu item notifikasi sebagai sudah dibaca
+  Future<void> markAsRead(String id) async {
+    final index = reminders.indexWhere((r) => r.id == id);
+    if (index != -1 && !reminders[index].isRead) {
+      reminders[index].isRead = true;
+      reminders.refresh();
+      await DatabaseHelper.markReminderAsRead(id, true);
+    }
+  }
+
+  /// Menandai semua notifikasi sebagai sudah dibaca
+  Future<void> markAllAsRead() async {
+    bool hasUnread = false;
+    for (var r in reminders) {
+      if (!r.isRead) {
+        r.isRead = true;
+        hasUnread = true;
+      }
+    }
+    if (hasUnread) {
+      reminders.refresh();
+      await DatabaseHelper.markAllRemindersAsRead(_currentUserId);
+      GlassFeedback.showSnackbar(
+        title: 'Semua Dibaca',
+        message: 'Semua notifikasi telah ditandai sudah dibaca.',
+      );
+    }
   }
 
   Future<void> toggleReminder(String id, bool active) async {

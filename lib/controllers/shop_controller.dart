@@ -3,9 +3,9 @@ import 'package:get/get.dart';
 import '../models/models.dart';
 import '../services/api_service.dart';
 import '../services/database_helper.dart';
-import '../services/notification_service.dart';
 import '../widgets/glass_feedback.dart';
 import 'auth_controller.dart';
+import 'notification_controller.dart';
 
 enum PriceSortOrder { none, lowest, highest }
 
@@ -102,6 +102,12 @@ class ShopController extends GetxController with StateMixin<List<ProductModel>> 
   // ---------------------------------------------------------------------------
   // PRODUK: Operasi & Filter
   // ---------------------------------------------------------------------------
+  Future<void> loadCatalogFromCsv() async {
+    await ApiService.loadCatalogFromCsv();
+    await loadCategories();
+    await loadProducts();
+  }
+
   Future<void> loadCategories() async {
     try {
       final list = await apiService.getCategories();
@@ -118,10 +124,7 @@ class ShopController extends GetxController with StateMixin<List<ProductModel>> 
     }
 
     try {
-      final list = await apiService.getProducts(
-        category: selectedCategory.value == 'semua' ? null : selectedCategory.value,
-        q: searchQuery.value,
-      );
+      final list = await apiService.getProducts();
       rawProducts.assignAll(list);
       _applyFiltersAndNotify();
     } catch (e) {
@@ -139,16 +142,24 @@ class ShopController extends GetxController with StateMixin<List<ProductModel>> 
 
     // Filter Kategori
     if (selectedCategory.value != 'semua') {
-      filtered = filtered
-          .where((p) => p.categoryId.toLowerCase() == selectedCategory.value.toLowerCase())
-          .toList();
+      final sel = selectedCategory.value.toLowerCase().trim();
+      filtered = filtered.where((p) {
+        final catP = p.categoryId.toLowerCase().trim();
+        if (catP == sel) return true;
+        if ((catP == 'sayur' || catP == 'sayuran') && (sel == 'sayur' || sel == 'sayuran')) return true;
+        if ((catP == 'bunga' || catP == 'tanaman_hias') && (sel == 'bunga' || sel == 'tanaman_hias')) return true;
+        return false;
+      }).toList();
     }
 
     // Filter Pencarian
     if (searchQuery.value.trim().isNotEmpty) {
       final q = searchQuery.value.toLowerCase().trim();
       filtered = filtered
-          .where((p) => p.name.toLowerCase().contains(q) || p.description.toLowerCase().contains(q))
+          .where((p) =>
+              p.name.toLowerCase().contains(q) ||
+              p.description.toLowerCase().contains(q) ||
+              p.origin.toLowerCase().contains(q))
           .toList();
     }
 
@@ -235,8 +246,6 @@ class ShopController extends GetxController with StateMixin<List<ProductModel>> 
       items.assignAll(userItems);
     } catch (_) {}
   }
-
-  void loadFromHive() => loadFromDatabase();
 
   Future<void> addToCart(ProductModel product, [int quantity = 1]) async {
     if (product.stock <= 0) {
@@ -397,15 +406,34 @@ class ShopController extends GetxController with StateMixin<List<ProductModel>> 
     update();
   }
 
+  NotificationController get _notifCtrl => Get.isRegistered<NotificationController>()
+      ? Get.find<NotificationController>()
+      : Get.put(NotificationController());
+
   // ---------------------------------------------------------------------------
-  // PESANAN & CHECKOUT: Operasi API
+  // PESANAN & CHECKOUT: Operasi API & SQLite
   // ---------------------------------------------------------------------------
   Future<void> loadOrders() async {
     try {
       isLoadingOrders.value = true;
-      final list = await apiService.getOrders(_currentUserId);
-      orders.assignAll(list);
+      final apiList = await apiService.getOrders(_currentUserId);
+      final dbList = await DatabaseHelper.getOrders(_currentUserId);
+
+      final Map<String, OrderModel> map = {};
+      for (var o in dbList) {
+        map[o.id] = o;
+      }
+      for (var o in apiList) {
+        map[o.id] = o;
+      }
+      final combined = map.values.toList()
+        ..sort((a, b) => b.createdAt.compareTo(a.createdAt));
+      orders.assignAll(combined);
     } catch (_) {
+      try {
+        final dbList = await DatabaseHelper.getOrders(_currentUserId);
+        orders.assignAll(dbList);
+      } catch (_) {}
     } finally {
       isLoadingOrders.value = false;
     }
@@ -463,6 +491,9 @@ class ShopController extends GetxController with StateMixin<List<ProductModel>> 
 
       final createdOrder = await apiService.createOrder(orderData);
 
+      // Simpan ke database lokal SQLite untuk persistensi permanen
+      await DatabaseHelper.saveOrder(createdOrder);
+
       // 2. Hapus HANYA item yang dibeli dari keranjang lokal & SQLite
       final purchasedIds = selectedItems.map((i) => i.productId).toList();
       await removePurchased(purchasedIds);
@@ -471,17 +502,17 @@ class ShopController extends GetxController with StateMixin<List<ProductModel>> 
       orders.insert(0, createdOrder);
       currentOrder.value = createdOrder;
 
-      // 4. Picu Notifikasi Immediate
+      // 4. Catat notifikasi aktivitas pesanan secara otomatis ke NotificationController & SQLite
       try {
-        final notifId = createdOrder.id.hashCode & 0x7FFFFFFF;
-        await NotificationService.showImmediateNotification(
-          id: notifId,
-          title: '🎉 Pesanan Berhasil Dibuat!',
-          body: 'No. Pesanan: ${createdOrder.orderNumber} dengan total Rp ${createdOrder.total.toInt()}. Kami segera menyiapkan barang Anda.',
-          payload: createdOrder.id,
+        await _notifCtrl.addOrderNotification(
+          title: 'Pesanan Berhasil Dibuat',
+          status: createdOrder.status,
+          orderNumber: createdOrder.orderNumber,
+          message: 'Pesanan ${createdOrder.orderNumber} berhasil dibuat dengan total Rp ${createdOrder.total.toInt()}. Menunggu konfirmasi pembayaran.',
+          orderId: createdOrder.id,
         );
       } catch (notifErr) {
-        debugPrint('Notifikasi dilewati: $notifErr');
+        debugPrint('Notifikasi error: $notifErr');
       }
 
       return createdOrder;
@@ -527,6 +558,20 @@ class ShopController extends GetxController with StateMixin<List<ProductModel>> 
       if (currentOrder.value?.id == orderId) {
         currentOrder.value = updated;
       }
+      orders.refresh();
+      await DatabaseHelper.updateOrderStatus(orderId, nextStatus);
+
+      // Catat pembaruan status ke sistem notifikasi
+      try {
+        await _notifCtrl.addOrderNotification(
+          title: 'Status Pesanan Diperbarui',
+          status: nextStatus,
+          orderNumber: updated.orderNumber,
+          message: 'Status pesanan ${updated.orderNumber} saat ini telah diperbarui menjadi $nextStatus.',
+          orderId: updated.id,
+        );
+      } catch (_) {}
+
       GlassFeedback.showSnackbar(
         title: 'Status Diperbarui',
         message: 'Status pesanan berubah menjadi: $nextStatus',
@@ -560,6 +605,20 @@ class ShopController extends GetxController with StateMixin<List<ProductModel>> 
       if (currentOrder.value?.id == orderId) {
         currentOrder.value = updated;
       }
+      orders.refresh();
+      await DatabaseHelper.updateOrderStatus(orderId, 'Dibatalkan');
+
+      // Catat notifikasi pembatalan pesanan
+      try {
+        await _notifCtrl.addOrderNotification(
+          title: 'Pesanan Dibatalkan',
+          status: 'Dibatalkan',
+          orderNumber: updated.orderNumber,
+          message: 'Pesanan ${updated.orderNumber} telah dibatalkan oleh pengguna.',
+          orderId: updated.id,
+        );
+      } catch (_) {}
+
       GlassFeedback.showSnackbar(
         title: 'Pesanan Dibatalkan',
         message: 'Pesanan ${updated.orderNumber} telah dibatalkan.',
@@ -570,6 +629,55 @@ class ShopController extends GetxController with StateMixin<List<ProductModel>> 
         message: e.toString(),
         isError: true,
       );
+    }
+  }
+
+  Future<bool> updatePaymentMethod(String orderId, String newMethod) async {
+    final index = orders.indexWhere((o) => o.id == orderId);
+    if (index == -1) return false;
+
+    final targetOrder = orders[index];
+    if (targetOrder.status == 'Selesai' || targetOrder.status == 'Dibatalkan') {
+      GlassFeedback.showSnackbar(
+        title: 'Tidak Dapat Diubah',
+        message: 'Metode pembayaran untuk pesanan yang sudah selesai atau dibatalkan tidak dapat diubah.',
+        isError: true,
+      );
+      return false;
+    }
+
+    try {
+      final updated = await apiService.updateOrderPaymentMethod(orderId, newMethod);
+      orders[index] = updated;
+      if (currentOrder.value?.id == orderId) {
+        currentOrder.value = updated;
+      }
+      orders.refresh();
+      await DatabaseHelper.updateOrderPaymentMethod(orderId, newMethod);
+
+      // Catat ke daftar notifikasi
+      try {
+        await _notifCtrl.addOrderNotification(
+          title: 'Metode Pembayaran Diubah',
+          status: newMethod,
+          orderNumber: updated.orderNumber,
+          message: 'Metode pembayaran untuk pesanan ${updated.orderNumber} berhasil dialihkan ke $newMethod.',
+          orderId: updated.id,
+        );
+      } catch (_) {}
+
+      GlassFeedback.showSnackbar(
+        title: 'Metode Pembayaran Diperbarui',
+        message: 'Metode pembayaran pesanan ${updated.orderNumber} diubah ke $newMethod.',
+      );
+      return true;
+    } catch (e) {
+      GlassFeedback.showSnackbar(
+        title: 'Gagal Memperbarui Metode Pembayaran',
+        message: e.toString(),
+        isError: true,
+      );
+      return false;
     }
   }
 }

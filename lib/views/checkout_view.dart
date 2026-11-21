@@ -147,6 +147,8 @@ class _CheckoutViewState extends State<CheckoutView> {
                           Expanded(
                             child: Text(
                               '${address.recipientName} (${address.phone})',
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
                               style: const TextStyle(
                                 fontSize: 13,
                                 fontWeight: FontWeight.bold,
@@ -172,6 +174,8 @@ class _CheckoutViewState extends State<CheckoutView> {
                       const SizedBox(height: 4),
                       Text(
                         address.fullAddress,
+                        maxLines: 3,
+                        overflow: TextOverflow.ellipsis,
                         style: const TextStyle(
                           fontSize: 12,
                           color: WijiBumiColors.textSecondary,
@@ -180,6 +184,8 @@ class _CheckoutViewState extends State<CheckoutView> {
                       ),
                       Text(
                         '${address.district}, ${address.city}',
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                         style: const TextStyle(
                           fontSize: 12,
                           color: WijiBumiColors.textMuted,
@@ -190,34 +196,44 @@ class _CheckoutViewState extends State<CheckoutView> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Row(
-                            children: [
-                              const Icon(Icons.near_me_outlined,
-                                  size: 16, color: WijiBumiColors.freshLeaf),
-                              const SizedBox(width: 6),
-                              Text(
-                                locationController.distanceKm.value > 0
-                                    ? 'Jarak Kebun: ${locationController.distanceKm.value.toStringAsFixed(1)} km'
-                                    : 'Jarak GPS: Standar Kota',
-                                style: const TextStyle(
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w600,
-                                  color: WijiBumiColors.textPrimary,
+                          Expanded(
+                            child: Row(
+                              children: [
+                                const Icon(Icons.near_me_outlined,
+                                    size: 16, color: WijiBumiColors.freshLeaf),
+                                const SizedBox(width: 6),
+                                Expanded(
+                                  child: Text(
+                                    locationController.distanceKm.value > 0
+                                        ? 'Jarak Kebun: ${locationController.distanceKm.value.toStringAsFixed(1)} km'
+                                        : 'Jarak GPS: Standar Kota',
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: const TextStyle(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w600,
+                                      color: WijiBumiColors.textPrimary,
+                                    ),
+                                  ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
-                          Text(
-                            locationController.currentShippingCost.value == 0
-                                ? 'Gratis Ongkir'
-                                : currencyFormatter.format(
-                                    locationController.currentShippingCost.value),
-                            style: TextStyle(
-                              fontSize: 12,
-                              fontWeight: FontWeight.bold,
-                              color: locationController.currentShippingCost.value == 0
-                                  ? WijiBumiColors.success
-                                  : WijiBumiColors.deepForest,
+                          const SizedBox(width: 8),
+                          FittedBox(
+                            fit: BoxFit.scaleDown,
+                            child: Text(
+                              locationController.currentShippingCost.value == 0
+                                  ? 'Gratis Ongkir'
+                                  : currencyFormatter.format(
+                                      locationController.currentShippingCost.value),
+                              style: TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.bold,
+                                color: locationController.currentShippingCost.value == 0
+                                    ? WijiBumiColors.success
+                                    : WijiBumiColors.deepForest,
+                              ),
                             ),
                           ),
                         ],
@@ -267,20 +283,7 @@ class _CheckoutViewState extends State<CheckoutView> {
                             children: [
                               ClipRRect(
                                 borderRadius: BorderRadius.circular(8),
-                                child: Image.network(
-                                  item.imageUrl,
-                                  width: 44,
-                                  height: 44,
-                                  fit: BoxFit.cover,
-                                  errorBuilder: (_, __, ___) => Container(
-                                    width: 44,
-                                    height: 44,
-                                    color: WijiBumiColors.lightMint,
-                                    child: const Icon(Icons.eco,
-                                        size: 20,
-                                        color: WijiBumiColors.freshLeaf),
-                                  ),
-                                ),
+                                child: _buildCheckoutItemImage(item.imageUrl),
                               ),
                               const SizedBox(width: 12),
                               Expanded(
@@ -360,16 +363,20 @@ class _CheckoutViewState extends State<CheckoutView> {
                                 size: 18,
                               ),
                               const SizedBox(width: 10),
-                              Text(
-                                method,
-                                style: TextStyle(
-                                  fontSize: 13,
-                                  fontWeight: isSelected
-                                      ? FontWeight.w700
-                                      : FontWeight.w500,
-                                  color: isSelected
-                                      ? WijiBumiColors.deepForest
-                                      : WijiBumiColors.textPrimary,
+                              Expanded(
+                                child: Text(
+                                  method,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(
+                                    fontSize: 13,
+                                    fontWeight: isSelected
+                                        ? FontWeight.w700
+                                        : FontWeight.w500,
+                                    color: isSelected
+                                        ? WijiBumiColors.deepForest
+                                        : WijiBumiColors.textPrimary,
+                                  ),
                                 ),
                               ),
                               if (method.startsWith('COD')) ...[
@@ -383,6 +390,8 @@ class _CheckoutViewState extends State<CheckoutView> {
                                   ),
                                   child: const Text(
                                     'Langsung Proses',
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
                                     style: TextStyle(
                                         fontSize: 9,
                                         fontWeight: FontWeight.bold,
@@ -423,33 +432,55 @@ class _CheckoutViewState extends State<CheckoutView> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          const Text('Subtotal Produk',
+                          const Expanded(
+                            child: Text(
+                              'Subtotal Produk',
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
                               style: TextStyle(
                                   fontSize: 13,
-                                  color: WijiBumiColors.textSecondary)),
-                          Text(currencyFormatter.format(subtotal),
+                                  color: WijiBumiColors.textSecondary),
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          FittedBox(
+                            fit: BoxFit.scaleDown,
+                            child: Text(
+                              currencyFormatter.format(subtotal),
                               style: const TextStyle(
-                                  fontSize: 13, fontWeight: FontWeight.w600)),
+                                  fontSize: 13, fontWeight: FontWeight.w600),
+                            ),
+                          ),
                         ],
                       ),
                       const SizedBox(height: 8),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          const Text('Ongkos Kirim',
+                          const Expanded(
+                            child: Text(
+                              'Ongkos Kirim',
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
                               style: TextStyle(
                                   fontSize: 13,
-                                  color: WijiBumiColors.textSecondary)),
-                          Text(
-                            shippingCost == 0
-                                ? 'Gratis'
-                                : currencyFormatter.format(shippingCost),
-                            style: TextStyle(
-                              fontSize: 13,
-                              fontWeight: FontWeight.w600,
-                              color: shippingCost == 0
-                                  ? WijiBumiColors.success
-                                  : WijiBumiColors.textPrimary,
+                                  color: WijiBumiColors.textSecondary),
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          FittedBox(
+                            fit: BoxFit.scaleDown,
+                            child: Text(
+                              shippingCost == 0
+                                  ? 'Gratis'
+                                  : currencyFormatter.format(shippingCost),
+                              style: TextStyle(
+                                fontSize: 13,
+                                fontWeight: FontWeight.w600,
+                                color: shippingCost == 0
+                                    ? WijiBumiColors.success
+                                    : WijiBumiColors.textPrimary,
+                              ),
                             ),
                           ),
                         ],
@@ -461,12 +492,16 @@ class _CheckoutViewState extends State<CheckoutView> {
                             Icon(Icons.check_circle_rounded,
                                 size: 14, color: WijiBumiColors.success),
                             SizedBox(width: 4),
-                            Text(
-                              'Promo Gratis Ongkir diterapkan (Subtotal ≥ Rp 200.000)',
-                              style: TextStyle(
-                                  fontSize: 11,
-                                  color: WijiBumiColors.success,
-                                  fontWeight: FontWeight.w500),
+                            Expanded(
+                              child: Text(
+                                'Promo Gratis Ongkir diterapkan (Subtotal ≥ Rp 200.000)',
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(
+                                    fontSize: 11,
+                                    color: WijiBumiColors.success,
+                                    fontWeight: FontWeight.w500),
+                              ),
                             ),
                           ],
                         ),
@@ -475,19 +510,27 @@ class _CheckoutViewState extends State<CheckoutView> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          const Text(
-                            'Total Tagihan',
-                            style: TextStyle(
-                                fontSize: 15,
-                                fontWeight: FontWeight.w700,
-                                color: WijiBumiColors.deepForest),
+                          const Expanded(
+                            child: Text(
+                              'Total Tagihan',
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w700,
+                                  color: WijiBumiColors.deepForest),
+                            ),
                           ),
-                          Text(
-                            currencyFormatter.format(total),
-                            style: const TextStyle(
-                                fontSize: 17,
-                                fontWeight: FontWeight.w800,
-                                color: WijiBumiColors.deepForest),
+                          const SizedBox(width: 8),
+                          FittedBox(
+                            fit: BoxFit.scaleDown,
+                            child: Text(
+                              currencyFormatter.format(total),
+                              style: const TextStyle(
+                                  fontSize: 17,
+                                  fontWeight: FontWeight.w800,
+                                  color: WijiBumiColors.deepForest),
+                            ),
                           ),
                         ],
                       ),
@@ -557,5 +600,38 @@ class _CheckoutViewState extends State<CheckoutView> {
         );
       }),
     );
+  }
+
+  Widget _buildCheckoutItemImage(String url) {
+    final cleanUrl = url.trim();
+    final fallback = Container(
+      width: 44,
+      height: 44,
+      color: WijiBumiColors.lightMint,
+      child: const Icon(Icons.eco, size: 20, color: WijiBumiColors.freshLeaf),
+    );
+
+    if (cleanUrl.isEmpty) return fallback;
+
+    if (cleanUrl.startsWith('http://') || cleanUrl.startsWith('https://')) {
+      return Image.network(
+        cleanUrl,
+        width: 44,
+        height: 44,
+        fit: BoxFit.cover,
+        errorBuilder: (_, __, ___) => fallback,
+      );
+    } else {
+      final assetPath = cleanUrl.startsWith('assets/')
+          ? cleanUrl
+          : 'assets/images/products/$cleanUrl';
+      return Image.asset(
+        assetPath,
+        width: 44,
+        height: 44,
+        fit: BoxFit.cover,
+        errorBuilder: (_, __, ___) => fallback,
+      );
+    }
   }
 }

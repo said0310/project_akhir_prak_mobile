@@ -116,6 +116,8 @@ class ProductCard extends StatelessWidget {
                             const SizedBox(height: 2),
                             Text(
                               currencyFormatter.format(product.price),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
                               style: const TextStyle(
                                 fontSize: 12.5,
                                 fontWeight: FontWeight.w800,
@@ -176,9 +178,13 @@ class ProductCard extends StatelessWidget {
   }
 
   Widget _buildPlantImage(String url) {
-    if (url.startsWith('http')) {
+    final cleanUrl = url.trim();
+    if (cleanUrl.isEmpty) {
+      return _buildFallbackPlant();
+    }
+    if (cleanUrl.startsWith('http://') || cleanUrl.startsWith('https://')) {
       return Image.network(
-        url,
+        cleanUrl,
         fit: BoxFit.cover,
         errorBuilder: (context, error, stackTrace) => _buildFallbackPlant(),
         loadingBuilder: (context, child, progress) {
@@ -199,8 +205,11 @@ class ProductCard extends StatelessWidget {
         },
       );
     } else {
+      final assetPath = cleanUrl.startsWith('assets/')
+          ? cleanUrl
+          : 'assets/images/products/$cleanUrl';
       return Image.asset(
-        url,
+        assetPath,
         fit: BoxFit.cover,
         errorBuilder: (context, error, stackTrace) => _buildFallbackPlant(),
       );

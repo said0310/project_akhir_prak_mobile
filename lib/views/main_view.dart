@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import '../app.dart';
 import '../controllers/shop_controller.dart';
 import 'home_view.dart';
+import 'order_history_view.dart';
 import 'cart_view.dart';
 import 'profile_view.dart';
 
@@ -29,6 +30,7 @@ class _MainViewState extends State<MainView> {
 
     final List<Widget> pages = [
       const HomeView(),
+      const OrderHistoryView(isEmbedded: true),
       const CartView(),
       const ProfileView(),
     ];
@@ -40,7 +42,7 @@ class _MainViewState extends State<MainView> {
         children: pages,
       ),
       extendBody: true,
-      // Bottom Navigation Bar Frosted Glass (3 Tab: Beranda, Keranjang, Profil)
+      // Bottom Navigation Bar Frosted Glass (4 Tab: Beranda, Pesanan Saya, Keranjang, Profil)
       bottomNavigationBar: ClipRRect(
         borderRadius: const BorderRadius.vertical(
           top: Radius.circular(36),
@@ -84,13 +86,18 @@ class _MainViewState extends State<MainView> {
                   index: 0,
                   icon: Icons.home_rounded,
                 ),
-                _buildCartNavItem(
+                _buildOrderNavItem(
                   index: 1,
+                  icon: Icons.local_shipping_rounded,
+                  shopController: shopController,
+                ),
+                _buildCartNavItem(
+                  index: 2,
                   icon: Icons.shopping_cart_rounded,
                   shopController: shopController,
                 ),
                 _buildNavItem(
-                  index: 2,
+                  index: 3,
                   icon: Icons.person_rounded,
                 ),
               ],
@@ -112,7 +119,7 @@ class _MainViewState extends State<MainView> {
       behavior: HitTestBehavior.opaque,
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 200),
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
         decoration: isSelected
             ? BoxDecoration(
                 color: Colors.white.withOpacity(0.18),
@@ -134,6 +141,78 @@ class _MainViewState extends State<MainView> {
     );
   }
 
+  Widget _buildOrderNavItem({
+    required int index,
+    required IconData icon,
+    required ShopController shopController,
+  }) {
+    final isSelected = _currentTabIndex == index;
+
+    return GestureDetector(
+      onTap: () => changeTab(index),
+      behavior: HitTestBehavior.opaque,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+        decoration: isSelected
+            ? BoxDecoration(
+                color: Colors.white.withOpacity(0.18),
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(
+                  color: Colors.white.withOpacity(0.28),
+                  width: 1.0,
+                ),
+              )
+            : null,
+        child: Stack(
+          clipBehavior: Clip.none,
+          children: [
+            Icon(
+              icon,
+              size: 27,
+              color: isSelected
+                  ? WijiBumiColors.textWhite
+                  : WijiBumiColors.iconNavInactive,
+            ),
+            Obx(() {
+              final activeCount = shopController.orders
+                  .where((o) => o.status != 'Selesai' && o.status != 'Dibatalkan')
+                  .length;
+              if (activeCount == 0) return const SizedBox.shrink();
+
+              return Positioned(
+                top: -4,
+                right: -6,
+                child: Container(
+                  padding: const EdgeInsets.all(3),
+                  decoration: const BoxDecoration(
+                    color: WijiBumiColors.freshLeaf,
+                    shape: BoxShape.circle,
+                  ),
+                  constraints: const BoxConstraints(
+                    minWidth: 15,
+                    minHeight: 15,
+                  ),
+                  child: Center(
+                    child: Text(
+                      activeCount > 99 ? '99+' : '$activeCount',
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 9,
+                        fontWeight: FontWeight.bold,
+                        height: 1.0,
+                      ),
+                    ),
+                  ),
+                ),
+              );
+            }),
+          ],
+        ),
+      ),
+    );
+  }
+
   Widget _buildCartNavItem({
     required int index,
     required IconData icon,
@@ -146,7 +225,7 @@ class _MainViewState extends State<MainView> {
       behavior: HitTestBehavior.opaque,
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 200),
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
         decoration: isSelected
             ? BoxDecoration(
                 color: Colors.white.withOpacity(0.18),

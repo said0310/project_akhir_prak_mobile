@@ -1,0 +1,99 @@
+﻿id;name;image;category;price;unit;stock;description;origin;is_featured
+FRU001;Alpukat;FRU001.jpg;buah;20000;kg;60;Alpukat berdaging lembut dengan tekstur creamy dan rasa gurih, cocok untuk jus maupun hidangan sehat.;Magelang;1
+FRU002;Anggur;FRU002.jpg;buah;45000;kg;40;Anggur dengan butiran berair, rasa manis sedikit asam, dan kulit tipis yang nikmat dikonsumsi langsung.;Probolinggo;0
+FRU003;Apel;FRU003.jpg;buah;30000;kg;70;Apel bertekstur renyah dengan perpaduan rasa manis dan segar, cocok sebagai camilan sehari-hari.;Batu, Malang;1
+FRU004;Belimbing;FRU004.jpg;buah;15000;kg;50;Belimbing berbentuk khas dengan rasa segar sedikit asam dan kandungan air yang melimpah.;Depok;0
+FRU005;Durian;FRU005.jpg;buah;50000;buah;30;Durian matang dengan aroma khas, daging buah lembut, serta cita rasa manis dan legit.;Banyuwangi;0
+FRU006;Jeruk Bali;FRU006.jpg;buah;20000;kg;45;Jeruk berukuran besar dengan daging buah tebal, rasa manis sedikit asam, dan tekstur menyegarkan.;Magetan;0
+FRU007;Jeruk Manis;FRU007.jpg;buah;18000;kg;80;Jeruk manis berair dengan rasa segar dan mudah dikupas, kaya vitamin C.;Pontianak;0
+FRU008;Jeruk Lemon;FRU008.jpg;buah;25000;kg;40;Lemon segar beraroma tajam dengan rasa asam menyegarkan, cocok untuk minuman dan bumbu masakan.;Batu, Malang;0
+FRU009;Mangga Harum Manis;FRU009.jpg;buah;25000;kg;60;Mangga berdaging tebal dan wangi dengan rasa manis legit serta serat yang halus.;Probolinggo;1
+FRU010;Mangga Manalagi;FRU010.jpg;buah;22000;kg;60;Mangga berkulit hijau kekuningan dengan daging lembut dan rasa manis yang pas.;Pasuruan;0
+FRU011;Manggis;FRU011.jpg;buah;25000;kg;35;Buah berkulit ungu dengan daging putih lembut, rasa manis sedikit asam yang segar.;Purwakarta;0
+FRU012;Nangka;FRU012.jpg;buah;18000;kg;40;Nangka matang berdaging kuning dengan aroma harum dan rasa manis.;Gunungkidul;0
+FRU013;Cempedak;FRU013.jpg;buah;25000;kg;25;Cempedak beraroma kuat dengan daging lembut dan manis, mirip nangka namun lebih legit.;Kalimantan Selatan;0
+FRU014;Nanas;FRU014.jpg;buah;12000;buah;50;Nanas matang berair dengan rasa manis asam yang segar, enak dimakan langsung atau dijus.;Subang;0
+FRU015;Pepaya California;FRU015.jpg;buah;12000;kg;55;Pepaya berdaging oranye tebal, manis, dan lembut dengan biji yang sedikit.;Bantul;0
+FRU016;Pepaya Bangkok;FRU016.jpg;buah;10000;kg;50;Pepaya berukuran besar dengan daging merah jingga yang manis dan segar.;Sleman;0
+FRU017;Pisang Ambon;FRU017.jpg;buah;20000;kg;60;Pisang berdaging lembut dengan rasa manis dan aroma harum, enak disantap langsung.;Lumajang;0
+FRU018;Pisang Raja;FRU018.jpg;buah;25000;kg;50;Pisang berdaging tebal dengan rasa manis legit, cocok dimakan langsung maupun diolah.;Klaten;0
+FRU019;Pisang Kapok;FRU019.jpg;buah;18000;kg;60;Pisang bertekstur padat dengan rasa manis pas untuk digoreng, direbus, atau dikukus.;Lampung;0
+FRU020;Pisang Cavendish;FRU020.jpg;buah;25000;kg;60;Pisang berukuran besar dengan rasa manis lembut dan daging yang halus.;Lampung;0
+FRU021;Rambutan;FRU021.jpg;buah;15000;kg;50;Rambutan berkulit merah berambut dengan daging bening, manis, dan berair.;Binjai;0
+FRU022;Salak Pondoh;FRU022.jpg;buah;15000;kg;65;Salak berdaging renyah dan manis dengan rasa sepat yang tipis.;Sleman;1
+FRU023;Sawo;FRU023.jpg;buah;15000;kg;35;Sawo matang bertekstur lembut dengan rasa manis seperti karamel.;Gunungkidul;0
+FRU024;Sirsak;FRU024.jpg;buah;15000;kg;35;Sirsak berdaging putih lembut dengan rasa manis asam segar, cocok untuk jus.;Bantul;0
+FRU025;Buah Naga Merah;FRU025.jpg;buah;25000;kg;45;Buah naga berdaging merah keunguan dengan rasa manis segar dan biji kecil yang renyah.;Banyuwangi;1
+FRU026;Buah Naga Putih;FRU026.jpg;buah;22000;kg;45;Buah naga berdaging putih berbiji hitam dengan rasa manis ringan dan menyegarkan.;Banyuwangi;0
+FRU027;Semangka Merah;FRU027.jpg;buah;10000;kg;50;Semangka berdaging merah yang manis dan sangat berair, penyegar di cuaca panas.;Kulon Progo;0
+FRU028;Semangka Putih;FRU028.jpg;buah;15000;kg;30;Semangka berdaging pucat dengan rasa manis lembut dan tekstur renyah.;Kulon Progo;0
+FRU029;Melon Hijau;FRU029.jpg;buah;15000;kg;45;Melon berdaging hijau pucat yang manis dan berair dengan aroma segar.;Kulon Progo;0
+FRU030;Melon Golden;FRU030.jpg;buah;20000;kg;40;Melon berkulit kuning keemasan dengan daging putih yang manis dan renyah.;Sragen;0
+FRU031;Srikaya;FRU031.jpg;buah;20000;kg;25;Srikaya berdaging putih lembut dengan rasa manis legit, mudah dikerok dengan sendok.;Malang;0
+FRU032;Bengkuang;FRU032.jpg;buah;10000;kg;55;Bengkuang renyah dan berair dengan rasa manis ringan, cocok untuk rujak dan salad.;Sleman;0
+FRU033;Jambu Air;FRU033.jpg;buah;20000;kg;40;Jambu air dengan tekstur renyah, kandungan air tinggi, dan rasa manis segar.;Demak;0
+FRU034;Jambu Biji;FRU034.jpg;buah;15000;kg;50;Jambu biji berdaging tebal dengan aroma khas dan rasa manis segar, cocok untuk jus maupun konsumsi langsung.;Bogor;0
+VEG001;Bayam Hijau;VEG001.jpg;sayur;5000;ikat;100;Bayam segar dipetik pagi hari, lembut dan cocok untuk sayur bening.;Wonosobo;1
+VEG002;Bayam Merah;VEG002.jpg;sayur;5000;ikat;80;Bayam berbatang kemerahan dengan rasa manis lembut, enak ditumis atau dibuat sayur bening.;Sleman;0
+VEG003;Kangkung;VEG003.jpg;sayur;4000;ikat;120;Kangkung segar bertekstur renyah, cocok untuk tumisan.;Sleman;0
+VEG004;Sawi Hijau;VEG004.jpg;sayur;6000;ikat;90;Sawi hijau segar dengan rasa ringan, cocok untuk tumisan dan sup.;Magelang;0
+VEG005;Pakcoy;VEG005.jpg;sayur;10000;kg;70;Pakcoy berbatang tebal dan renyah, mudah dimasak untuk tumisan dan kuah.;Lembang;0
+VEG006;Selada Hijau;VEG006.jpg;sayur;20000;kg;50;Selada hijau renyah dan segar untuk salad dan isian burger.;Lembang;0
+VEG007;Brokoli;VEG007.jpg;sayur;30000;kg;45;Brokoli hijau padat kaya serat, cocok dikukus, ditumis, atau dibuat sup.;Dieng;1
+VEG008;Kembang Kol;VEG008.jpg;sayur;18000;kg;45;Kembang kol putih bertekstur padat, enak ditumis atau digoreng tepung.;Dieng;0
+VEG009;Kol Putih;VEG009.jpg;sayur;9000;kg;70;Kol putih padat dan renyah untuk sayur, lalapan, dan isian gorengan.;Temanggung;0
+VEG010;Wortel;VEG010.jpg;sayur;12000;kg;80;Wortel manis dan renyah dari dataran tinggi, cocok untuk sup dan jus.;Dieng;1
+VEG011;Tomat;VEG011.jpg;sayur;14000;kg;75;Tomat merah matang dengan rasa asam manis segar, cocok untuk sambal dan masakan.;Magelang;0
+VEG012;Terong Ungu;VEG012.jpg;sayur;12000;kg;60;Terong ungu berdaging lembut, enak digoreng, dibakar, atau dibalado.;Sleman;0
+VEG013;Timun;VEG013.jpg;sayur;8000;kg;70;Timun segar berair dan renyah untuk lalapan dan acar.;Magelang;0
+VEG014;Buncis;VEG014.jpg;sayur;16000;kg;55;Buncis muda renyah dengan rasa manis alami, cocok untuk tumisan dan sup.;Wonosobo;0
+VEG015;Kacang Panjang;VEG015.jpg;sayur;5000;ikat;90;Kacang panjang segar dan renyah untuk tumisan, urap, dan lalapan.;Bantul;0
+VEG016;Labu Siam;VEG016.jpg;sayur;7000;kg;60;Labu siam berdaging lembut dengan rasa ringan, cocok untuk sayur bening dan lodeh.;Wonosobo;0
+VEG017;Labu Kuning;VEG017.jpg;sayur;8000;kg;50;Labu kuning manis berdaging tebal, cocok untuk sup, kolak, dan bubur.;Gunungkidul;0
+VEG018;Jagung Manis;VEG018.jpg;sayur;12000;kg;70;Jagung manis segar berbiji penuh, enak direbus, dibakar, atau ditumis.;Magelang;0
+VEG019;Pare;VEG019.jpg;sayur;12000;kg;40;Pare segar dengan rasa pahit khas, cocok ditumis atau dimasak dengan telur.;Sleman;0
+VEG020;Daun Bawang;VEG020.jpg;sayur;5000;ikat;85;Daun bawang segar beraroma harum untuk taburan, sup, dan tumisan.;Temanggung;0
+FLW001;Mawar Merah;FLW001.jpg;bunga;30000;ikat;40;Mawar merah segar berkelopak penuh, satu ikat berisi 10 tangkai.;Lembang;1
+FLW002;Krisan Putih;FLW002.jpg;bunga;25000;ikat;40;Krisan putih tahan lama dengan kelopak rapat, satu ikat berisi 10 tangkai.;Cianjur;0
+FLW003;Gerbera;FLW003.jpg;bunga;35000;ikat;30;Gerbera berwarna cerah dengan bunga besar, satu ikat berisi 10 tangkai.;Cianjur;0
+FLW004;Lily;FLW004.jpg;bunga;60000;ikat;20;Lily berkelopak besar dan harum, satu ikat berisi 5 tangkai.;Lembang;0
+FLW005;Sedap Malam;FLW005.jpg;bunga;30000;ikat;30;Sedap malam berbunga putih beraroma harum kuat, satu ikat berisi 10 tangkai.;Cianjur;0
+FLW006;Bunga Matahari;FLW006.jpg;bunga;35000;ikat;25;Bunga matahari berkelopak kuning cerah, satu ikat berisi 5 tangkai.;Magelang;0
+FLW007;Anyelir;FLW007.jpg;bunga;40000;ikat;25;Anyelir berkelopak bergelombang dan tahan lama, satu ikat berisi 10 tangkai.;Lembang;0
+FLW008;Melati;FLW008.jpg;bunga;30000;kg;30;Bunga melati segar beraroma harum untuk rangkaian, tabur, dan seserahan.;Pemalang;0
+FLW009;Kenanga;FLW009.jpg;bunga;40000;kg;20;Bunga kenanga beraroma khas untuk tabur dan sesaji.;Yogyakarta;0
+FLW010;Anggrek Bulan;FLW010.jpg;bunga;75000;pot;15;Anggrek bulan berbunga putih elegan dalam pot, cocok sebagai hiasan ruangan.;Malang;1
+GRT001;Beras Putih Pulen;GRT001.jpg;beras&umbi-umbian;14000;kg;150;Beras putih pulen dengan butiran utuh, cocok untuk nasi harian.;Klaten;0
+GRT002;Beras Pandan Wangi;GRT002.jpg;beras&umbi-umbian;16000;kg;120;Beras beraroma pandan alami dengan tekstur pulen dan wangi.;Cianjur;0
+GRT003;Beras Merah;GRT003.jpg;beras&umbi-umbian;20000;kg;80;Beras merah berserat tinggi dengan tekstur pera dan rasa gurih alami.;Wonosobo;0
+GRT004;Beras Hitam;GRT004.jpg;beras&umbi-umbian;30000;kg;50;Beras hitam kaya antosianin dengan aroma khas dan tekstur kenyal.;Sleman;0
+GRT005;Beras Organik;GRT005.jpg;beras&umbi-umbian;18000;kg;100;Beras organik pulen yang ditanam tanpa pestisida kimia.;Klaten;1
+GRT006;Ketan Putih;GRT006.jpg;beras&umbi-umbian;18000;kg;70;Ketan putih bertekstur lengket untuk lemper, wajik, dan jajanan pasar.;Klaten;0
+GRT007;Ketan Hitam;GRT007.jpg;beras&umbi-umbian;22000;kg;50;Ketan hitam beraroma harum untuk bubur dan kue tradisional.;Klaten;0
+GRT008;Kentang Dieng;GRT008.jpg;beras&umbi-umbian;20000;kg;90;Kentang dari dataran tinggi Dieng, cocok untuk digoreng, direbus, atau dibuat sup.;Dieng;1
+GRT009;Singkong;GRT009.jpg;beras&umbi-umbian;6000;kg;100;Singkong segar berdaging putih, enak direbus, digoreng, atau dibuat tape.;Gunungkidul;0
+GRT010;Ubi Jalar Ungu;GRT010.jpg;beras&umbi-umbian;10000;kg;70;Ubi ungu manis berdaging lembut kaya antosianin, enak dikukus atau dipanggang.;Magelang;0
+GRT011;Ubi Cilembu;GRT011.jpg;beras&umbi-umbian;15000;kg;60;Ubi manis yang mengeluarkan getah madu saat dipanggang.;Sumedang;0
+GRT012;Ubi Jalar Kuning;GRT012.jpg;beras&umbi-umbian;9000;kg;60;Ubi kuning bertekstur pulen dengan rasa manis lembut.;Magelang;0
+GRT013;Talas Bogor;GRT013.jpg;beras&umbi-umbian;15000;kg;50;Talas berdaging pulen dan gurih, cocok dikukus, digoreng, atau dibuat keripik.;Bogor;0
+GRT014;Jagung Pipil;GRT014.jpg;beras&umbi-umbian;8000;kg;80;Jagung pipil pilihan untuk nasi jagung, bubur, atau digiling menjadi tepung.;Gunungkidul;0
+SPI001;Bawang Merah;SPI001.jpg;rempah-rempah;32000;kg;60;Bawang merah beraroma kuat, bumbu dasar berbagai masakan Nusantara.;Brebes;1
+SPI002;Bawang Putih;SPI002.jpg;rempah-rempah;38000;kg;50;Bawang putih beraroma tajam dengan siung padat untuk bumbu dasar.;Temanggung;0
+SPI003;Bawang Bombay;SPI003.jpg;rempah-rempah;22000;kg;45;Bawang bombay berukuran besar dengan rasa manis saat ditumis.;Brebes;0
+SPI004;Cabai Merah Keriting;SPI004.jpg;rempah-rempah;40000;kg;40;Cabai merah keriting segar dengan rasa pedas yang pas untuk sambal dan masakan.;Temanggung;1
+SPI005;Cabai Rawit Merah;SPI005.jpg;rempah-rempah;50000;kg;35;Cabai rawit merah dengan rasa sangat pedas dan aroma kuat.;Temanggung;0
+SPI006;Cabai Hijau;SPI006.jpg;rempah-rempah;30000;kg;40;Cabai hijau segar dengan pedas ringan, cocok untuk sambal hijau dan tumisan.;Temanggung;0
+SPI007;Jahe;SPI007.jpg;rempah-rempah;28000;kg;50;Jahe segar beraroma hangat untuk bumbu masak dan minuman.;Temanggung;0
+SPI008;Jahe Merah;SPI008.jpg;rempah-rempah;45000;kg;30;Jahe merah beraroma tajam untuk wedang dan jamu.;Temanggung;0
+SPI009;Kunyit;SPI009.jpg;rempah-rempah;20000;kg;40;Kunyit segar berwarna kuning pekat untuk bumbu dan jamu.;Gunungkidul;0
+SPI010;Lengkuas;SPI010.jpg;rempah-rempah;18000;kg;40;Lengkuas segar beraroma khas untuk soto, rawon, dan gulai.;Bantul;0
+SPI011;Kencur;SPI011.jpg;rempah-rempah;35000;kg;30;Kencur beraroma segar untuk bumbu pecel dan jamu beras kencur.;Temanggung;0
+SPI012;Sereh;SPI012.jpg;rempah-rempah;4000;ikat;80;Sereh segar beraroma harum untuk sup, tumisan, dan teh herbal.;Sleman;0
+SPI013;Daun Salam;SPI013.jpg;rempah-rempah;3000;ikat;80;Daun salam segar pelengkap bumbu nasi, gulai, dan sup.;Sleman;0
+SPI014;Daun Jeruk;SPI014.jpg;rempah-rempah;5000;pak;70;Daun jeruk purut segar beraroma tajam untuk penyedap masakan dan sambal.;Sleman;0
+SPI015;Kemiri;SPI015.jpg;rempah-rempah;50000;kg;30;Kemiri kupas pilihan penambah gurih dan kental bumbu.;Gunungkidul;0
+SPI016;Merica Hitam;SPI016.jpg;rempah-rempah;15000;pak;50;Merica hitam butiran, satu pak berisi 100 gram.;Bangka;0
+SPI017;Ketumbar;SPI017.jpg;rempah-rempah;12000;pak;50;Ketumbar biji pilihan, satu pak berisi 100 gram.;Jawa Timur;0
+SPI018;Kayu Manis;SPI018.jpg;rempah-rempah;18000;pak;40;Kayu manis batang beraroma hangat, satu pak berisi 100 gram.;Kerinci;0
+;;;;;;;;;
+;;;;;;;;;

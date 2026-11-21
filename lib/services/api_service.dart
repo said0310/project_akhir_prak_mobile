@@ -7,6 +7,7 @@ import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/models.dart';
+import 'database_helper.dart';
 
 /// ============================================================================
 /// 1. PREF SERVICE (PENYIMPANAN SESI & PREFERENSI VIA SHAREDPREFERENCES)
@@ -79,6 +80,31 @@ class ApiService {
   }
 
   // In-Memory Mock Data
+  static List<ProductModel>? _csvProducts;
+  static List<CategoryModel>? _csvCategories;
+  static bool _hasLoadedCsv = false;
+
+  /// Memuat katalog produk dan kategori dari file CSV lokal
+  static Future<void> loadCatalogFromCsv({String path = 'assets/data/Katalog_WijiBumi.csv'}) async {
+    if (_hasLoadedCsv && _csvProducts != null && _csvProducts!.isNotEmpty) return;
+    try {
+      final list = await ProductModel.loadFromAssets(path: path);
+      if (list.isNotEmpty) {
+        _csvProducts = list;
+        _csvCategories = CategoryModel.fromProductList(list);
+        _hasLoadedCsv = true;
+      }
+    } catch (_) {
+      // Fallback jika tidak dalam lingkungan asset bundle Flutter
+      _csvProducts ??= List<ProductModel>.from(_mockProducts);
+      _csvCategories ??= List<CategoryModel>.from(_mockCategories);
+      _hasLoadedCsv = true;
+    }
+  }
+
+  static List<ProductModel> get currentProducts => _csvProducts ?? _mockProducts;
+  static List<CategoryModel> get currentCategories => _csvCategories ?? _mockCategories;
+
   static final List<CategoryModel> _mockCategories = [
     CategoryModel(id: 'tanaman_hias', name: 'Big plants', icon: 'yard'),
     CategoryModel(id: 'sayuran', name: 'Outdoor', icon: 'grass'),
@@ -94,7 +120,7 @@ class ApiService {
       price: 6500,
       unit: 'ikat',
       stock: 45,
-      imageUrl: 'https://images.unsplash.com/photo-1576045057995-568f588f82fb?w=600&auto=format&fit=crop&q=80',
+      imageUrl: 'assets/images/products/veg_bayam.jpg',
       sellerName: 'Kebun Tani Makmur',
       sellerLocation: 'Pasar Minggu, Jakarta Selatan',
       sellerLat: -6.2847,
@@ -109,42 +135,12 @@ class ApiService {
       price: 5000,
       unit: 'ikat',
       stock: 30,
-      imageUrl: 'https://images.unsplash.com/photo-1540420773420-3366772f4999?w=600&auto=format&fit=crop&q=80',
+      imageUrl: 'assets/images/products/veg_kangkung.jpg',
       sellerName: 'Hydro Fresh Garden',
       sellerLocation: 'Jagakarsa, Jakarta Selatan',
       sellerLat: -6.3312,
       sellerLng: 106.8288,
       rating: 4.8,
-    ),
-    ProductModel(
-      id: 'p3',
-      name: 'Brokoli Hijau Segar Pilihan',
-      categoryId: 'sayuran',
-      description: 'Brokoli hijau padat bebas ulat dengan kuntum segar berkualitas ekspor. Baik untuk daya tahan tubuh.',
-      price: 18000,
-      unit: 'kg',
-      stock: 20,
-      imageUrl: 'https://images.unsplash.com/photo-1584270354949-c26b0d5b4a0c?w=600&auto=format&fit=crop&q=80',
-      sellerName: 'Sayur Lembang Lestari',
-      sellerLocation: 'Cilandak, Jakarta Selatan',
-      sellerLat: -6.2952,
-      sellerLng: 106.8041,
-      rating: 4.9,
-    ),
-    ProductModel(
-      id: 'p4',
-      name: 'Wortel Manis Brastagi',
-      categoryId: 'sayuran',
-      description: 'Wortel renyah manis asal Brastagi, kaya beta karoten untuk kesehatan mata dan jus segar.',
-      price: 14000,
-      unit: 'kg',
-      stock: 35,
-      imageUrl: 'https://images.unsplash.com/photo-1598170845058-32b9d6a5da37?w=600&auto=format&fit=crop&q=80',
-      sellerName: 'Kebun Tani Makmur',
-      sellerLocation: 'Pasar Minggu, Jakarta Selatan',
-      sellerLat: -6.2847,
-      sellerLng: 106.8441,
-      rating: 4.7,
     ),
     ProductModel(
       id: 'p5',
@@ -154,42 +150,12 @@ class ApiService {
       price: 125000,
       unit: 'pot',
       stock: 12,
-      imageUrl: 'https://images.unsplash.com/photo-1614594975525-e45190c55d0b?w=600&auto=format&fit=crop&q=80',
+      imageUrl: 'assets/images/products/FLW001.jpg',
       sellerName: 'Flora Asri Sentosa',
       sellerLocation: 'Tebet, Jakarta Selatan',
       sellerLat: -6.2297,
       sellerLng: 106.8580,
       rating: 5.0,
-    ),
-    ProductModel(
-      id: 'p6',
-      name: 'Sansevieria Lidah Mertua',
-      categoryId: 'tanaman_hias',
-      description: 'Tanaman hias tangguh penyerap racun udara dalam ruangan. Sangat mudah dirawat dan jarang layu.',
-      price: 45000,
-      unit: 'pot',
-      stock: 25,
-      imageUrl: 'https://images.unsplash.com/photo-1509423350716-97f9360b4e09?w=600&auto=format&fit=crop&q=80',
-      sellerName: 'Flora Asri Sentosa',
-      sellerLocation: 'Tebet, Jakarta Selatan',
-      sellerLat: -6.2297,
-      sellerLng: 106.8580,
-      rating: 4.8,
-    ),
-    ProductModel(
-      id: 'p7',
-      name: 'Aglaonema Suksom Merah',
-      categoryId: 'tanaman_hias',
-      description: 'Pesona daun merah menyala aglaonema import. Tampil mewah elegan di meja kerja atau teras.',
-      price: 85000,
-      unit: 'pot',
-      stock: 8,
-      imageUrl: 'https://images.unsplash.com/photo-1597055181300-e3633a917c9c?w=600&auto=format&fit=crop&q=80',
-      sellerName: 'Kebun Hijau Ciganjur',
-      sellerLocation: 'Jagakarsa, Jakarta Selatan',
-      sellerLat: -6.3401,
-      sellerLng: 106.8095,
-      rating: 4.9,
     ),
     ProductModel(
       id: 'p8',
@@ -199,251 +165,11 @@ class ApiService {
       price: 24000,
       unit: 'kg',
       stock: 40,
-      imageUrl: 'https://images.unsplash.com/photo-1571771894821-ce9b6c11b08e?w=600&auto=format&fit=crop&q=80',
+      imageUrl: 'assets/images/products/FRU001.jpg',
       sellerName: 'Buah Segar Nusantara',
       sellerLocation: 'Kebayoran Baru, Jakarta Selatan',
       sellerLat: -6.2444,
       sellerLng: 106.7972,
-      rating: 4.8,
-    ),
-    ProductModel(
-      id: 'p9',
-      name: 'Apel Fuji Manis Renyah',
-      categoryId: 'buah',
-      description: 'Apel merah kaya air bertekstur garing manis menyegarkan, pas untuk asupan vitamin harian keluarga.',
-      price: 38000,
-      unit: 'kg',
-      stock: 28,
-      imageUrl: 'https://images.unsplash.com/photo-1560806887-1e4cd0b6cbd6?w=600&auto=format&fit=crop&q=80',
-      sellerName: 'Buah Segar Nusantara',
-      sellerLocation: 'Kebayoran Baru, Jakarta Selatan',
-      sellerLat: -6.2444,
-      sellerLng: 106.7972,
-      rating: 4.9,
-    ),
-    ProductModel(
-      id: 'p10',
-      name: 'Jeruk Medan Manis Segar',
-      categoryId: 'buah',
-      description: 'Jeruk peras atau kupas berkulit tipis air melimpah manis alami tanpa rasa asam getir.',
-      price: 28000,
-      unit: 'kg',
-      stock: 50,
-      imageUrl: 'https://images.unsplash.com/photo-1611080626919-7cf5a9dbab5b?w=600&auto=format&fit=crop&q=80',
-      sellerName: 'Buah Segar Nusantara',
-      sellerLocation: 'Kebayoran Baru, Jakarta Selatan',
-      sellerLat: -6.2444,
-      sellerLng: 106.7972,
-      rating: 4.7,
-    ),
-    ProductModel(
-      id: 'p11',
-      name: 'Ketapang Biola (Fiddle Leaf)',
-      categoryId: 'tanaman_hias',
-      description: 'Ficus Lyrata berdaun lebar mengkilap seperti biola. Sangat populer untuk estetika interior minimalis.',
-      price: 115000,
-      unit: 'pot',
-      stock: 15,
-      imageUrl: 'https://images.unsplash.com/photo-1599598425947-63098d697f3d?w=600&auto=format&fit=crop&q=80',
-      sellerName: 'Flora Asri Sentosa',
-      sellerLocation: 'Tebet, Jakarta Selatan',
-      sellerLat: -6.2297,
-      sellerLng: 106.8580,
-      rating: 4.9,
-    ),
-    ProductModel(
-      id: 'p12',
-      name: 'Tomat Cherry Hidroponik',
-      categoryId: 'sayuran',
-      description: 'Tomat cherry merah manis segar dipetik pohon, kaya antioksidan likopen dan vitamin C.',
-      price: 15000,
-      unit: 'pack',
-      stock: 30,
-      imageUrl: 'https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=600&auto=format&fit=crop&q=80',
-      sellerName: 'Hydro Fresh Garden',
-      sellerLocation: 'Jagakarsa, Jakarta Selatan',
-      sellerLat: -6.3312,
-      sellerLng: 106.8288,
-      rating: 4.8,
-    ),
-    ProductModel(
-      id: 'p13',
-      name: 'Alpukat Mentega Super',
-      categoryId: 'buah',
-      description: 'Alpukat berdaging tebal kuning mentega legit tanpa serat kasar. Sangat cocok untuk jus atau salad sehat.',
-      price: 35000,
-      unit: 'kg',
-      stock: 25,
-      imageUrl: 'https://images.unsplash.com/photo-1523049673857-eb18f1d7b578?w=600&auto=format&fit=crop&q=80',
-      sellerName: 'Buah Segar Nusantara',
-      sellerLocation: 'Kebayoran Baru, Jakarta Selatan',
-      sellerLat: -6.2444,
-      sellerLng: 106.7972,
-      rating: 4.9,
-    ),
-    ProductModel(
-      id: 'p14',
-      name: 'Selada Romaine Segar',
-      categoryId: 'sayuran',
-      description: 'Selada romaine renyah segar hidroponik bebas pestisida. Tekstur daun garing cocok untuk salad sehat.',
-      price: 9500,
-      unit: 'ikat',
-      stock: 35,
-      imageUrl: 'https://images.unsplash.com/photo-1622206151226-18ca2c9ab4a1?w=600&auto=format&fit=crop&q=80',
-      sellerName: 'Sayur Lembang Lestari',
-      sellerLocation: 'Cilandak, Jakarta Selatan',
-      sellerLat: -6.2952,
-      sellerLng: 106.8041,
-      rating: 4.7,
-    ),
-    ProductModel(
-      id: 'p15',
-      name: 'Philodendron Birkin',
-      categoryId: 'tanaman_hias',
-      description: 'Tanaman hias cantik dengan corak garis putih artistik pada daun hijau pekat. Mudah dirawat di dalam ruangan.',
-      price: 65000,
-      unit: 'pot',
-      stock: 18,
-      imageUrl: 'https://images.unsplash.com/photo-1616690710400-a16d146927c5?w=600&auto=format&fit=crop&q=80',
-      sellerName: 'Kebun Hijau Ciganjur',
-      sellerLocation: 'Jagakarsa, Jakarta Selatan',
-      sellerLat: -6.3401,
-      sellerLng: 106.8095,
-      rating: 4.8,
-    ),
-    ProductModel(
-      id: 'p16',
-      name: 'Cabai Rawit Merah Segar',
-      categoryId: 'sayuran',
-      description: 'Cabai rawit merah segar pedas menggigit, langsung dipanen dari perkebunan dataran tinggi.',
-      price: 12000,
-      unit: '250gr',
-      stock: 50,
-      imageUrl: 'https://images.unsplash.com/photo-1588252303782-cb80119abd6d?w=600&auto=format&fit=crop&q=80',
-      sellerName: 'Kebun Tani Makmur',
-      sellerLocation: 'Pasar Minggu, Jakarta Selatan',
-      sellerLat: -6.2847,
-      sellerLng: 106.8441,
-      rating: 4.9,
-    ),
-    ProductModel(
-      id: 'p17',
-      name: 'Mangga Harum Manis Matang',
-      categoryId: 'buah',
-      description: 'Mangga harum manis matang pohon berkualitas premium. Daging buah lembut manis berserat halus.',
-      price: 28000,
-      unit: 'kg',
-      stock: 30,
-      imageUrl: 'https://images.unsplash.com/photo-1553279768-865429fa0078?w=600&auto=format&fit=crop&q=80',
-      sellerName: 'Buah Segar Nusantara',
-      sellerLocation: 'Kebayoran Baru, Jakarta Selatan',
-      sellerLat: -6.2444,
-      sellerLng: 106.7972,
-      rating: 4.8,
-    ),
-    ProductModel(
-      id: 'p18',
-      name: 'Janda Bolong (Adansonii)',
-      categoryId: 'tanaman_hias',
-      description: 'Monstera Adansonii dengan lubang khas alami pada daun. Sangat cocok untuk pot gantung atau tanaman meja.',
-      price: 35000,
-      unit: 'pot',
-      stock: 22,
-      imageUrl: 'https://images.unsplash.com/photo-1614594975525-e45190c55d0b?w=600&auto=format&fit=crop&q=80',
-      sellerName: 'Flora Asri Sentosa',
-      sellerLocation: 'Tebet, Jakarta Selatan',
-      sellerLat: -6.2297,
-      sellerLng: 106.8580,
-      rating: 4.7,
-    ),
-    ProductModel(
-      id: 'p19',
-      name: 'Stroberi Ciwidey Segar',
-      categoryId: 'buah',
-      description: 'Stroberi merah segar dari kebun Ciwidey Bandung. Manis segar dengan aroma khas alami pegunungan.',
-      price: 22000,
-      unit: 'pack',
-      stock: 20,
-      imageUrl: 'https://images.unsplash.com/photo-1464965911861-746a04b4bca6?w=600&auto=format&fit=crop&q=80',
-      sellerName: 'Buah Segar Nusantara',
-      sellerLocation: 'Kebayoran Baru, Jakarta Selatan',
-      sellerLat: -6.2444,
-      sellerLng: 106.7972,
-      rating: 4.9,
-    ),
-    ProductModel(
-      id: 'p20',
-      name: 'Kaktus Sukulen Mix Mini',
-      categoryId: 'tanaman_hias',
-      description: 'Koleksi aneka sukulen mini lucu dalam pot keramik. Tidak membutuhkan perawatan rumit dan hemat air.',
-      price: 25000,
-      unit: 'pot',
-      stock: 40,
-      imageUrl: 'https://images.unsplash.com/photo-1459411552884-841db9b3cc2a?w=600&auto=format&fit=crop&q=80',
-      sellerName: 'Kebun Hijau Ciganjur',
-      sellerLocation: 'Jagakarsa, Jakarta Selatan',
-      sellerLat: -6.3401,
-      sellerLng: 106.8095,
-      rating: 4.8,
-    ),
-    ProductModel(
-      id: 'p21',
-      name: 'Jamur Tiram Putih Segar',
-      categoryId: 'sayuran',
-      description: 'Jamur tiram putih organik bertekstur empuk kenyal, lezat untuk tumis atau jamur krispi renyah.',
-      price: 8500,
-      unit: 'pack',
-      stock: 30,
-      imageUrl: 'https://images.unsplash.com/photo-1504544750208-dc0358e63f7f?w=600&auto=format&fit=crop&q=80',
-      sellerName: 'Kebun Tani Makmur',
-      sellerLocation: 'Pasar Minggu, Jakarta Selatan',
-      sellerLat: -6.2847,
-      sellerLng: 106.8441,
-      rating: 4.6,
-    ),
-    ProductModel(
-      id: 'p22',
-      name: 'Sirih Gading (Golden Pothos)',
-      categoryId: 'tanaman_hias',
-      description: 'Tanaman rambat daun bercorak kuning emas pembersih udara ampuh, sangat toleran di ruangan indoor.',
-      price: 30000,
-      unit: 'pot',
-      stock: 28,
-      imageUrl: 'https://images.unsplash.com/photo-1509423350716-97f9360b4e09?w=600&auto=format&fit=crop&q=80',
-      sellerName: 'Flora Asri Sentosa',
-      sellerLocation: 'Tebet, Jakarta Selatan',
-      sellerLat: -6.2297,
-      sellerLng: 106.8580,
-      rating: 4.9,
-    ),
-    ProductModel(
-      id: 'p23',
-      name: 'Buah Naga Merah Manis',
-      categoryId: 'buah',
-      description: 'Buah naga daging merah manis tinggi antioksidan dan serat, dipetik segar saat kematangan optimal.',
-      price: 19000,
-      unit: 'kg',
-      stock: 25,
-      imageUrl: 'https://images.unsplash.com/photo-1527325678964-54921661f888?w=600&auto=format&fit=crop&q=80',
-      sellerName: 'Buah Segar Nusantara',
-      sellerLocation: 'Kebayoran Baru, Jakarta Selatan',
-      sellerLat: -6.2444,
-      sellerLng: 106.7972,
-      rating: 4.7,
-    ),
-    ProductModel(
-      id: 'p24',
-      name: 'Paprika Merah Segar',
-      categoryId: 'sayuran',
-      description: 'Paprika merah manis renyah dengan warna merah berkilau, kaya vitamin A dan C untuk hidangan istimewa.',
-      price: 21000,
-      unit: '500gr',
-      stock: 18,
-      imageUrl: 'https://images.unsplash.com/photo-1563565375-f3fdfdbefa83?w=600&auto=format&fit=crop&q=80',
-      sellerName: 'Sayur Lembang Lestari',
-      sellerLocation: 'Cilandak, Jakarta Selatan',
-      sellerLat: -6.2952,
-      sellerLng: 106.8041,
       rating: 4.8,
     ),
   ];
@@ -471,20 +197,37 @@ class ApiService {
 
   Future<List<CategoryModel>> getCategories() async {
     await _checkSimulatedError();
-    return List<CategoryModel>.from(_mockCategories);
+    if (!_hasLoadedCsv) {
+      await loadCatalogFromCsv();
+    }
+    return List<CategoryModel>.from(currentCategories);
   }
 
   Future<List<ProductModel>> getProducts({String? category, String? q}) async {
     await _checkSimulatedError();
-    List<ProductModel> list = List<ProductModel>.from(_mockProducts);
+    if (!_hasLoadedCsv) {
+      await loadCatalogFromCsv();
+    }
+    List<ProductModel> list = List<ProductModel>.from(currentProducts);
 
     if (category != null && category.isNotEmpty && category != 'semua') {
-      list = list.where((p) => p.categoryId.toLowerCase() == category.toLowerCase()).toList();
+      final sel = category.toLowerCase().trim();
+      list = list.where((p) {
+        final catP = p.categoryId.toLowerCase().trim();
+        if (catP == sel) return true;
+        if ((catP == 'sayur' || catP == 'sayuran') && (sel == 'sayur' || sel == 'sayuran')) return true;
+        if ((catP == 'bunga' || catP == 'tanaman_hias') && (sel == 'bunga' || sel == 'tanaman_hias')) return true;
+        return false;
+      }).toList();
     }
 
     if (q != null && q.trim().isNotEmpty) {
       final query = q.toLowerCase().trim();
-      list = list.where((p) => p.name.toLowerCase().contains(query) || p.description.toLowerCase().contains(query)).toList();
+      list = list.where((p) =>
+        p.name.toLowerCase().contains(query) ||
+        p.description.toLowerCase().contains(query) ||
+        p.origin.toLowerCase().contains(query)
+      ).toList();
     }
 
     return list;
@@ -492,9 +235,16 @@ class ApiService {
 
   Future<ProductModel> getProductById(String id) async {
     await _checkSimulatedError();
-    return _mockProducts.firstWhere(
+    if (!_hasLoadedCsv) {
+      await loadCatalogFromCsv();
+    }
+    final allProducts = currentProducts;
+    return allProducts.firstWhere(
       (p) => p.id == id,
-      orElse: () => throw HttpException('Produk dengan ID $id tidak ditemukan'),
+      orElse: () => _mockProducts.firstWhere(
+        (p) => p.id == id,
+        orElse: () => throw HttpException('Produk dengan ID $id tidak ditemukan'),
+      ),
     );
   }
 
@@ -530,6 +280,28 @@ class ApiService {
         (u) => (u.email.toLowerCase() == cleanId || u.username.toLowerCase() == cleanId) && u.passwordHash == passwordHash,
       );
     } catch (_) {
+      // Periksa apakah user terdaftar di database SQLite lokal
+      try {
+        final dbUser = await DatabaseHelper.getUserByEmailOrUsername(cleanId);
+        if (dbUser != null) {
+          final storedHash = dbUser['password_hash'] as String? ?? '';
+          final storedPass = dbUser['password'] as String? ?? '';
+          if (storedHash == passwordHash || hashPassword(storedPass) == passwordHash) {
+            final u = UserModel(
+              id: dbUser['id'] as String? ?? '',
+              name: dbUser['name'] as String? ?? '',
+              email: dbUser['email'] as String? ?? '',
+              username: dbUser['username'] as String? ?? '',
+              passwordHash: storedHash.isNotEmpty ? storedHash : passwordHash,
+              phone: dbUser['phone'] as String? ?? '',
+              photoUrl: dbUser['photo_url'] as String? ?? '',
+              createdAt: dbUser['created_at'] as String? ?? '',
+            );
+            _mockUsers.add(u);
+            return u;
+          }
+        }
+      } catch (_) {}
       throw const HttpException('Email/Username atau password salah');
     }
   }
@@ -555,12 +327,13 @@ class ApiService {
   Future<OrderModel> createOrder(Map<String, dynamic> orderData) async {
     await _checkSimulatedError();
     final newOrder = OrderModel.fromJson(orderData);
+    final targetList = _csvProducts ?? _mockProducts;
 
     // Validasi stok produk
     for (var item in newOrder.items) {
-      final productIndex = _mockProducts.indexWhere((p) => p.id == item.productId);
+      final productIndex = targetList.indexWhere((p) => p.id == item.productId);
       if (productIndex != -1) {
-        final currentStock = _mockProducts[productIndex].stock;
+        final currentStock = targetList[productIndex].stock;
         if (currentStock < item.quantity) {
           throw HttpException('Stok untuk produk "${item.name}" tidak mencukupi (sisa $currentStock)');
         }
@@ -569,10 +342,10 @@ class ApiService {
 
     // Kurangi stok produk
     for (var item in newOrder.items) {
-      final productIndex = _mockProducts.indexWhere((p) => p.id == item.productId);
+      final productIndex = targetList.indexWhere((p) => p.id == item.productId);
       if (productIndex != -1) {
-        final current = _mockProducts[productIndex];
-        _mockProducts[productIndex] = current.copyWith(stock: current.stock - item.quantity);
+        final current = targetList[productIndex];
+        targetList[productIndex] = current.copyWith(stock: current.stock - item.quantity);
       }
     }
 
@@ -605,6 +378,19 @@ class ApiService {
     _mockOrders[index] = updated;
     return updated;
   }
+
+  Future<OrderModel> updateOrderPaymentMethod(String id, String newPaymentMethod) async {
+    await _checkSimulatedError();
+    final index = _mockOrders.indexWhere((o) => o.id == id);
+    if (index == -1) {
+      throw const HttpException('Pesanan tidak ditemukan');
+    }
+
+    final old = _mockOrders[index];
+    final updated = old.copyWith(paymentMethod: newPaymentMethod);
+    _mockOrders[index] = updated;
+    return updated;
+  }
 }
 
 /// ============================================================================
@@ -627,13 +413,27 @@ class AuthRepository {
     String? phone,
   }) async {
     final passwordHash = hashPassword(password);
-    return await apiService.registerUser({
+    final user = await apiService.registerUser({
       'name': name,
       'email': email,
       'username': username,
       'passwordHash': passwordHash,
       'phone': phone ?? '',
     });
+    try {
+      await DatabaseHelper.saveUser(
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        username: user.username,
+        phone: user.phone,
+        password: password,
+        passwordHash: passwordHash,
+        photoUrl: user.photoUrl,
+        createdAt: user.createdAt,
+      );
+    } catch (_) {}
+    return user;
   }
 
   Future<UserModel> login({required String identifier, required String password}) async {
@@ -709,10 +509,15 @@ class OrderRepository {
       'items': orderItems.map((i) => i.toJson()).toList(),
     };
 
-    return await apiService.createOrder(orderData);
+    final createdOrder = await apiService.createOrder(orderData);
+    try {
+      await DatabaseHelper.saveOrder(createdOrder);
+    } catch (_) {}
+    return createdOrder;
   }
 
   Future<List<OrderModel>> getOrders(String userId) => apiService.getOrders(userId);
   Future<OrderModel> getOrderById(String id) => apiService.getOrderById(id);
   Future<OrderModel> updateStatus(String id, String status) => apiService.updateOrderStatus(id, status);
+  Future<OrderModel> updatePaymentMethod(String id, String paymentMethod) => apiService.updateOrderPaymentMethod(id, paymentMethod);
 }

@@ -4,7 +4,9 @@ import 'package:get/get.dart';
 import '../app.dart';
 import '../controllers/auth_controller.dart';
 import '../controllers/shop_controller.dart';
+import '../controllers/notification_controller.dart';
 import '../widgets/product_card.dart';
+import '../widgets/category_card.dart';
 
 class HomeView extends StatelessWidget {
   const HomeView({super.key});
@@ -12,7 +14,7 @@ class HomeView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final productController = Get.find<ShopController>();
-    final cartController = Get.find<ShopController>();
+    final cartController = productController;
     final authController = Get.find<AuthController>();
 
     return Scaffold(
@@ -35,70 +37,122 @@ class HomeView extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            const Text(
-                              'Hello!',
-                              style: TextStyle(
-                                fontFamily: 'Poppins',
-                                fontSize: 14,
-                                fontWeight: FontWeight.w400,
-                                color: WijiBumiColors.textMutedLight,
-                                height: 1.3,
-                              ),
-                            ),
-                            const SizedBox(height: 4),
-                            Obx(() {
-                              final name =
-                                  authController.currentUser.value?.name ??
-                                      'Nuril Anggara';
-                              return Text(
-                                name,
-                                style: const TextStyle(
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              const Text(
+                                'Hello!',
+                                style: TextStyle(
                                   fontFamily: 'Poppins',
-                                  fontSize: 19,
-                                  fontWeight: FontWeight.w600,
-                                  color: WijiBumiColors.textWhite,
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w400,
+                                  color: WijiBumiColors.textMutedLight,
                                   height: 1.3,
                                 ),
-                              );
-                            }),
-                          ],
-                        ),
-
-                        // Tombol Notifikasi 48 x 48 px, radius 14 px
-                        GestureDetector(
-                          onTap: () => Get.toNamed(AppRoutes.REMINDERS),
-                          behavior: HitTestBehavior.opaque,
-                          child: Container(
-                            width: 48,
-                            height: 48,
-                            decoration: BoxDecoration(
-                              color: WijiBumiColors.surfaceDark,
-                              borderRadius: BorderRadius.circular(14),
-                              border: Border.all(
-                                color: Colors.white.withOpacity(0.16),
-                                width: 1.0,
                               ),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black.withOpacity(0.20),
-                                  blurRadius: 10,
-                                  offset: const Offset(0, 4),
-                                ),
-                              ],
-                            ),
-                            child: const Center(
-                              child: Icon(
-                                Icons.notifications_rounded,
-                                size: 22,
-                                color: WijiBumiColors.textWhite,
-                              ),
-                            ),
+                              const SizedBox(height: 4),
+                              Obx(() {
+                                final name =
+                                    authController.currentUser.value?.name ??
+                                        'Nuril Anggara';
+                                return Text(
+                                  name,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: const TextStyle(
+                                    fontFamily: 'Poppins',
+                                    fontSize: 19,
+                                    fontWeight: FontWeight.w600,
+                                    color: WijiBumiColors.textWhite,
+                                    height: 1.3,
+                                  ),
+                                );
+                              }),
+                            ],
                           ),
                         ),
+                        const SizedBox(width: 12),
+
+                        // Tombol Notifikasi 48 x 48 px, radius 14 px dengan Badge Jumlah Belum Dibaca
+                        Obx(() {
+                          final notifCtrl = Get.isRegistered<NotificationController>()
+                              ? Get.find<NotificationController>()
+                              : Get.put(NotificationController());
+                          final unreadCount = notifCtrl.unreadCount;
+
+                          return Stack(
+                            clipBehavior: Clip.none,
+                            children: [
+                              GestureDetector(
+                                onTap: () => Get.toNamed(AppRoutes.REMINDERS),
+                                behavior: HitTestBehavior.opaque,
+                                child: Container(
+                                  width: 48,
+                                  height: 48,
+                                  decoration: BoxDecoration(
+                                    color: WijiBumiColors.surfaceDark,
+                                    borderRadius: BorderRadius.circular(14),
+                                    border: Border.all(
+                                      color: Colors.white.withOpacity(0.16),
+                                      width: 1.0,
+                                    ),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.black.withOpacity(0.20),
+                                        blurRadius: 10,
+                                        offset: const Offset(0, 4),
+                                      ),
+                                    ],
+                                  ),
+                                  child: const Center(
+                                    child: Icon(
+                                      Icons.notifications_rounded,
+                                      size: 22,
+                                      color: WijiBumiColors.textWhite,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              if (unreadCount > 0)
+                                Positioned(
+                                  top: -4,
+                                  right: -4,
+                                  child: Container(
+                                    padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
+                                    constraints: const BoxConstraints(minWidth: 18, minHeight: 18),
+                                    decoration: BoxDecoration(
+                                      color: WijiBumiColors.error,
+                                      borderRadius: BorderRadius.circular(10),
+                                      border: Border.all(
+                                        color: WijiBumiColors.bgPrimary,
+                                        width: 2.0,
+                                      ),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.black.withOpacity(0.35),
+                                          blurRadius: 4,
+                                          offset: const Offset(0, 2),
+                                        ),
+                                      ],
+                                    ),
+                                    child: Center(
+                                      child: Text(
+                                        unreadCount > 99 ? '99+' : '$unreadCount',
+                                        style: const TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 10,
+                                          fontWeight: FontWeight.w800,
+                                          height: 1.0,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                            ],
+                          );
+                        }),
                       ],
                     ),
                   ),
@@ -211,8 +265,9 @@ class HomeView extends StatelessWidget {
                                   );
                                 }),
                                 Obx(() {
-                                  if (!productController.hasActiveFilter)
+                                  if (!productController.hasActiveFilter) {
                                     return const SizedBox.shrink();
+                                  }
                                   return Positioned(
                                     top: 11,
                                     right: 11,
@@ -232,6 +287,39 @@ class HomeView extends StatelessWidget {
                         ),
                       ],
                     ),
+                  ),
+
+                  // Category Tabs (All, Buah, Sayuran, Bunga, Beras & Umbi, Rempah)
+                  const SizedBox(height: 18),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                    child: Obx(() {
+                      final categories = productController.categories;
+                      final selectedCategory =
+                          productController.selectedCategory.value;
+                      return SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        physics: const BouncingScrollPhysics(),
+                        child: Row(
+                          children: categories.map((cat) {
+                            final isSelected =
+                                selectedCategory.toLowerCase() ==
+                                    cat.id.toLowerCase();
+                            return Padding(
+                              padding: const EdgeInsets.only(right: 18.0),
+                              child: CategoryCard(
+                                key: ValueKey('tab_${cat.id}'),
+                                category: cat,
+                                isSelected: isSelected,
+                                onTap: () {
+                                  productController.selectCategory(cat.id);
+                                },
+                              ),
+                            );
+                          }).toList(),
+                        ),
+                      );
+                    }),
                   ),
 
                   // Active Filter Pills
@@ -341,15 +429,19 @@ class HomeView extends StatelessWidget {
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Text(
-                                    title,
-                                    style: const TextStyle(
-                                      fontFamily: 'Poppins',
-                                      fontSize: 24,
-                                      fontWeight: FontWeight.w900,
-                                      color: WijiBumiColors.textWhite,
-                                      height: 1.15,
-                                      letterSpacing: -0.5,
+                                  Expanded(
+                                    child: Text(
+                                      title,
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: const TextStyle(
+                                        fontFamily: 'Poppins',
+                                        fontSize: 24,
+                                        fontWeight: FontWeight.w900,
+                                        color: WijiBumiColors.textWhite,
+                                        height: 1.15,
+                                        letterSpacing: -0.5,
+                                      ),
                                     ),
                                   ),
                                 ],
@@ -400,32 +492,39 @@ class HomeView extends StatelessWidget {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               crossAxisAlignment: CrossAxisAlignment.end,
                               children: [
-                                const Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      'Katalog Lengkap',
-                                      style: TextStyle(
-                                        fontFamily: 'Poppins',
-                                        fontSize: 24,
-                                        fontWeight: FontWeight.w900,
-                                        color: WijiBumiColors.textWhite,
-                                        height: 1.15,
-                                        letterSpacing: -0.5,
+                                const Expanded(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        'Katalog Lengkap',
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: TextStyle(
+                                          fontFamily: 'Poppins',
+                                          fontSize: 24,
+                                          fontWeight: FontWeight.w900,
+                                          color: WijiBumiColors.textWhite,
+                                          height: 1.15,
+                                          letterSpacing: -0.5,
+                                        ),
                                       ),
-                                    ),
-                                    SizedBox(height: 4),
-                                    Text(
-                                      'Koleksi segar siap panen & tanaman asri',
-                                      style: TextStyle(
-                                        fontFamily: 'Poppins',
-                                        fontSize: 12,
-                                        fontWeight: FontWeight.w400,
-                                        color: WijiBumiColors.textMutedLight,
+                                      SizedBox(height: 4),
+                                      Text(
+                                        'Koleksi segar siap panen & tanaman asri',
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: TextStyle(
+                                          fontFamily: 'Poppins',
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w400,
+                                          color: WijiBumiColors.textMutedLight,
+                                        ),
                                       ),
-                                    ),
-                                  ],
+                                    ],
+                                  ),
                                 ),
+                                const SizedBox(width: 8),
                                 Container(
                                   padding: const EdgeInsets.symmetric(
                                       horizontal: 10, vertical: 4),
@@ -435,6 +534,8 @@ class HomeView extends StatelessWidget {
                                   ),
                                   child: Text(
                                     '${products.length} Produk',
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
                                     style: const TextStyle(
                                       fontFamily: 'Poppins',
                                       fontSize: 11,
@@ -459,7 +560,7 @@ class HomeView extends StatelessWidget {
                               crossAxisCount: 2,
                               crossAxisSpacing: 14,
                               mainAxisSpacing: 16,
-                              childAspectRatio: 0.72,
+                              childAspectRatio: 0.70,
                             ),
                             itemCount: products.length,
                             itemBuilder: (context, index) {
@@ -744,20 +845,22 @@ class HomeView extends StatelessWidget {
               ),
             ),
             child: SafeArea(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Center(
-                    child: Container(
-                      width: 40,
-                      height: 4,
-                      decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.3),
-                        borderRadius: BorderRadius.circular(2),
+              child: SingleChildScrollView(
+                physics: const BouncingScrollPhysics(),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Center(
+                      child: Container(
+                        width: 40,
+                        height: 4,
+                        decoration: BoxDecoration(
+                          color: Colors.white.withOpacity(0.3),
+                          borderRadius: BorderRadius.circular(2),
+                        ),
                       ),
                     ),
-                  ),
                   const SizedBox(height: 18),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -803,22 +906,26 @@ class HomeView extends StatelessWidget {
                       'Bunga': 0,
                       'Buah': 1,
                       'Sayuran': 2,
+                      'Beras & Umbi': 3,
+                      'Rempah': 4,
                     };
                     categories.sort((first, second) {
                       final firstOrder = categoryOrder[
                               _categoryFilterLabel(first.id, first.name)] ??
-                          3;
+                          5;
                       final secondOrder = categoryOrder[
                               _categoryFilterLabel(second.id, second.name)] ??
-                          3;
+                          5;
                       return firstOrder.compareTo(secondOrder);
                     });
 
-                    return Row(
+                    return Wrap(
+                      spacing: 8,
+                      runSpacing: 8,
                       children: [
                         for (var index = 0;
                             index < categories.length;
-                            index++) ...[
+                            index++)
                           _buildFilterOption(
                             label: _categoryFilterLabel(
                               categories[index].id,
@@ -830,9 +937,6 @@ class HomeView extends StatelessWidget {
                               categories[index].id,
                             ),
                           ),
-                          if (index < categories.length - 1)
-                            const SizedBox(width: 8),
-                        ],
                       ],
                     );
                   }),
@@ -907,6 +1011,7 @@ class HomeView extends StatelessWidget {
           ),
         ),
       ),
+      ),
       isScrollControlled: true,
     );
   }
@@ -916,32 +1021,30 @@ class HomeView extends StatelessWidget {
     required bool isSelected,
     required VoidCallback onTap,
   }) {
-    return Expanded(
-      child: GestureDetector(
-        onTap: onTap,
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 150),
-          padding: const EdgeInsets.symmetric(vertical: 10),
-          alignment: Alignment.center,
-          decoration: BoxDecoration(
+    return GestureDetector(
+      onTap: onTap,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 150),
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+          color: isSelected
+              ? WijiBumiColors.freshLeaf
+              : Colors.white.withOpacity(0.06),
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(
             color: isSelected
                 ? WijiBumiColors.freshLeaf
-                : Colors.white.withOpacity(0.06),
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(
-              color: isSelected
-                  ? WijiBumiColors.freshLeaf
-                  : Colors.white.withOpacity(0.12),
-              width: 1.0,
-            ),
+                : Colors.white.withOpacity(0.12),
+            width: 1.0,
           ),
-          child: Text(
-            label,
-            style: TextStyle(
-              fontSize: 13,
-              fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
-              color: isSelected ? Colors.white : WijiBumiColors.textMutedLight,
-            ),
+        ),
+        child: Text(
+          label,
+          style: TextStyle(
+            fontSize: 13,
+            fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
+            color: isSelected ? Colors.white : WijiBumiColors.textMutedLight,
           ),
         ),
       ),
@@ -958,6 +1061,10 @@ class HomeView extends StatelessWidget {
       case 'sayur':
       case 'sayuran':
         return 'Sayuran';
+      case 'beras&umbi-umbian':
+        return 'Beras & Umbi';
+      case 'rempah-rempah':
+        return 'Rempah';
       default:
         return fallback;
     }
