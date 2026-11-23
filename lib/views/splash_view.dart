@@ -48,7 +48,7 @@ class _SplashViewState extends State<SplashView>
       Get.find<ShopController>().loadFromDatabase();
     }
 
-    await Future.delayed(const Duration(milliseconds: 2000));
+    await Future.delayed(const Duration(milliseconds: 1000));
     if (!mounted) return;
 
     // Selalu arahkan pengguna ke LoginView pada cold start (nonaktifkan auto-redirect ke MainView)
@@ -138,7 +138,8 @@ class _SplashViewState extends State<SplashView>
                                 ),
                                 boxShadow: [
                                   BoxShadow(
-                                    color: const Color(0xFF4CAF50).withOpacity(0.20),
+                                    color: const Color(0xFF4CAF50)
+                                        .withOpacity(0.20),
                                     blurRadius: 18,
                                     offset: const Offset(0, 4),
                                   ),
@@ -159,7 +160,7 @@ class _SplashViewState extends State<SplashView>
                                 fontSize: 22,
                                 fontWeight: FontWeight.w800,
                                 letterSpacing: 0.5,
-                                color: Color.fromARGB(255, 19, 57, 17),
+                                color: Color.fromARGB(255, 255, 255, 255),
                               ),
                             ),
                             const SizedBox(height: 4),
@@ -168,7 +169,7 @@ class _SplashViewState extends State<SplashView>
                               style: TextStyle(
                                 fontSize: 13,
                                 fontWeight: FontWeight.w500,
-                                color: Color.fromARGB(255, 35, 79, 51),
+                                color: Color.fromARGB(255, 208, 208, 208),
                               ),
                             ),
                             const SizedBox(height: 24),
