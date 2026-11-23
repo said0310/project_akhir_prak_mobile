@@ -8,6 +8,7 @@ import 'app.dart';
 import 'services/api_service.dart';
 import 'services/database_helper.dart';
 import 'services/notification_service.dart';
+import 'services/map_service.dart';
 
 void main() async {
   // 1. Pastikan Flutter Binding terinisialisasi
@@ -41,6 +42,9 @@ void main() async {
   // 7. Muat Katalog Produk & Kategori dari CSV Lokal
   await ApiService.loadCatalogFromCsv();
 
-  // 8. Jalankan Aplikasi
+  // 8. Inisialisasi Layanan Peta & API Key Google Maps
+  await MapService.init();
+
+  // 9. Jalankan Aplikasi
   runApp(const WijiBumiApp());
 }
