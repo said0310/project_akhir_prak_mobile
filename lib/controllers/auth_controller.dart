@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:get/get.dart';
 import '../models/models.dart';
 import '../services/api_service.dart';
@@ -5,7 +7,10 @@ import '../services/database_helper.dart';
 import '../widgets/glass_feedback.dart';
 
 class AuthController extends GetxController {
+  static const Duration _sessionTimeout = Duration(minutes: 5);
+
   final AuthRepository authRepository;
+  Timer? _autoLogoutTimer;
 
   AuthController({required this.authRepository});
 
@@ -31,7 +36,18 @@ class AuthController extends GetxController {
         passwordHash: '',
         phone: '081234567890',
       );
+      _scheduleAutoLogout();
     }
+  }
+
+  void _scheduleAutoLogout() {
+    _autoLogoutTimer?.cancel();
+    _autoLogoutTimer = Timer(_sessionTimeout, _logoutAfterTimeout);
+  }
+
+  Future<void> _logoutAfterTimeout() async {
+    await logout();
+    Get.offAllNamed('/login');
   }
 
   Future<bool> login(String identifier, String password) async {
@@ -52,6 +68,7 @@ class AuthController extends GetxController {
       );
       currentUser.value = user;
       isLoggedIn.value = true;
+      _scheduleAutoLogout();
       GlassFeedback.showSnackbar(
         title: 'Berhasil Masuk',
         message: 'Selamat datang kembali, ${user.name}!',
@@ -145,8 +162,16 @@ class AuthController extends GetxController {
 
   Future<void> logout() async {
     await authRepository.logout();
+    _autoLogoutTimer?.cancel();
+    _autoLogoutTimer = null;
     currentUser.value = null;
     isLoggedIn.value = false;
     // Sesuai BR-10: Logout tidak menghapus keranjang dan wishlist
+  }
+
+  @override
+  void onClose() {
+    _autoLogoutTimer?.cancel();
+    super.onClose();
   }
 }
