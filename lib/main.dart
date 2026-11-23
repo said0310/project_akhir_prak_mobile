@@ -29,6 +29,8 @@ void main() async {
 
   // 4. Inisialisasi SharedPreferences (Sesi Pengguna)
   final prefService = await PrefService().init();
+  // Reset sesi lama pada cold start agar setiap kali aplikasi baru dijalankan selalu dimulai dari LoginView
+  await prefService.clearSession();
   Get.put<PrefService>(prefService, permanent: true);
 
   // 5. Inisialisasi SQLite Database & Tabel

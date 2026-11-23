@@ -1,6 +1,6 @@
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../app.dart';
 import '../widgets/custom_button.dart';
 import '../widgets/custom_text_field.dart';
 import '../controllers/auth_controller.dart';
@@ -91,19 +91,19 @@ class _LoginViewState extends State<LoginView> {
                     children: [
                       // Header Logo
                       Container(
-                        width: 68,
-                        height: 68,
+                        width: 72,
+                        height: 72,
                         decoration: BoxDecoration(
-                          color: WijiBumiColors.lightMint,
+                          color: Colors.white.withOpacity(0.14),
                           shape: BoxShape.circle,
                           border: Border.all(
-                            color: WijiBumiColors.softSage,
-                            width: 1.5,
+                            color: Colors.white.withOpacity(0.30),
+                            width: 1.2,
                           ),
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.black.withOpacity(0.12),
-                              blurRadius: 12,
+                              color: const Color(0xFF4CAF50).withOpacity(0.20),
+                              blurRadius: 18,
                               offset: const Offset(0, 4),
                             ),
                           ],
@@ -111,8 +111,8 @@ class _LoginViewState extends State<LoginView> {
                         child: const Center(
                           child: Icon(
                             Icons.eco_rounded,
-                            size: 38,
-                            color: WijiBumiColors.deepForest,
+                            size: 40,
+                            color: Color(0xFFA7F3D0),
                           ),
                         ),
                       ),
@@ -123,6 +123,7 @@ class _LoginViewState extends State<LoginView> {
                           fontSize: 24,
                           fontWeight: FontWeight.w800,
                           color: Colors.white,
+                          letterSpacing: 0.5,
                         ),
                       ),
                       const SizedBox(height: 4),
@@ -130,87 +131,94 @@ class _LoginViewState extends State<LoginView> {
                         'Masuk ke Akun Anda',
                         style: TextStyle(
                           fontSize: 13,
-                          color: Color(0xFFD8E8DC),
+                          fontWeight: FontWeight.w500,
+                          color: Color(0xFFC8DDD0),
                         ),
                       ),
                       const SizedBox(height: 28),
 
-                      // Panel Formulir
-                      Container(
-                        padding: const EdgeInsets.all(24),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(16),
-                          border: Border.all(
-                            color: WijiBumiColors.borderSage,
-                            width: 1.0,
-                          ),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withOpacity(0.14),
-                              blurRadius: 18,
-                              offset: const Offset(0, 6),
+                      // Panel Formulir Liquid Glass
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(24),
+                        child: BackdropFilter(
+                          filter: ImageFilter.blur(sigmaX: 14, sigmaY: 14),
+                          child: Container(
+                            padding: const EdgeInsets.all(24),
+                            decoration: BoxDecoration(
+                              color: Colors.white.withOpacity(0.12),
+                              borderRadius: BorderRadius.circular(24),
+                              border: Border.all(
+                                color: Colors.white.withOpacity(0.28),
+                                width: 1.2,
+                              ),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withOpacity(0.20),
+                                  blurRadius: 20,
+                                  offset: const Offset(0, 8),
+                                ),
+                              ],
                             ),
-                          ],
-                        ),
-                        child: Form(
-                          key: _formKey,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const Text(
-                                'Email atau Username',
-                                style: TextStyle(
-                                  fontSize: 13,
-                                  fontWeight: FontWeight.w600,
-                                  color: WijiBumiColors.textPrimary,
-                                ),
+                            child: Form(
+                              key: _formKey,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const Text(
+                                    'Email atau Username',
+                                    style: TextStyle(
+                                      fontSize: 13,
+                                      fontWeight: FontWeight.w600,
+                                      color: Color(0xFFC8DDD0),
+                                    ),
+                                  ),
+                                  const SizedBox(height: 8),
+                                  CustomTextField(
+                                    controller: _identifierController,
+                                    hintText: 'Masukkan email atau username',
+                                    prefixIcon: Icons.person_outline_rounded,
+                                    textColor: Colors.white,
+                                    validator: (val) {
+                                      if (val == null || val.trim().isEmpty) {
+                                        return 'Email atau username tidak boleh kosong';
+                                      }
+                                      return null;
+                                    },
+                                  ),
+                                  const SizedBox(height: 18),
+                                  const Text(
+                                    'Password',
+                                    style: TextStyle(
+                                      fontSize: 13,
+                                      fontWeight: FontWeight.w600,
+                                      color: Color(0xFFC8DDD0),
+                                    ),
+                                  ),
+                                  const SizedBox(height: 8),
+                                  CustomTextField(
+                                    controller: _passwordController,
+                                    hintText: 'Masukkan password',
+                                    prefixIcon: Icons.lock_outline_rounded,
+                                    isPassword: true,
+                                    textColor: Colors.white,
+                                    validator: (val) {
+                                      if (val == null || val.isEmpty) {
+                                        return 'Password tidak boleh kosong';
+                                      }
+                                      return null;
+                                    },
+                                  ),
+                                  const SizedBox(height: 24),
+                                  Obx(
+                                    () => CustomButton(
+                                      text: 'Masuk Sekarang',
+                                      isLoading: authController.isLoading.value,
+                                      onPressed: _onLogin,
+                                    ),
+                                  ),
+                                ],
                               ),
-                              const SizedBox(height: 8),
-                              CustomTextField(
-                                controller: _identifierController,
-                                hintText: 'Masukkan email atau username',
-                                prefixIcon: Icons.person_outline_rounded,
-                                textColor: WijiBumiColors.textPrimary,
-                                validator: (val) {
-                                  if (val == null || val.trim().isEmpty) {
-                                    return 'Email atau username tidak boleh kosong';
-                                  }
-                                  return null;
-                                },
-                              ),
-                              const SizedBox(height: 18),
-                              const Text(
-                                'Password',
-                                style: TextStyle(
-                                  fontSize: 13,
-                                  fontWeight: FontWeight.w600,
-                                  color: WijiBumiColors.textPrimary,
-                                ),
-                              ),
-                              const SizedBox(height: 8),
-                              CustomTextField(
-                                controller: _passwordController,
-                                hintText: 'Masukkan password',
-                                prefixIcon: Icons.lock_outline_rounded,
-                                isPassword: true,
-                                textColor: WijiBumiColors.textPrimary,
-                                validator: (val) {
-                                  if (val == null || val.isEmpty) {
-                                    return 'Password tidak boleh kosong';
-                                  }
-                                  return null;
-                                },
-                              ),
-                              const SizedBox(height: 24),
-                              Obx(
-                                () => CustomButton(
-                                  text: 'Masuk Sekarang',
-                                  isLoading: authController.isLoading.value,
-                                  onPressed: _onLogin,
-                                ),
-                              ),
-                            ],
+                            ),
                           ),
                         ),
                       ),
@@ -224,7 +232,8 @@ class _LoginViewState extends State<LoginView> {
                             'Belum punya akun? ',
                             style: TextStyle(
                               fontSize: 13,
-                              color: Color(0xFFD8E8DC),
+                              fontWeight: FontWeight.w500,
+                              color: Colors.white,
                             ),
                           ),
                           GestureDetector(
@@ -237,9 +246,10 @@ class _LoginViewState extends State<LoginView> {
                               'Daftar di sini',
                               style: TextStyle(
                                 fontSize: 13,
-                                fontWeight: FontWeight.w700,
-                                color: Colors.white,
+                                fontWeight: FontWeight.w800,
+                                color: Color(0xFFA7F3D0),
                                 decoration: TextDecoration.underline,
+                                decorationColor: Color(0xFFA7F3D0),
                               ),
                             ),
                           ),
