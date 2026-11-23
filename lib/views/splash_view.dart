@@ -2,11 +2,8 @@ import 'dart:async';
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../app.dart';
-import '../controllers/auth_controller.dart';
 import '../controllers/shop_controller.dart';
 import 'login_view.dart';
-import 'main_view.dart';
 
 class SplashView extends StatefulWidget {
   const SplashView({super.key});
@@ -53,12 +50,10 @@ class _SplashViewState extends State<SplashView> with SingleTickerProviderStateM
     await Future.delayed(const Duration(milliseconds: 2000));
     if (!mounted) return;
 
-    final authController = Get.find<AuthController>();
-    final bool isLoggedIn = authController.isLoggedIn.value;
-
+    // Selalu arahkan pengguna ke LoginView pada cold start (nonaktifkan auto-redirect ke MainView)
     Navigator.of(context).pushReplacement(
       MaterialPageRoute(
-        builder: (_) => isLoggedIn ? const MainView() : const LoginView(),
+        builder: (_) => const LoginView(),
       ),
     );
   }
@@ -112,22 +107,15 @@ class _SplashViewState extends State<SplashView> with SingleTickerProviderStateM
                         width: 224,
                         padding: const EdgeInsets.symmetric(vertical: 36, horizontal: 24),
                         decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight,
-                            colors: [
-                              Colors.white.withOpacity(0.92),
-                              const Color(0xFFE8F5E9).withOpacity(0.85),
-                            ],
-                          ),
+                          color: Colors.white.withOpacity(0.12),
                           borderRadius: BorderRadius.circular(24),
                           border: Border.all(
-                            color: Colors.white.withOpacity(0.70),
+                            color: Colors.white.withOpacity(0.28),
                             width: 1.2,
                           ),
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.black.withOpacity(0.20),
+                              color: Colors.black.withOpacity(0.25),
                               blurRadius: 24,
                               offset: const Offset(0, 8),
                             ),
@@ -140,18 +128,25 @@ class _SplashViewState extends State<SplashView> with SingleTickerProviderStateM
                               width: 76,
                               height: 76,
                               decoration: BoxDecoration(
-                                color: WijiBumiColors.lightMint,
+                                color: Colors.white.withOpacity(0.14),
                                 shape: BoxShape.circle,
                                 border: Border.all(
-                                  color: WijiBumiColors.softSage,
-                                  width: 1.5,
+                                  color: Colors.white.withOpacity(0.30),
+                                  width: 1.2,
                                 ),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: const Color(0xFF4CAF50).withOpacity(0.20),
+                                    blurRadius: 18,
+                                    offset: const Offset(0, 4),
+                                  ),
+                                ],
                               ),
                               child: const Center(
                                 child: Icon(
                                   Icons.eco_rounded,
                                   size: 44,
-                                  color: WijiBumiColors.deepForest,
+                                  color: Color(0xFFA7F3D0),
                                 ),
                               ),
                             ),
@@ -162,7 +157,7 @@ class _SplashViewState extends State<SplashView> with SingleTickerProviderStateM
                                 fontSize: 22,
                                 fontWeight: FontWeight.w800,
                                 letterSpacing: 0.5,
-                                color: WijiBumiColors.textPrimary,
+                                color: Colors.white,
                               ),
                             ),
                             const SizedBox(height: 4),
@@ -171,7 +166,7 @@ class _SplashViewState extends State<SplashView> with SingleTickerProviderStateM
                               style: TextStyle(
                                 fontSize: 13,
                                 fontWeight: FontWeight.w500,
-                                color: WijiBumiColors.textSecondary,
+                                color: Color(0xFFC8DDD0),
                               ),
                             ),
                             const SizedBox(height: 24),
@@ -181,7 +176,7 @@ class _SplashViewState extends State<SplashView> with SingleTickerProviderStateM
                               child: CircularProgressIndicator(
                                 strokeWidth: 2.5,
                                 valueColor: AlwaysStoppedAnimation<Color>(
-                                  WijiBumiColors.deepForest,
+                                  Color(0xFFA7F3D0),
                                 ),
                               ),
                             ),

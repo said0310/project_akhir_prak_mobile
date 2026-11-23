@@ -67,7 +67,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
             ? IconButton(
                 icon: Icon(
                   _obscureText ? Icons.visibility_off_outlined : Icons.visibility_outlined,
-                  color: const Color(0xFFC8DDD0),
+                  color: const Color(0xFFA7F3D0),
                   size: 20,
                 ),
                 onPressed: () {

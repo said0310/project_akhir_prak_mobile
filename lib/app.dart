@@ -202,20 +202,28 @@ class DynamicGlassDecoration {
       suffixIcon: suffixIcon,
       filled: true,
       fillColor: Colors.white.withOpacity(0.10),
-      hintStyle: const TextStyle(color: Color(0xFF9EB5A4), fontSize: 13),
+      hintStyle: const TextStyle(color: Color(0xFFC8DDD0), fontSize: 13),
       labelStyle: const TextStyle(color: Color(0xFFC8DDD0), fontSize: 13, fontWeight: FontWeight.w600),
       contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
       border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(14),
         borderSide: BorderSide(color: Colors.white.withOpacity(0.25), width: 1.0),
       ),
       enabledBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(14),
         borderSide: BorderSide(color: Colors.white.withOpacity(0.25), width: 1.0),
       ),
       focusedBorder: const OutlineInputBorder(
-        borderRadius: BorderRadius.all(Radius.circular(12)),
+        borderRadius: BorderRadius.all(Radius.circular(14)),
         borderSide: BorderSide(color: Color(0xFFA7F3D0), width: 1.6),
+      ),
+      errorBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(14),
+        borderSide: const BorderSide(color: Color(0xFFFF5252), width: 1.0),
+      ),
+      focusedErrorBorder: const OutlineInputBorder(
+        borderRadius: BorderRadius.all(Radius.circular(14)),
+        borderSide: BorderSide(color: Color(0xFFFF5252), width: 1.6),
       ),
     );
   }
