@@ -122,9 +122,9 @@ class HomeView extends StatelessWidget {
                                   ),
                                   const SizedBox(height: 2),
                                   Obx(() {
-                                    final name =
-                                        authController.currentUser.value?.name ??
-                                            'Nuril Anggara';
+                                    final name = authController
+                                            .currentUser.value?.name ??
+                                        'Nuril Anggara';
                                     return Text(
                                       name,
                                       maxLines: 1,
@@ -145,25 +145,29 @@ class HomeView extends StatelessWidget {
 
                             // Tombol Notifikasi Liquid Glass 48 x 48 px dengan Specular Border
                             Obx(() {
-                              final notifCtrl = Get.isRegistered<NotificationController>()
-                                  ? Get.find<NotificationController>()
-                                  : Get.put(NotificationController());
+                              final notifCtrl =
+                                  Get.isRegistered<NotificationController>()
+                                      ? Get.find<NotificationController>()
+                                      : Get.put(NotificationController());
                               final unreadCount = notifCtrl.unreadCount;
 
                               return Stack(
                                 clipBehavior: Clip.none,
                                 children: [
                                   GestureDetector(
-                                    onTap: () => Get.toNamed(AppRoutes.REMINDERS),
+                                    onTap: () =>
+                                        Get.toNamed(AppRoutes.REMINDERS),
                                     behavior: HitTestBehavior.opaque,
                                     child: ClipRRect(
                                       borderRadius: BorderRadius.circular(14),
                                       child: BackdropFilter(
-                                        filter: ImageFilter.blur(sigmaX: 14, sigmaY: 14),
+                                        filter: ImageFilter.blur(
+                                            sigmaX: 14, sigmaY: 14),
                                         child: Container(
                                           width: 48,
                                           height: 48,
-                                          decoration: DynamicGlassDecoration.liquidGlassDark(radius: 14),
+                                          decoration: DynamicGlassDecoration
+                                              .liquidGlassDark(radius: 14),
                                           child: const Center(
                                             child: Icon(
                                               Icons.notifications_rounded,
@@ -180,18 +184,22 @@ class HomeView extends StatelessWidget {
                                       top: -4,
                                       right: -4,
                                       child: Container(
-                                        padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
-                                        constraints: const BoxConstraints(minWidth: 18, minHeight: 18),
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 5, vertical: 2),
+                                        constraints: const BoxConstraints(
+                                            minWidth: 18, minHeight: 18),
                                         decoration: BoxDecoration(
                                           color: WijiBumiColors.error,
-                                          borderRadius: BorderRadius.circular(10),
+                                          borderRadius:
+                                              BorderRadius.circular(10),
                                           border: Border.all(
                                             color: const Color(0xFF1C2B1E),
                                             width: 2.0,
                                           ),
                                           boxShadow: [
                                             BoxShadow(
-                                              color: Colors.black.withOpacity(0.25),
+                                              color: Colors.black
+                                                  .withOpacity(0.25),
                                               blurRadius: 4,
                                               offset: const Offset(0, 2),
                                             ),
@@ -199,7 +207,9 @@ class HomeView extends StatelessWidget {
                                         ),
                                         child: Center(
                                           child: Text(
-                                            unreadCount > 99 ? '99+' : '$unreadCount',
+                                            unreadCount > 99
+                                                ? '99+'
+                                                : '$unreadCount',
                                             style: const TextStyle(
                                               color: Colors.white,
                                               fontSize: 10,
@@ -229,11 +239,15 @@ class HomeView extends StatelessWidget {
                               child: ClipRRect(
                                 borderRadius: BorderRadius.circular(16),
                                 child: BackdropFilter(
-                                  filter: ImageFilter.blur(sigmaX: 14, sigmaY: 14),
+                                  filter:
+                                      ImageFilter.blur(sigmaX: 14, sigmaY: 14),
                                   child: Container(
                                     height: 52,
-                                    padding: const EdgeInsets.symmetric(horizontal: 14),
-                                    decoration: DynamicGlassDecoration.liquidGlassDark(radius: 16),
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 14),
+                                    decoration:
+                                        DynamicGlassDecoration.liquidGlassDark(
+                                            radius: 16),
                                     child: Row(
                                       children: [
                                         const Icon(
@@ -244,10 +258,10 @@ class HomeView extends StatelessWidget {
                                         const SizedBox(width: 10),
                                         Expanded(
                                           child: TextField(
-                                            controller:
-                                                productController.searchInputController,
-                                            onChanged:
-                                                productController.onSearchChanged,
+                                            controller: productController
+                                                .searchInputController,
+                                            onChanged: productController
+                                                .onSearchChanged,
                                             cursorColor: Colors.white,
                                             style: const TextStyle(
                                               fontFamily: 'Poppins',
@@ -256,7 +270,8 @@ class HomeView extends StatelessWidget {
                                             ),
                                             decoration: const InputDecoration(
                                               isDense: true,
-                                              hintText: 'Cari sayuran, buah, atau tanaman...',
+                                              hintText:
+                                                  'Cari sayuran, buah, atau tanaman...',
                                               hintStyle: TextStyle(
                                                 fontFamily: 'Poppins',
                                                 fontSize: 13,
@@ -272,7 +287,8 @@ class HomeView extends StatelessWidget {
                                           if (productController
                                               .searchQuery.value.isNotEmpty) {
                                             return GestureDetector(
-                                              onTap: productController.clearSearch,
+                                              onTap:
+                                                  productController.clearSearch,
                                               behavior: HitTestBehavior.opaque,
                                               child: const Padding(
                                                 padding: EdgeInsets.all(6.0),
@@ -302,11 +318,14 @@ class HomeView extends StatelessWidget {
                               child: ClipRRect(
                                 borderRadius: BorderRadius.circular(16),
                                 child: BackdropFilter(
-                                  filter: ImageFilter.blur(sigmaX: 14, sigmaY: 14),
+                                  filter:
+                                      ImageFilter.blur(sigmaX: 14, sigmaY: 14),
                                   child: Container(
                                     width: 52,
                                     height: 52,
-                                    decoration: DynamicGlassDecoration.liquidGlassDark(radius: 16),
+                                    decoration:
+                                        DynamicGlassDecoration.liquidGlassDark(
+                                            radius: 16),
                                     child: Stack(
                                       alignment: Alignment.center,
                                       children: [
@@ -322,7 +341,8 @@ class HomeView extends StatelessWidget {
                                           );
                                         }),
                                         Obx(() {
-                                          if (!productController.hasActiveFilter) {
+                                          if (!productController
+                                              .hasActiveFilter) {
                                             return const SizedBox.shrink();
                                           }
                                           return Positioned(
@@ -348,218 +368,156 @@ class HomeView extends StatelessWidget {
                         ),
                       ),
 
-                  // Category Tabs (All, Buah, Sayuran, Bunga, Beras & Umbi, Rempah)
-                  const SizedBox(height: 18),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 24.0),
-                    child: Obx(() {
-                      final categories = productController.categories;
-                      final selectedCategory =
-                          productController.selectedCategory.value;
-                      return SingleChildScrollView(
-                        scrollDirection: Axis.horizontal,
-                        physics: const BouncingScrollPhysics(),
-                        child: Row(
-                          children: categories.map((cat) {
-                            final isSelected =
-                                selectedCategory.toLowerCase() ==
-                                    cat.id.toLowerCase();
-                            return Padding(
-                              padding: const EdgeInsets.only(right: 18.0),
-                              child: CategoryCard(
-                                key: ValueKey('tab_${cat.id}'),
-                                category: cat,
-                                isSelected: isSelected,
-                                onTap: () {
-                                  productController.selectCategory(cat.id);
-                                },
-                              ),
-                            );
-                          }).toList(),
-                        ),
-                      );
-                    }),
-                  ),
-
-                  // Active Filter Pills
-                  Obx(() {
-                    final hasFilter = productController.hasActiveFilter;
-                    if (!hasFilter) return const SizedBox.shrink();
-                    final selectedCategoryId =
-                        productController.selectedCategory.value;
-                    final selectedCategoryName = productController.categories
-                            .firstWhereOrNull(
-                              (category) =>
-                                  category.id == selectedCategoryId,
-                            )
-                            ?.name ??
-                        selectedCategoryId;
-
-                    return Padding(
-                      padding: const EdgeInsets.only(
-                          left: 24.0, right: 24.0, top: 12.0),
-                      child: SingleChildScrollView(
-                        scrollDirection: Axis.horizontal,
-                        physics: const BouncingScrollPhysics(),
-                        child: Row(
-                          children: [
-                            if (selectedCategoryId != 'semua')
-                              _buildActiveFilterChip(
-                                label: 'Kategori: ${_categoryFilterLabel(
-                                  selectedCategoryId,
-                                  selectedCategoryName,
-                                )}',
-                                onRemove: () =>
-                                    productController.selectCategory('semua'),
-                              ),
-                            if (productController.searchQuery.value.isNotEmpty)
-                              _buildActiveFilterChip(
-                                label:
-                                    'Cari: "${productController.searchQuery.value}"',
-                                onRemove: productController.clearSearch,
-                              ),
-                            if (productController.priceSortOrder.value !=
-                                PriceSortOrder.none)
-                              _buildActiveFilterChip(
-                                label: productController.priceSortOrder.value ==
-                                        PriceSortOrder.lowest
-                                    ? 'Harga: Termurah'
-                                    : 'Harga: Termahal',
-                                onRemove: () => productController
-                                    .setSortPrice(PriceSortOrder.none),
-                              ),
-                            if (productController.filterInStockOnly.value)
-                              _buildActiveFilterChip(
-                                label: 'Ready Stock',
-                                onRemove: () =>
-                                    productController.setFilterStock(false),
-                              ),
-                            GestureDetector(
-                              onTap: productController.resetAllFilters,
-                              child: const Padding(
-                                padding: EdgeInsets.symmetric(
-                                    horizontal: 8, vertical: 4),
-                                child: Text(
-                                  'Reset',
-                                  style: TextStyle(
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.w600,
-                                    color: WijiBumiColors.textSecondary,
-                                    decoration: TextDecoration.underline,
+                      // Category Tabs (All, Buah, Sayuran, Bunga, Beras & Umbi, Rempah)
+                      const SizedBox(height: 18),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                        child: Obx(() {
+                          final categories = productController.categories;
+                          final selectedCategory =
+                              productController.selectedCategory.value;
+                          return SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            physics: const BouncingScrollPhysics(),
+                            child: Row(
+                              children: categories.map((cat) {
+                                final isSelected =
+                                    selectedCategory.toLowerCase() ==
+                                        cat.id.toLowerCase();
+                                return Padding(
+                                  padding: const EdgeInsets.only(right: 18.0),
+                                  child: CategoryCard(
+                                    key: ValueKey('tab_${cat.id}'),
+                                    category: cat,
+                                    isSelected: isSelected,
+                                    onTap: () {
+                                      productController.selectCategory(cat.id);
+                                    },
                                   ),
-                                ),
-                              ),
+                                );
+                              }).toList(),
                             ),
-                          ],
-                        ),
+                          );
+                        }),
                       ),
-                    );
-                  }),
 
-                  const SizedBox(height: 24),
+                      // Active Filter Pills
+                      Obx(() {
+                        final hasFilter = productController.hasActiveFilter;
+                        if (!hasFilter) return const SizedBox.shrink();
+                        final selectedCategoryId =
+                            productController.selectedCategory.value;
+                        final selectedCategoryName =
+                            productController.categories
+                                    .firstWhereOrNull(
+                                      (category) =>
+                                          category.id == selectedCategoryId,
+                                    )
+                                    ?.name ??
+                                selectedCategoryId;
 
-                  // 3. Section Produk Unggulan & Horizontal Carousel
-                  productController.obx(
-                    (products) {
-                      if (products == null || products.isEmpty) {
-                        return _buildEmptySearchState(productController);
-                      }
-
-                      return Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            // Header Section Unggulan
-                            Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 24.0),
-                              child: Obx(() {
-                                final selected =
-                                    productController.selectedCategory.value;
-                                String title = 'Pilihan Unggulan';
-                                if (selected != 'semua') {
-                                  final cat = productController.categories
-                                      .firstWhereOrNull((c) => c.id == selected);
-                                  if (cat != null) {
-                                    title =
-                                        '${_categoryFilterLabel(cat.id, cat.name)} Pilihan';
-                                  }
-                                }
-                                return Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Expanded(
-                                      child: Text(
-                                        title,
-                                        maxLines: 1,
-                                        overflow: TextOverflow.ellipsis,
-                                        style: const TextStyle(
-                                          fontFamily: 'Poppins',
-                                          fontSize: 22,
-                                          fontWeight: FontWeight.w800,
-                                          color: WijiBumiColors.textPrimary,
-                                          height: 1.15,
-                                          letterSpacing: -0.5,
-                                        ),
+                        return Padding(
+                          padding: const EdgeInsets.only(
+                              left: 24.0, right: 24.0, top: 12.0),
+                          child: SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            physics: const BouncingScrollPhysics(),
+                            child: Row(
+                              children: [
+                                if (selectedCategoryId != 'semua')
+                                  _buildActiveFilterChip(
+                                    label: 'Kategori: ${_categoryFilterLabel(
+                                      selectedCategoryId,
+                                      selectedCategoryName,
+                                    )}',
+                                    onRemove: () => productController
+                                        .selectCategory('semua'),
+                                  ),
+                                if (productController
+                                    .searchQuery.value.isNotEmpty)
+                                  _buildActiveFilterChip(
+                                    label:
+                                        'Cari: "${productController.searchQuery.value}"',
+                                    onRemove: productController.clearSearch,
+                                  ),
+                                if (productController.priceSortOrder.value !=
+                                    PriceSortOrder.none)
+                                  _buildActiveFilterChip(
+                                    label: productController
+                                                .priceSortOrder.value ==
+                                            PriceSortOrder.lowest
+                                        ? 'Harga: Termurah'
+                                        : 'Harga: Termahal',
+                                    onRemove: () => productController
+                                        .setSortPrice(PriceSortOrder.none),
+                                  ),
+                                if (productController.filterInStockOnly.value)
+                                  _buildActiveFilterChip(
+                                    label: 'Ready Stock',
+                                    onRemove: () =>
+                                        productController.setFilterStock(false),
+                                  ),
+                                GestureDetector(
+                                  onTap: productController.resetAllFilters,
+                                  child: const Padding(
+                                    padding: EdgeInsets.symmetric(
+                                        horizontal: 8, vertical: 4),
+                                    child: Text(
+                                      'Reset',
+                                      style: TextStyle(
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w600,
+                                        color: WijiBumiColors.textSecondary,
+                                        decoration: TextDecoration.underline,
                                       ),
                                     ),
-                                  ],
-                                );
-                              }),
+                                  ),
+                                ),
+                              ],
                             ),
+                          ),
+                        );
+                      }),
 
-                            const SizedBox(height: 12),
+                      const SizedBox(height: 24),
 
-                            // Carousel Horizontal Glass Card (Scroll ke Samping)
-                            SizedBox(
-                              height: 226,
-                              child: ListView.separated(
+                      // 3. Section Produk Unggulan & Horizontal Carousel
+                      productController.obx(
+                        (products) {
+                          if (products == null || products.isEmpty) {
+                            return _buildEmptySearchState(productController);
+                          }
+
+                          return Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              // Header Section Unggulan
+                              Padding(
                                 padding: const EdgeInsets.symmetric(
-                                    horizontal: 24, vertical: 6),
-                                scrollDirection: Axis.horizontal,
-                                physics: const BouncingScrollPhysics(),
-                                itemCount: products.length,
-                                separatorBuilder: (_, __) =>
-                                    const SizedBox(width: 14),
-                                itemBuilder: (context, index) {
-                                  final product = products[index];
-                                  return ProductCard(
-                                    key: ValueKey('top_${product.id}'),
-                                    product: product,
-                                    heroTagPrefix: 'top',
-                                    width: 156,
-                                    height: 206,
-                                    onQuickAdd: () =>
-                                        cartController.addToCart(product, 1),
-                                  );
-                                },
-                              ),
-                            ),
-
-                            const SizedBox(height: 28),
-
-                            // 4. Section "Promotion"
-                            _buildPromotionBanner(),
-
-                            const SizedBox(height: 28),
-
-                            // 5. Section "Katalog Lengkap" (2 Kolom Kanan & Kiri, Scroll ke Bawah)
-                            Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 24.0),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                crossAxisAlignment: CrossAxisAlignment.end,
-                                children: [
-                                  const Expanded(
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          'Katalog Lengkap',
+                                    horizontal: 24.0),
+                                child: Obx(() {
+                                  final selected =
+                                      productController.selectedCategory.value;
+                                  String title = 'Pilihan Unggulan';
+                                  if (selected != 'semua') {
+                                    final cat = productController.categories
+                                        .firstWhereOrNull(
+                                            (c) => c.id == selected);
+                                    if (cat != null) {
+                                      title =
+                                          '${_categoryFilterLabel(cat.id, cat.name)} Pilihan';
+                                    }
+                                  }
+                                  return Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Expanded(
+                                        child: Text(
+                                          title,
                                           maxLines: 1,
                                           overflow: TextOverflow.ellipsis,
-                                          style: TextStyle(
+                                          style: const TextStyle(
                                             fontFamily: 'Poppins',
                                             fontSize: 22,
                                             fontWeight: FontWeight.w800,
@@ -568,106 +526,177 @@ class HomeView extends StatelessWidget {
                                             letterSpacing: -0.5,
                                           ),
                                         ),
-                                        SizedBox(height: 4),
-                                        Text(
-                                          'Koleksi segar siap panen & tanaman asri',
-                                          maxLines: 1,
-                                          overflow: TextOverflow.ellipsis,
-                                          style: TextStyle(
-                                            fontFamily: 'Poppins',
-                                            fontSize: 12,
-                                            fontWeight: FontWeight.w400,
-                                            color: WijiBumiColors.textSecondary,
+                                      ),
+                                    ],
+                                  );
+                                }),
+                              ),
+
+                              const SizedBox(height: 12),
+
+                              // Carousel Horizontal Glass Card (Scroll ke Samping)
+                              SizedBox(
+                                height: 226,
+                                child: ListView.separated(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 24, vertical: 6),
+                                  scrollDirection: Axis.horizontal,
+                                  physics: const BouncingScrollPhysics(),
+                                  itemCount: products.length,
+                                  separatorBuilder: (_, __) =>
+                                      const SizedBox(width: 14),
+                                  itemBuilder: (context, index) {
+                                    final product = products[index];
+                                    return ProductCard(
+                                      key: ValueKey('top_${product.id}'),
+                                      product: product,
+                                      heroTagPrefix: 'top',
+                                      width: 156,
+                                      height: 206,
+                                      onQuickAdd: () =>
+                                          cartController.addToCart(product, 1),
+                                    );
+                                  },
+                                ),
+                              ),
+
+                              const SizedBox(height: 28),
+
+                              // 4. Section "Promotion"
+                              _buildPromotionBanner(),
+
+                              const SizedBox(height: 28),
+
+                              // 5. Section "Katalog Lengkap" (2 Kolom Kanan & Kiri, Scroll ke Bawah)
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 24.0),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  children: [
+                                    const Expanded(
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            'Katalog Lengkap',
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
+                                            style: TextStyle(
+                                              fontFamily: 'Poppins',
+                                              fontSize: 22,
+                                              fontWeight: FontWeight.w800,
+                                              color: WijiBumiColors.textPrimary,
+                                              height: 1.15,
+                                              letterSpacing: -0.5,
+                                            ),
                                           ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  const SizedBox(width: 8),
-                                  Container(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 10, vertical: 4),
-                                    decoration: DynamicGlassDecoration.accentPill(
-                                      radius: 8,
-                                      fillColor: WijiBumiColors.lightMint,
-                                      borderColor: WijiBumiColors.softSage,
-                                    ),
-                                    child: Text(
-                                      '${products.length} Produk',
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
-                                      style: const TextStyle(
-                                        fontFamily: 'Poppins',
-                                        fontSize: 11,
-                                        fontWeight: FontWeight.w700,
-                                        color: WijiBumiColors.deepForest,
+                                          SizedBox(height: 4),
+                                          Text(
+                                            'Koleksi segar siap panen & tanaman asri',
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
+                                            style: TextStyle(
+                                              fontFamily: 'Poppins',
+                                              fontSize: 12,
+                                              fontWeight: FontWeight.w400,
+                                              color:
+                                                  WijiBumiColors.textSecondary,
+                                            ),
+                                          ),
+                                        ],
                                       ),
                                     ),
-                                  ),
-                                ],
+                                    const SizedBox(width: 8),
+                                    Container(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 10, vertical: 4),
+                                      decoration:
+                                          DynamicGlassDecoration.accentPill(
+                                        radius: 8,
+                                        fillColor: WijiBumiColors.lightMint,
+                                        borderColor: WijiBumiColors.softSage,
+                                      ),
+                                      child: Text(
+                                        '${products.length} Produk',
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: const TextStyle(
+                                          fontFamily: 'Poppins',
+                                          fontSize: 11,
+                                          fontWeight: FontWeight.w700,
+                                          color: WijiBumiColors.deepForest,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ),
-                            ),
 
-                          const SizedBox(height: 16),
+                              const SizedBox(height: 16),
 
-                          // Grid 2 Kolom (Kanan & Kiri)
-                          GridView.builder(
-                            shrinkWrap: true,
-                            physics: const NeverScrollableScrollPhysics(),
-                            padding: const EdgeInsets.symmetric(horizontal: 24),
-                            gridDelegate:
-                                const SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 2,
-                              crossAxisSpacing: 14,
-                              mainAxisSpacing: 16,
-                              childAspectRatio: 0.70,
+                              // Grid 2 Kolom (Kanan & Kiri)
+                              GridView.builder(
+                                shrinkWrap: true,
+                                physics: const NeverScrollableScrollPhysics(),
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 24),
+                                gridDelegate:
+                                    const SliverGridDelegateWithFixedCrossAxisCount(
+                                  crossAxisCount: 2,
+                                  crossAxisSpacing: 14,
+                                  mainAxisSpacing: 16,
+                                  childAspectRatio: 0.70,
+                                ),
+                                itemCount: products.length,
+                                itemBuilder: (context, index) {
+                                  final product = products[index];
+                                  return ProductCard(
+                                    key: ValueKey('grid_${product.id}'),
+                                    product: product,
+                                    heroTagPrefix: 'grid',
+                                    onQuickAdd: () =>
+                                        cartController.addToCart(product, 1),
+                                  );
+                                },
+                              ),
+                            ],
+                          );
+                        },
+                        onEmpty: _buildEmptySearchState(productController),
+                        onLoading: const SizedBox(
+                          height: 240,
+                          child: Center(
+                            child: CircularProgressIndicator(
+                              valueColor: AlwaysStoppedAnimation<Color>(
+                                  WijiBumiColors.deepForest),
                             ),
-                            itemCount: products.length,
-                            itemBuilder: (context, index) {
-                              final product = products[index];
-                              return ProductCard(
-                                key: ValueKey('grid_${product.id}'),
-                                product: product,
-                                heroTagPrefix: 'grid',
-                                onQuickAdd: () =>
-                                    cartController.addToCart(product, 1),
-                              );
-                            },
                           ),
-                        ],
-                      );
-                    },
-                    onEmpty: _buildEmptySearchState(productController),
-                    onLoading: const SizedBox(
-                      height: 240,
-                      child: Center(
-                        child: CircularProgressIndicator(
-                          valueColor: AlwaysStoppedAnimation<Color>(
-                              WijiBumiColors.deepForest),
+                        ),
+                        onError: (err) => Padding(
+                          padding: const EdgeInsets.all(24.0),
+                          child: Text(
+                            err ?? 'Gagal memuat produk',
+                            style: const TextStyle(
+                                color: WijiBumiColors.textSecondary),
+                          ),
                         ),
                       ),
-                    ),
-                    onError: (err) => Padding(
-                      padding: const EdgeInsets.all(24.0),
-                      child: Text(
-                        err ?? 'Gagal memuat produk',
-                        style: const TextStyle(
-                            color: WijiBumiColors.textSecondary),
-                      ),
-                    ),
-                  ),
 
-                  const SizedBox(height: 100),
-                ],
-              ),
+                      const SizedBox(height: 100),
+                    ],
+                  ),
+                ),
+              ],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
-    ],
-  ),
-);
-}
+    );
+  }
 
   Widget _buildActiveFilterChip(
       {required String label, required VoidCallback onRemove}) {
@@ -901,8 +930,7 @@ class HomeView extends StatelessWidget {
           padding: const EdgeInsets.all(24),
           decoration: const BoxDecoration(
             color: Colors.white,
-            borderRadius:
-                BorderRadius.vertical(top: Radius.circular(28)),
+            borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
           ),
           child: SafeArea(
             child: SingleChildScrollView(
@@ -957,8 +985,7 @@ class HomeView extends StatelessWidget {
                   ),
                   const SizedBox(height: 10),
                   Obx(() {
-                    final selectedCategory =
-                        controller.selectedCategory.value;
+                    final selectedCategory = controller.selectedCategory.value;
                     final categories = controller.categories
                         .where((category) => category.id != 'semua')
                         .toList();
@@ -983,9 +1010,7 @@ class HomeView extends StatelessWidget {
                       spacing: 8,
                       runSpacing: 8,
                       children: [
-                        for (var index = 0;
-                            index < categories.length;
-                            index++)
+                        for (var index = 0; index < categories.length; index++)
                           _buildFilterOption(
                             label: _categoryFilterLabel(
                               categories[index].id,
@@ -1078,7 +1103,7 @@ class HomeView extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: AnimatedContainer(
-        duration: const Duration(milliseconds: 150),
+        duration: const Duration(milliseconds: 100),
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
         alignment: Alignment.center,
         decoration: BoxDecoration(
@@ -1098,7 +1123,8 @@ class HomeView extends StatelessWidget {
           style: TextStyle(
             fontSize: 13,
             fontWeight: isSelected ? FontWeight.w800 : FontWeight.w600,
-            color: isSelected ? const Color(0xFF142117) : const Color(0xFFC8DDD0),
+            color:
+                isSelected ? const Color(0xFF142117) : const Color(0xFFC8DDD0),
           ),
         ),
       ),
