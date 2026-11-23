@@ -8,14 +8,24 @@ import '../widgets/empty_state.dart';
 
 class OrderHistoryView extends StatefulWidget {
   final bool isEmbedded;
-  const OrderHistoryView({super.key, this.isEmbedded = false});
+  final bool isHistoryMode;
+  const OrderHistoryView({
+    super.key,
+    this.isEmbedded = false,
+    this.isHistoryMode = false,
+  });
 
   @override
   State<OrderHistoryView> createState() => _OrderHistoryViewState();
 }
 
 class _OrderHistoryViewState extends State<OrderHistoryView> {
-  String _selectedStatus = 'Semua';
+  late String _selectedStatus;
+
+  bool get _isHistoryMode =>
+      widget.isHistoryMode ||
+      (Get.arguments is Map && Get.arguments['isHistoryMode'] == true) ||
+      Get.arguments == true;
 
   final List<Map<String, dynamic>> _filterCategories = [
     {'status': 'Semua', 'label': 'Semua', 'icon': Icons.all_inbox_rounded},
@@ -26,9 +36,16 @@ class _OrderHistoryViewState extends State<OrderHistoryView> {
     {'status': 'Dibatalkan', 'label': 'Dibatalkan', 'icon': Icons.cancel_outlined},
   ];
 
+  final List<Map<String, dynamic>> _historyFilterCategories = [
+    {'status': 'Semua Riwayat', 'label': 'Semua Riwayat', 'icon': Icons.history_rounded},
+    {'status': 'Selesai', 'label': 'Selesai', 'icon': Icons.check_circle_outline_rounded},
+    {'status': 'Dibatalkan', 'label': 'Dibatalkan', 'icon': Icons.cancel_outlined},
+  ];
+
   @override
   void initState() {
     super.initState();
+    _selectedStatus = _isHistoryMode ? 'Semua Riwayat' : 'Semua';
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Get.find<ShopController>().loadOrders();
     });
@@ -37,34 +54,35 @@ class _OrderHistoryViewState extends State<OrderHistoryView> {
   Color _getStatusColor(String status) {
     switch (status) {
       case 'Selesai':
-        return WijiBumiColors.success;
+        return const Color(0xFFA7F3D0);
       case 'Dikirim':
-        return WijiBumiColors.deepForest;
+        return const Color(0xFF68D391);
       case 'Diproses':
       case 'Dikemas':
-        return WijiBumiColors.freshLeaf;
+        return const Color(0xFF81E6D9);
       case 'Menunggu Pembayaran':
-        return WijiBumiColors.warning;
+        return const Color(0xFFFFD166);
       case 'Dibatalkan':
-        return WijiBumiColors.error;
+        return const Color(0xFFFF6B6B);
       default:
-        return WijiBumiColors.textSecondary;
+        return const Color(0xFFC8DDD0);
     }
   }
 
   Color _getStatusBg(String status) {
     switch (status) {
       case 'Selesai':
+        return const Color(0xFFA7F3D0).withOpacity(0.16);
       case 'Dikirim':
       case 'Diproses':
       case 'Dikemas':
-        return WijiBumiColors.lightMint;
+        return Colors.white.withOpacity(0.12);
       case 'Menunggu Pembayaran':
-        return WijiBumiColors.warning.withOpacity(0.15);
+        return const Color(0xFFFFD166).withOpacity(0.15);
       case 'Dibatalkan':
-        return WijiBumiColors.error.withOpacity(0.12);
+        return const Color(0xFFFF6B6B).withOpacity(0.16);
       default:
-        return WijiBumiColors.lightMint;
+        return Colors.white.withOpacity(0.10);
     }
   }
 
@@ -102,55 +120,101 @@ class _OrderHistoryViewState extends State<OrderHistoryView> {
       if (orderController.isLoading.value) {
         return const Center(
           child: CircularProgressIndicator(
-            valueColor: AlwaysStoppedAnimation<Color>(WijiBumiColors.deepForest),
+            valueColor: AlwaysStoppedAnimation<Color>(Color(0xFFA7F3D0)),
           ),
         );
       }
 
       final allOrders = orderController.orders;
 
+      // Base orders: mode riwayat hanya menyaring pesanan Selesai & Dibatalkan
+      final List<OrderModel> baseOrders = _isHistoryMode
+          ? allOrders.where((o) => o.status == 'Selesai' || o.status == 'Dibatalkan').toList()
+          : allOrders;
+
       // Filter berdasarkan tab status aktif
-      final filteredOrders = _selectedStatus == 'Semua'
-          ? allOrders
-          : (_selectedStatus == 'Diproses'
-              ? allOrders.where((o) => o.status == 'Diproses' || o.status == 'Dikemas').toList()
-              : allOrders.where((o) => o.status == _selectedStatus).toList());
+      final List<OrderModel> filteredOrders;
+      if (_isHistoryMode) {
+        if (_selectedStatus == 'Semua Riwayat' || _selectedStatus == 'Semua') {
+          filteredOrders = baseOrders;
+        } else {
+          filteredOrders = baseOrders.where((o) => o.status == _selectedStatus).toList();
+        }
+      } else {
+        if (_selectedStatus == 'Semua') {
+          filteredOrders = baseOrders;
+        } else if (_selectedStatus == 'Diproses') {
+          filteredOrders = baseOrders.where((o) => o.status == 'Diproses' || o.status == 'Dikemas').toList();
+        } else {
+          filteredOrders = baseOrders.where((o) => o.status == _selectedStatus).toList();
+        }
+      }
 
       return RefreshIndicator(
         onRefresh: () => orderController.loadOrders(),
-        color: WijiBumiColors.deepForest,
+        color: const Color(0xFFA7F3D0),
+        backgroundColor: const Color(0xFF1C2B1E),
         child: Column(
           children: [
             // Tab Filter Status Pesanan (Horizontal Scroll)
-            _buildStatusFilterBar(allOrders),
+            _buildStatusFilterBar(baseOrders),
 
             // Daftar Pesanan
             Expanded(
               child: filteredOrders.isEmpty
-                  ? (allOrders.isEmpty
-                      ? EmptyState(
-                          icon: Icons.receipt_long_outlined,
-                          title: 'Belum Ada Pesanan',
-                          message: 'Anda belum memiliki transaksi pesanan di Wiji Bumi.',
-                          action: ElevatedButton(
-                            onPressed: () => Get.offAllNamed(AppRoutes.MAIN),
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: WijiBumiColors.deepForest,
-                              foregroundColor: Colors.white,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12),
+                  ? (_isHistoryMode
+                      ? (baseOrders.isEmpty
+                          ? EmptyState(
+                              icon: Icons.history_rounded,
+                              title: 'Belum Ada Riwayat',
+                              message: 'Belum ada riwayat pesanan selesai atau dibatalkan.',
+                              action: ElevatedButton(
+                                onPressed: () {
+                                  if (Navigator.of(context).canPop()) {
+                                    Navigator.of(context).pop();
+                                  } else {
+                                    Get.offAllNamed(AppRoutes.MAIN);
+                                  }
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: const Color(0xFFA7F3D0),
+                                  foregroundColor: const Color(0xFF142117),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                ),
+                                child: const Text('Kembali ke Profil', style: TextStyle(fontWeight: FontWeight.w700)),
                               ),
-                            ),
-                            child: const Text('Mulai Belanja', style: TextStyle(fontWeight: FontWeight.w700)),
-                          ),
-                        )
-                      : EmptyState(
-                          icon: _getStatusIcon(_selectedStatus),
-                          title: 'Tidak Ada Pesanan',
-                          message: 'Tidak ada pesanan dengan status "$_selectedStatus".',
-                        ))
+                            )
+                          : EmptyState(
+                              icon: _getStatusIcon(_selectedStatus),
+                              title: 'Tidak Ada Riwayat',
+                              message: 'Tidak ada riwayat pesanan dengan status "$_selectedStatus".',
+                            ))
+                      : (baseOrders.isEmpty
+                          ? EmptyState(
+                              icon: Icons.receipt_long_outlined,
+                              title: 'Belum Ada Pesanan',
+                              message: 'Anda belum memiliki transaksi pesanan di Wiji Bumi.',
+                              action: ElevatedButton(
+                                onPressed: () => Get.offAllNamed(AppRoutes.MAIN),
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: const Color(0xFFA7F3D0),
+                                  foregroundColor: const Color(0xFF142117),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                ),
+                                child: const Text('Mulai Belanja', style: TextStyle(fontWeight: FontWeight.w700)),
+                              ),
+                            )
+                          : EmptyState(
+                              icon: _getStatusIcon(_selectedStatus),
+                              title: 'Tidak Ada Pesanan',
+                              message: 'Tidak ada pesanan dengan status "$_selectedStatus".',
+                            )))
                   : ListView.separated(
-                      padding: EdgeInsets.fromLTRB(16, 8, 16, widget.isEmbedded ? 100 : 32),
+                      padding: EdgeInsets.fromLTRB(16, 8, 16, (widget.isEmbedded && !_isHistoryMode) ? 100 : 32),
                       physics: const AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
                       itemCount: filteredOrders.length,
                       separatorBuilder: (_, __) => const SizedBox(height: 12),
@@ -180,7 +244,7 @@ class _OrderHistoryViewState extends State<OrderHistoryView> {
                                         style: const TextStyle(
                                           fontSize: 13.5,
                                           fontWeight: FontWeight.w800,
-                                          color: WijiBumiColors.textPrimary,
+                                          color: Colors.white,
                                         ),
                                       ),
                                     ),
@@ -228,7 +292,8 @@ class _OrderHistoryViewState extends State<OrderHistoryView> {
                                   overflow: TextOverflow.ellipsis,
                                   style: const TextStyle(
                                     fontSize: 11.5,
-                                    color: WijiBumiColors.textSecondary,
+                                    fontWeight: FontWeight.w500,
+                                    color: Color(0xFFC8DDD0),
                                   ),
                                 ),
                                 const Padding(
@@ -250,7 +315,7 @@ class _OrderHistoryViewState extends State<OrderHistoryView> {
                                   style: const TextStyle(
                                     fontSize: 13,
                                     fontWeight: FontWeight.w600,
-                                    color: WijiBumiColors.textPrimary,
+                                    color: Colors.white,
                                   ),
                                 ),
                                 const SizedBox(height: 8),
@@ -266,7 +331,8 @@ class _OrderHistoryViewState extends State<OrderHistoryView> {
                                         overflow: TextOverflow.ellipsis,
                                         style: const TextStyle(
                                           fontSize: 12,
-                                          color: WijiBumiColors.textSecondary,
+                                          fontWeight: FontWeight.w500,
+                                          color: Color(0xFFC8DDD0),
                                         ),
                                       ),
                                     ),
@@ -278,7 +344,7 @@ class _OrderHistoryViewState extends State<OrderHistoryView> {
                                         style: const TextStyle(
                                           fontSize: 14.5,
                                           fontWeight: FontWeight.w800,
-                                          color: WijiBumiColors.textPrimary,
+                                          color: Colors.white,
                                         ),
                                       ),
                                     ),
@@ -296,26 +362,27 @@ class _OrderHistoryViewState extends State<OrderHistoryView> {
       );
     });
 
+    final showBackButton = _isHistoryMode || !widget.isEmbedded;
+
     return Scaffold(
       backgroundColor: WijiBumiColors.backgroundCanvas,
       appBar: AppBar(
         backgroundColor: WijiBumiColors.deepForest,
         elevation: 0,
         centerTitle: true,
-        title: const Text(
-          'Pesanan Saya',
-          style: TextStyle(
+        title: Text(
+          _isHistoryMode ? 'Riwayat Pesanan' : 'Pesanan Saya',
+          style: const TextStyle(
             color: Colors.white,
             fontSize: 16.5,
             fontWeight: FontWeight.w700,
           ),
         ),
-        automaticallyImplyLeading: !widget.isEmbedded,
-        leading: widget.isEmbedded
-            ? null
-            : IconButton(
+        automaticallyImplyLeading: showBackButton,
+        leading: showBackButton
+            ? IconButton(
                 icon: const Icon(Icons.chevron_left_rounded, size: 30, color: Colors.white),
-                tooltip: 'Kembali ke Beranda',
+                tooltip: 'Kembali',
                 onPressed: () {
                   if (Navigator.of(context).canPop()) {
                     Navigator.of(context).pop();
@@ -323,9 +390,10 @@ class _OrderHistoryViewState extends State<OrderHistoryView> {
                     Get.offAllNamed(AppRoutes.MAIN);
                   }
                 },
-              ),
+              )
+            : null,
         actions: [
-          if (!widget.isEmbedded)
+          if (showBackButton)
             IconButton(
               icon: const Icon(Icons.home_outlined, size: 24, color: Colors.white),
               tooltip: 'Ke Beranda',
@@ -335,7 +403,7 @@ class _OrderHistoryViewState extends State<OrderHistoryView> {
             ),
         ],
       ),
-      body: widget.isEmbedded
+      body: (widget.isEmbedded && !_isHistoryMode)
           ? content
           : PopScope(
               canPop: false,
@@ -352,7 +420,9 @@ class _OrderHistoryViewState extends State<OrderHistoryView> {
     );
   }
 
-  Widget _buildStatusFilterBar(List<OrderModel> allOrders) {
+  Widget _buildStatusFilterBar(List<OrderModel> baseOrders) {
+    final categories = _isHistoryMode ? _historyFilterCategories : _filterCategories;
+
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 10),
       child: SingleChildScrollView(
@@ -360,17 +430,28 @@ class _OrderHistoryViewState extends State<OrderHistoryView> {
         physics: const BouncingScrollPhysics(),
         padding: const EdgeInsets.symmetric(horizontal: 16),
         child: Row(
-          children: _filterCategories.map((tab) {
+          children: categories.map((tab) {
             final statusKey = tab['status'] as String;
             final label = tab['label'] as String;
             final icon = tab['icon'] as IconData;
             final isSelected = _selectedStatus == statusKey;
 
-            final count = statusKey == 'Semua'
-                ? allOrders.length
-                : (statusKey == 'Diproses'
-                    ? allOrders.where((o) => o.status == 'Diproses' || o.status == 'Dikemas').length
-                    : allOrders.where((o) => o.status == statusKey).length);
+            final int count;
+            if (_isHistoryMode) {
+              if (statusKey == 'Semua Riwayat') {
+                count = baseOrders.length;
+              } else {
+                count = baseOrders.where((o) => o.status == statusKey).length;
+              }
+            } else {
+              if (statusKey == 'Semua') {
+                count = baseOrders.length;
+              } else if (statusKey == 'Diproses') {
+                count = baseOrders.where((o) => o.status == 'Diproses' || o.status == 'Dikemas').length;
+              } else {
+                count = baseOrders.where((o) => o.status == statusKey).length;
+              }
+            }
 
             return Padding(
               padding: const EdgeInsets.only(right: 8),

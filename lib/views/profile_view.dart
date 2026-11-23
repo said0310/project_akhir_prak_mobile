@@ -7,6 +7,7 @@ import '../widgets/custom_button.dart';
 import '../widgets/glass_feedback.dart';
 import 'about_view.dart';
 import 'login_view.dart';
+import 'order_history_view.dart';
 
 class ProfileView extends StatefulWidget {
   const ProfileView({super.key});
@@ -155,14 +156,20 @@ class _ProfileViewState extends State<ProfileView> {
                     subtitle: 'Kelola alamat & koordinat GPS',
                     onTap: () => Get.toNamed(AppRoutes.ADDRESS),
                   ),
-                  const Divider(color: Color(0xFFEAF0EB), height: 1, indent: 64),
+                  Divider(color: Colors.white.withOpacity(0.14), height: 1, indent: 64),
                   _buildMenuItem(
-                    icon: Icons.receipt_long_outlined,
-                    title: 'Pesanan Saya',
-                    subtitle: 'Lacak status & transaksi belanja',
-                    onTap: () => Get.toNamed(AppRoutes.ORDERS),
+                    icon: Icons.history_rounded,
+                    title: 'Riwayat Pesanan',
+                    subtitle: 'Riwayat pembelian selesai & dibatalkan',
+                    onTap: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (_) => const OrderHistoryView(isHistoryMode: true),
+                        ),
+                      );
+                    },
                   ),
-                  const Divider(color: Color(0xFFEAF0EB), height: 1, indent: 64),
+                  Divider(color: Colors.white.withOpacity(0.14), height: 1, indent: 64),
                   _buildMenuItem(
                     icon: Icons.alarm_outlined,
                     title: 'Pengingat Belanja Rutin',
