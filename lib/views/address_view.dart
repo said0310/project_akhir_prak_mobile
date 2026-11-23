@@ -201,13 +201,13 @@ class _AddressViewState extends State<AddressView> {
                     Container(
                       padding: const EdgeInsets.all(10),
                       decoration: BoxDecoration(
-                        color: WijiBumiColors.lightMint,
+                        color: Colors.white.withOpacity(0.12),
                         shape: BoxShape.circle,
-                        border: Border.all(color: WijiBumiColors.freshLeaf, width: 1.2),
+                        border: Border.all(color: const Color(0xFFA7F3D0).withOpacity(0.4), width: 1.2),
                       ),
                       child: const Icon(
                         Icons.my_location_rounded,
-                        color: WijiBumiColors.deepForest,
+                        color: Color(0xFFA7F3D0),
                         size: 22,
                       ),
                     ),
@@ -221,7 +221,7 @@ class _AddressViewState extends State<AddressView> {
                             style: TextStyle(
                               fontSize: 14,
                               fontWeight: FontWeight.w700,
-                              color: WijiBumiColors.deepForest,
+                              color: Colors.white,
                             ),
                           ),
                           const SizedBox(height: 2),
@@ -230,24 +230,24 @@ class _AddressViewState extends State<AddressView> {
                             if (locationController.isLoadingLocation.value) {
                               return const Text(
                                 'Mendeteksi posisi satelit...',
-                                style: TextStyle(fontSize: 11, color: WijiBumiColors.textMuted),
+                                style: TextStyle(fontSize: 11, color: Color(0xFFC8DDD0)),
                               );
                             }
                             if (pos != null) {
                               return Text(
                                 'Terdeteksi: ${pos.latitude.toStringAsFixed(4)}, ${pos.longitude.toStringAsFixed(4)}',
-                                style: const TextStyle(fontSize: 11, color: WijiBumiColors.freshLeaf, fontWeight: FontWeight.bold),
+                                style: const TextStyle(fontSize: 11, color: Color(0xFFA7F3D0), fontWeight: FontWeight.bold),
                               );
                             }
                             return const Text(
                               'Sentuh untuk mengisi koordinat secara otomatis',
-                              style: TextStyle(fontSize: 11, color: WijiBumiColors.textMuted),
+                              style: TextStyle(fontSize: 11, color: Color(0xFFC8DDD0)),
                             );
                           }),
                         ],
                       ),
                     ),
-                    const Icon(Icons.arrow_forward_ios_rounded, size: 14, color: WijiBumiColors.textMuted),
+                    const Icon(Icons.arrow_forward_ios_rounded, size: 14, color: Color(0xFFC8DDD0)),
                   ],
                 ),
               ),
@@ -258,7 +258,7 @@ class _AddressViewState extends State<AddressView> {
             if (_isAdding) ...[
               Container(
                 padding: const EdgeInsets.all(18),
-                decoration: DynamicGlassDecoration.cleanCard(radius: 16),
+                decoration: DynamicGlassDecoration.glassCard(radius: 16),
                 child: Form(
                   key: _formKey,
                   child: Column(
@@ -269,10 +269,10 @@ class _AddressViewState extends State<AddressView> {
                         children: [
                           const Text(
                             'Formulir Alamat Baru',
-                            style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700, color: WijiBumiColors.deepForest),
+                            style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700, color: Colors.white),
                           ),
                           IconButton(
-                            icon: const Icon(Icons.close_rounded, size: 20),
+                            icon: const Icon(Icons.close_rounded, size: 20, color: Colors.white),
                             onPressed: () {
                               setState(() {
                                 _isAdding = false;
@@ -287,6 +287,7 @@ class _AddressViewState extends State<AddressView> {
                         hintText: 'Nama Penerima (Misal: Sari Lestari)',
                         labelText: 'Nama Penerima',
                         prefixIcon: Icons.person_outline,
+                        textColor: Colors.white,
                         validator: (v) => v == null || v.trim().isEmpty ? 'Nama penerima wajib diisi' : null,
                       ),
                       const SizedBox(height: 10),
@@ -296,6 +297,7 @@ class _AddressViewState extends State<AddressView> {
                         labelText: 'Nomor Telepon',
                         keyboardType: TextInputType.phone,
                         prefixIcon: Icons.phone_outlined,
+                        textColor: Colors.white,
                         validator: (v) => v == null || v.trim().isEmpty ? 'Nomor telepon wajib diisi' : null,
                       ),
                       const SizedBox(height: 10),
@@ -305,6 +307,7 @@ class _AddressViewState extends State<AddressView> {
                         labelText: 'Alamat Rumah / Kantor',
                         maxLines: 2,
                         prefixIcon: Icons.home_outlined,
+                        textColor: Colors.white,
                         validator: (v) => v == null || v.trim().isEmpty ? 'Alamat lengkap wajib diisi' : null,
                       ),
                       const SizedBox(height: 10),
@@ -315,6 +318,7 @@ class _AddressViewState extends State<AddressView> {
                               controller: _districtController,
                               hintText: 'Kecamatan',
                               labelText: 'Kecamatan',
+                              textColor: Colors.white,
                               validator: (v) => v == null || v.trim().isEmpty ? 'Kecamatan wajib' : null,
                             ),
                           ),
@@ -324,6 +328,7 @@ class _AddressViewState extends State<AddressView> {
                               controller: _cityController,
                               hintText: 'Kota/Kabupaten',
                               labelText: 'Kota',
+                              textColor: Colors.white,
                               validator: (v) => v == null || v.trim().isEmpty ? 'Kota wajib' : null,
                             ),
                           ),
@@ -333,20 +338,20 @@ class _AddressViewState extends State<AddressView> {
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                         decoration: BoxDecoration(
-                          color: WijiBumiColors.lightMint.withOpacity(0.5),
+                          color: Colors.white.withOpacity(0.08),
                           borderRadius: BorderRadius.circular(10),
-                          border: Border.all(color: WijiBumiColors.softSage),
+                          border: Border.all(color: Colors.white.withOpacity(0.20)),
                         ),
                         child: Row(
                           children: [
-                            const Icon(Icons.pin_drop_outlined, size: 18, color: WijiBumiColors.deepForest),
+                            const Icon(Icons.pin_drop_outlined, size: 18, color: Color(0xFFA7F3D0)),
                             const SizedBox(width: 8),
                             Expanded(
                               child: Text(
                                 _latitude != 0.0
                                     ? 'Koordinat: ${_latitude.toStringAsFixed(4)}, ${_longitude.toStringAsFixed(4)}'
                                     : 'Koordinat belum diset (Bisa gunakan tombol GPS di atas)',
-                                style: const TextStyle(fontSize: 11, color: WijiBumiColors.textSecondary),
+                                style: const TextStyle(fontSize: 11, color: Color(0xFFC8DDD0)),
                               ),
                             ),
                           ],
@@ -363,7 +368,7 @@ class _AddressViewState extends State<AddressView> {
                             style: TextStyle(
                               fontSize: 13,
                               fontWeight: FontWeight.w700,
-                              color: WijiBumiColors.deepForest,
+                              color: Colors.white,
                             ),
                           ),
                           if (_latitude != 0)
@@ -371,7 +376,7 @@ class _AddressViewState extends State<AddressView> {
                               '(${_latitude.toStringAsFixed(3)}, ${_longitude.toStringAsFixed(3)})',
                               style: const TextStyle(
                                 fontSize: 11,
-                                color: WijiBumiColors.freshLeaf,
+                                color: Color(0xFFA7F3D0),
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
@@ -380,7 +385,7 @@ class _AddressViewState extends State<AddressView> {
                       const SizedBox(height: 4),
                       const Text(
                         'Geser layar atau ketuk titik di peta untuk memilih lokasi pengiriman.',
-                        style: TextStyle(fontSize: 11, color: WijiBumiColors.textSecondary),
+                        style: TextStyle(fontSize: 11, color: Color(0xFFC8DDD0)),
                       ),
                       const SizedBox(height: 8),
                       GoogleMapWidget(
@@ -406,7 +411,8 @@ class _AddressViewState extends State<AddressView> {
                         children: [
                           Checkbox(
                             value: _isPrimary,
-                            activeColor: WijiBumiColors.deepForest,
+                            activeColor: const Color(0xFFA7F3D0),
+                            checkColor: const Color(0xFF142117),
                             onChanged: (val) {
                               setState(() {
                                 _isPrimary = val ?? false;
@@ -415,7 +421,7 @@ class _AddressViewState extends State<AddressView> {
                           ),
                           const Text(
                             'Jadikan alamat pengiriman utama',
-                            style: TextStyle(fontSize: 13, color: WijiBumiColors.textPrimary),
+                            style: TextStyle(fontSize: 13, color: Colors.white),
                           ),
                         ],
                       ),
@@ -441,12 +447,12 @@ class _AddressViewState extends State<AddressView> {
                   style: TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.w700,
-                    color: WijiBumiColors.textPrimary,
+                    color: Colors.white,
                   ),
                 ),
                 TextButton.icon(
-                  icon: const Icon(Icons.add_rounded, size: 18, color: WijiBumiColors.deepForest),
-                  label: const Text('Tambah Baru', style: TextStyle(color: WijiBumiColors.deepForest, fontWeight: FontWeight.bold)),
+                  icon: const Icon(Icons.add_rounded, size: 18, color: Color(0xFFA7F3D0)),
+                  label: const Text('Tambah Baru', style: TextStyle(color: Color(0xFFA7F3D0), fontWeight: FontWeight.bold)),
                   onPressed: () {
                     setState(() {
                       _isAdding = true;
@@ -504,21 +510,19 @@ class _AddressViewState extends State<AddressView> {
                     child: Container(
                       padding: const EdgeInsets.all(16),
                       decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.94),
-                        borderRadius: BorderRadius.circular(14),
+                        color: Colors.white.withOpacity(0.12),
+                        borderRadius: BorderRadius.circular(18),
                         border: Border.all(
-                          color: isSelected ? WijiBumiColors.deepForest : WijiBumiColors.softSage.withOpacity(0.55),
-                          width: isSelected ? 2.0 : 1.0,
+                          color: isSelected ? const Color(0xFFA7F3D0) : Colors.white.withOpacity(0.28),
+                          width: isSelected ? 1.6 : 1.2,
                         ),
-                        boxShadow: isSelected
-                            ? [
-                                BoxShadow(
-                                  color: WijiBumiColors.deepForest.withOpacity(0.08),
-                                  blurRadius: 10,
-                                  offset: const Offset(0, 3),
-                                ),
-                              ]
-                            : null,
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.20),
+                            blurRadius: 14,
+                            offset: const Offset(0, 4),
+                          ),
+                        ],
                       ),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -527,38 +531,41 @@ class _AddressViewState extends State<AddressView> {
                             children: [
                               Icon(
                                 isSelected ? Icons.radio_button_checked : Icons.radio_button_off,
-                                color: isSelected ? WijiBumiColors.deepForest : WijiBumiColors.textMuted,
+                                color: isSelected ? const Color(0xFFA7F3D0) : Colors.white.withOpacity(0.40),
                                 size: 18,
                               ),
                               const SizedBox(width: 8),
                               Text(
                                 addr.recipientName,
                                 style: const TextStyle(
-                                  fontSize: 14,
+                                  fontSize: 14.5,
                                   fontWeight: FontWeight.w700,
-                                  color: WijiBumiColors.textPrimary,
+                                  color: Colors.white,
                                 ),
                               ),
                               const SizedBox(width: 8),
                               Text(
                                 '(${addr.phone})',
-                                style: const TextStyle(fontSize: 12, color: WijiBumiColors.textMuted),
+                                style: const TextStyle(fontSize: 12.5, color: Color(0xFFC8DDD0)),
                               ),
                               const Spacer(),
                               if (addr.isPrimary || isSelected)
                                 Container(
-                                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                                  decoration: DynamicGlassDecoration.accentPill(
-                                    radius: 6,
-                                    fillColor: isSelected ? WijiBumiColors.deepForest : WijiBumiColors.lightMint,
-                                    borderColor: isSelected ? WijiBumiColors.deepForest : WijiBumiColors.freshLeaf,
+                                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                                  decoration: BoxDecoration(
+                                    color: Colors.white.withOpacity(0.14),
+                                    borderRadius: BorderRadius.circular(8),
+                                    border: Border.all(
+                                      color: const Color(0xFFA7F3D0),
+                                      width: 1.0,
+                                    ),
                                   ),
                                   child: Text(
                                     isSelected ? 'Terpilih' : 'Utama',
-                                    style: TextStyle(
-                                      fontSize: 10,
+                                    style: const TextStyle(
+                                      fontSize: 10.5,
                                       fontWeight: FontWeight.bold,
-                                      color: isSelected ? Colors.white : WijiBumiColors.deepForest,
+                                      color: Color(0xFFA7F3D0),
                                     ),
                                   ),
                                 ),
@@ -567,12 +574,12 @@ class _AddressViewState extends State<AddressView> {
                           const SizedBox(height: 8),
                           Text(
                             addr.fullAddress,
-                            style: const TextStyle(fontSize: 13, color: WijiBumiColors.textSecondary, height: 1.3),
+                            style: const TextStyle(fontSize: 13, color: Color(0xFFC8DDD0), height: 1.35),
                           ),
-                          const SizedBox(height: 2),
+                          const SizedBox(height: 3),
                           Text(
                             '${addr.district}, ${addr.city}',
-                            style: const TextStyle(fontSize: 12, color: WijiBumiColors.textMuted),
+                            style: TextStyle(fontSize: 12, color: const Color(0xFFC8DDD0).withOpacity(0.85)),
                           ),
                           const SizedBox(height: 10),
                           Row(
@@ -580,21 +587,30 @@ class _AddressViewState extends State<AddressView> {
                             children: [
                               Row(
                                 children: [
-                                  const Icon(Icons.near_me_outlined, size: 14, color: WijiBumiColors.freshLeaf),
+                                  const Icon(Icons.near_me_outlined, size: 14, color: Color(0xFFA7F3D0)),
                                   const SizedBox(width: 4),
                                   Text(
                                     addr.latitude != 0
                                         ? 'GPS: ${addr.latitude.toStringAsFixed(3)}, ${addr.longitude.toStringAsFixed(3)}'
                                         : 'Tanpa GPS (Tarif Flat Rp 10.000)',
-                                    style: const TextStyle(fontSize: 11, color: WijiBumiColors.textMuted),
+                                    style: const TextStyle(fontSize: 11.5, color: Color(0xFFA7F3D0), fontWeight: FontWeight.w600),
                                   ),
                                 ],
                               ),
                               if (list.length > 1)
                                 IconButton(
-                                  icon: const Icon(Icons.delete_outline_rounded, size: 18, color: WijiBumiColors.error),
-                                  onPressed: () {
-                                    locationController.deleteAddress(addr.id);
+                                  icon: const Icon(Icons.delete_outline_rounded, size: 18, color: Color(0xFFFCA5A5)),
+                                  onPressed: () async {
+                                    final confirm = await GlassFeedback.showConfirmDialog(
+                                      context: context,
+                                      title: 'Hapus Alamat?',
+                                      message: 'Apakah Anda yakin ingin menghapus alamat ini?',
+                                      confirmText: 'Hapus',
+                                      isDestructive: true,
+                                    );
+                                    if (confirm == true) {
+                                      locationController.deleteAddress(addr.id);
+                                    }
                                   },
                                 ),
                             ],

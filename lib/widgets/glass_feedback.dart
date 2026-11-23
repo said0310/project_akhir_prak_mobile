@@ -1,7 +1,6 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../app.dart';
 import 'custom_button.dart';
 
 class GlassFeedback {
@@ -24,33 +23,34 @@ class GlassFeedback {
       messageText: Text(
         message,
         style: const TextStyle(
-          color: Colors.white,
-          fontSize: 12,
+          color: Color(0xFFC8DDD0),
+          fontSize: 12.5,
+          fontWeight: FontWeight.w500,
         ),
       ),
       backgroundColor: isError
-          ? WijiBumiColors.error.withOpacity(0.92)
-          : WijiBumiColors.deepForest.withOpacity(0.92),
-      borderRadius: 14,
+          ? const Color(0xFFB71C1C).withOpacity(0.92)
+          : const Color(0xFF1E2F21).withOpacity(0.94),
+      borderRadius: 16,
       margin: const EdgeInsets.all(16),
       snackPosition: SnackPosition.BOTTOM,
       duration: duration,
       icon: Icon(
         isError ? Icons.error_outline_rounded : Icons.check_circle_outline_rounded,
-        color: Colors.white,
+        color: isError ? const Color(0xFFFF8585) : const Color(0xFFA7F3D0),
       ),
-      barBlur: 14,
+      barBlur: 16,
       boxShadows: [
         BoxShadow(
-          color: Colors.black.withOpacity(0.18),
-          blurRadius: 14,
+          color: Colors.black.withOpacity(0.30),
+          blurRadius: 16,
           offset: const Offset(0, 4),
         ),
       ],
     );
   }
 
-  /// Glass Dialog Konfirmasi dengan Liquid Glass Asli
+  /// Glass Dialog Konfirmasi dengan Dark Liquid Glass
   static Future<bool?> showConfirmDialog({
     required BuildContext context,
     required String title,
@@ -61,10 +61,11 @@ class GlassFeedback {
   }) {
     return showDialog<bool>(
       context: context,
+      barrierColor: Colors.black.withOpacity(0.6),
       builder: (ctx) {
         return Dialog(
           backgroundColor: Colors.transparent,
-          insetPadding: const EdgeInsets.all(24),
+          insetPadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
           child: ClipRRect(
             borderRadius: BorderRadius.circular(20),
             child: BackdropFilter(
@@ -72,22 +73,15 @@ class GlassFeedback {
               child: Container(
                 padding: const EdgeInsets.all(22),
                 decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [
-                      Colors.white.withOpacity(0.92),
-                      const Color(0xFFE8F5E9).withOpacity(0.85),
-                    ],
-                  ),
+                  color: const Color(0xFF1E2F21).withOpacity(0.92),
                   borderRadius: BorderRadius.circular(20),
                   border: Border.all(
-                    color: Colors.white.withOpacity(0.75),
+                    color: Colors.white.withOpacity(0.25),
                     width: 1.2,
                   ),
                   boxShadow: [
                     BoxShadow(
-                      color: const Color(0xFF1C2B1E).withOpacity(0.12),
+                      color: Colors.black.withOpacity(0.35),
                       blurRadius: 24,
                       offset: const Offset(0, 8),
                     ),
@@ -100,37 +94,57 @@ class GlassFeedback {
                     Text(
                       title,
                       style: const TextStyle(
-                        fontSize: 17,
+                        fontSize: 18,
                         fontWeight: FontWeight.w700,
-                        color: WijiBumiColors.textPrimary,
+                        color: Colors.white,
+                        letterSpacing: 0.3,
                       ),
                     ),
                     const SizedBox(height: 10),
                     Text(
                       message,
                       style: const TextStyle(
-                        fontSize: 13,
+                        fontSize: 13.5,
                         fontWeight: FontWeight.w400,
-                        color: WijiBumiColors.textSecondary,
-                        height: 1.4,
+                        color: Color(0xFFC8DDD0),
+                        height: 1.45,
                       ),
                     ),
-                    const SizedBox(height: 22),
+                    const SizedBox(height: 24),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
-                        TextButton(
-                          onPressed: () => Navigator.of(ctx).pop(false),
-                          child: Text(
-                            cancelText,
-                            style: const TextStyle(
-                              color: WijiBumiColors.textSecondary,
-                              fontWeight: FontWeight.w600,
-                              fontSize: 13,
+                        // Tombol Batal Liquid Glass
+                        Container(
+                          height: 40,
+                          decoration: BoxDecoration(
+                            color: Colors.white.withOpacity(0.08),
+                            borderRadius: BorderRadius.circular(12),
+                            border: Border.all(
+                              color: Colors.white.withOpacity(0.25),
+                              width: 1.0,
+                            ),
+                          ),
+                          child: TextButton(
+                            onPressed: () => Navigator.of(ctx).pop(false),
+                            style: TextButton.styleFrom(
+                              padding: const EdgeInsets.symmetric(horizontal: 16),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                            ),
+                            child: Text(
+                              cancelText,
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w600,
+                                fontSize: 13,
+                              ),
                             ),
                           ),
                         ),
-                        const SizedBox(width: 8),
+                        const SizedBox(width: 10),
+                        // Tombol Konfirmasi (Mint Cerah)
                         CustomButton(
                           text: confirmText,
                           width: 120,
@@ -154,35 +168,54 @@ class GlassFeedback {
     showDialog(
       context: context,
       barrierDismissible: false,
+      barrierColor: Colors.black.withOpacity(0.6),
       builder: (ctx) {
         return Dialog(
           backgroundColor: Colors.transparent,
-          child: Container(
-            padding: const EdgeInsets.all(24),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(16),
-              border: Border.all(
-                color: WijiBumiColors.borderSage,
-                width: 1.0,
-              ),
-            ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const CircularProgressIndicator(
-                  valueColor: AlwaysStoppedAnimation<Color>(WijiBumiColors.deepForest),
-                ),
-                const SizedBox(width: 20),
-                Text(
-                  message,
-                  style: const TextStyle(
-                    fontSize: 14,
-                    color: WijiBumiColors.textPrimary,
-                    fontWeight: FontWeight.w600,
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(18),
+            child: BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
+                decoration: BoxDecoration(
+                  color: const Color(0xFF1E2F21).withOpacity(0.92),
+                  borderRadius: BorderRadius.circular(18),
+                  border: Border.all(
+                    color: Colors.white.withOpacity(0.25),
+                    width: 1.2,
                   ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.30),
+                      blurRadius: 20,
+                      offset: const Offset(0, 6),
+                    ),
+                  ],
                 ),
-              ],
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const SizedBox(
+                      width: 24,
+                      height: 24,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2.5,
+                        valueColor: AlwaysStoppedAnimation<Color>(Color(0xFFA7F3D0)),
+                      ),
+                    ),
+                    const SizedBox(width: 18),
+                    Text(
+                      message,
+                      style: const TextStyle(
+                        fontSize: 14,
+                        color: Colors.white,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             ),
           ),
         );

@@ -1,3 +1,4 @@
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -39,13 +40,31 @@ class _ReminderViewState extends State<ReminderView> {
             return Dialog(
               backgroundColor: Colors.transparent,
               insetPadding: const EdgeInsets.all(20),
-              child: Container(
-                padding: const EdgeInsets.all(22),
-                decoration: DynamicGlassDecoration.glassCard(radius: 20),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(20),
+                child: BackdropFilter(
+                  filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
+                  child: Container(
+                    padding: const EdgeInsets.all(22),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF1E2F21).withOpacity(0.92),
+                      borderRadius: BorderRadius.circular(20),
+                      border: Border.all(
+                        color: Colors.white.withOpacity(0.25),
+                        width: 1.2,
+                      ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.35),
+                          blurRadius: 24,
+                          offset: const Offset(0, 8),
+                        ),
+                      ],
+                    ),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
                     const Text(
                       'Tambah Pengingat Belanja',
                       style: TextStyle(
@@ -137,9 +156,32 @@ class _ReminderViewState extends State<ReminderView> {
                     Row(
                       children: [
                         Expanded(
-                          child: TextButton(
-                            onPressed: () => Navigator.pop(ctx),
-                            child: const Text('Batal', style: TextStyle(color: WijiBumiColors.textSecondary)),
+                          child: Container(
+                            height: 42,
+                            decoration: BoxDecoration(
+                              color: Colors.white.withOpacity(0.08),
+                              borderRadius: BorderRadius.circular(12),
+                              border: Border.all(
+                                color: Colors.white.withOpacity(0.25),
+                                width: 1.0,
+                              ),
+                            ),
+                            child: TextButton(
+                              onPressed: () => Navigator.pop(ctx),
+                              style: TextButton.styleFrom(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                              ),
+                              child: const Text(
+                                'Batal',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 13,
+                                ),
+                              ),
+                            ),
                           ),
                         ),
                         const SizedBox(width: 10),
@@ -193,8 +235,10 @@ class _ReminderViewState extends State<ReminderView> {
                   ],
                 ),
               ),
-            );
-          },
+            ),
+          ),
+        );
+      },
         );
       },
     );

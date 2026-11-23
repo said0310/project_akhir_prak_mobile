@@ -132,7 +132,7 @@ class _ProductDetailViewState extends State<ProductDetailView> {
                               style: const TextStyle(
                                 fontSize: 11,
                                 fontWeight: FontWeight.bold,
-                                color: WijiBumiColors.deepForest,
+                                color: Color(0xFFA7F3D0),
                               ),
                             ),
                           ),

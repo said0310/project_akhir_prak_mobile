@@ -231,16 +231,33 @@ class DynamicGlassDecoration {
 
 class AppTheme {
   static ThemeData get lightTheme {
+    const darkSurface = Color(0xFF1E2F21);
+    const deepForest = Color(0xFF1C2B1E);
+    const freshLeaf = Color(0xFFA7F3D0);
+
     return ThemeData(
       useMaterial3: true,
-      scaffoldBackgroundColor: WijiBumiColors.backgroundCanvas,
-      colorScheme: ColorScheme.fromSeed(
-        seedColor: WijiBumiColors.deepForest,
-        primary: WijiBumiColors.deepForest,
-        secondary: WijiBumiColors.freshLeaf,
-        surface: Colors.white,
+      brightness: Brightness.dark,
+      scaffoldBackgroundColor: deepForest,
+      cardColor: darkSurface,
+      dialogBackgroundColor: darkSurface,
+      colorScheme: const ColorScheme(
+        brightness: Brightness.dark,
+        primary: freshLeaf,
+        onPrimary: Color(0xFF142117),
+        secondary: freshLeaf,
+        onSecondary: Color(0xFF142117),
         error: WijiBumiColors.error,
-        brightness: Brightness.light,
+        onError: Colors.white,
+        surface: darkSurface,
+        onSurface: Colors.white,
+        surfaceContainerLowest: Color(0xFF142117),
+        surfaceContainerLow: deepForest,
+        surfaceContainer: darkSurface,
+        surfaceContainerHigh: Color(0xFF243827),
+        surfaceContainerHighest: Color(0xFF2A3F2D),
+        outline: Color(0x3BFFFFFF),
+        outlineVariant: Color(0x24FFFFFF),
       ),
       appBarTheme: const AppBarTheme(
         backgroundColor: WijiBumiColors.deepForest,
@@ -255,6 +272,49 @@ class AppTheme {
           fontWeight: FontWeight.w700,
           fontFamily: 'Poppins',
         ),
+      ),
+      dialogTheme: DialogThemeData(
+        backgroundColor: const Color(0xFF1E2F21),
+        elevation: 8,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
+          side: BorderSide(color: Colors.white.withOpacity(0.25), width: 1.2),
+        ),
+        titleTextStyle: const TextStyle(
+          color: Colors.white,
+          fontSize: 17,
+          fontWeight: FontWeight.w700,
+          fontFamily: 'Poppins',
+        ),
+        contentTextStyle: const TextStyle(
+          color: Color(0xFFC8DDD0),
+          fontSize: 13.5,
+          fontWeight: FontWeight.w400,
+          fontFamily: 'Poppins',
+        ),
+      ),
+      bottomSheetTheme: BottomSheetThemeData(
+        backgroundColor: const Color(0xFF1E2F21),
+        elevation: 8,
+        shape: RoundedRectangleBorder(
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+          side: BorderSide(color: Colors.white.withOpacity(0.25), width: 1.2),
+        ),
+        modalBackgroundColor: const Color(0xFF1E2F21),
+        modalBarrierColor: Colors.black.withOpacity(0.6),
+      ),
+      snackBarTheme: SnackBarThemeData(
+        backgroundColor: const Color(0xFF1E2F21),
+        contentTextStyle: const TextStyle(
+          color: Colors.white,
+          fontSize: 13,
+          fontWeight: FontWeight.w500,
+        ),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(14),
+          side: BorderSide(color: Colors.white.withOpacity(0.22), width: 1.0),
+        ),
+        behavior: SnackBarBehavior.floating,
       ),
     );
   }

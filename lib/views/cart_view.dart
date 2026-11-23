@@ -208,14 +208,14 @@ class CartView extends StatelessWidget {
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
-                                  // Kontrol Kuantitas
+                                  // Kontrol Kuantitas Liquid Glass
                                   Container(
                                     decoration: BoxDecoration(
-                                      color: WijiBumiColors.lightMint,
+                                      color: Colors.white.withOpacity(0.08),
                                       borderRadius: BorderRadius.circular(8),
                                       border: Border.all(
-                                        color: WijiBumiColors.softSage,
-                                        width: 1,
+                                        color: Colors.white.withOpacity(0.22),
+                                        width: 1.0,
                                       ),
                                     ),
                                     child: Row(
@@ -227,7 +227,7 @@ class CartView extends StatelessWidget {
                                           borderRadius: BorderRadius.circular(6),
                                           child: Container(
                                             padding: const EdgeInsets.all(4),
-                                            child: const Icon(Icons.remove, size: 14, color: WijiBumiColors.deepForest),
+                                            child: const Icon(Icons.remove, size: 14, color: Colors.white),
                                           ),
                                         ),
                                         Padding(
@@ -235,9 +235,9 @@ class CartView extends StatelessWidget {
                                           child: Text(
                                             '${item.quantity}',
                                             style: const TextStyle(
-                                              fontSize: 12,
+                                              fontSize: 12.5,
                                               fontWeight: FontWeight.bold,
-                                              color: WijiBumiColors.deepForest,
+                                              color: Colors.white,
                                             ),
                                           ),
                                         ),
@@ -248,7 +248,7 @@ class CartView extends StatelessWidget {
                                           borderRadius: BorderRadius.circular(6),
                                           child: Container(
                                             padding: const EdgeInsets.all(4),
-                                            child: const Icon(Icons.add, size: 14, color: WijiBumiColors.deepForest),
+                                            child: const Icon(Icons.add, size: 14, color: Colors.white),
                                           ),
                                         ),
                                       ],

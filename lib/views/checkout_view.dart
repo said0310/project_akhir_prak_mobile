@@ -293,7 +293,7 @@ class _CheckoutViewState extends State<CheckoutView> {
                                             .currentShippingCost.value ==
                                         0
                                     ? WijiBumiColors.success
-                                    : WijiBumiColors.deepForest,
+                                    : Colors.white,
                               ),
                             ),
                           ),
@@ -420,7 +420,7 @@ class _CheckoutViewState extends State<CheckoutView> {
                                     ? Icons.radio_button_checked
                                     : Icons.radio_button_off,
                                 color: isSelected
-                                    ? WijiBumiColors.deepForest
+                                    ? const Color(0xFFA7F3D0)
                                     : WijiBumiColors.textMuted,
                                 size: 18,
                               ),
@@ -436,8 +436,8 @@ class _CheckoutViewState extends State<CheckoutView> {
                                         ? FontWeight.w700
                                         : FontWeight.w500,
                                     color: isSelected
-                                        ? WijiBumiColors.deepForest
-                                        : WijiBumiColors.textPrimary,
+                                        ? const Color(0xFFA7F3D0)
+                                        : Colors.white,
                                   ),
                                 ),
                               ),
@@ -457,7 +457,7 @@ class _CheckoutViewState extends State<CheckoutView> {
                                     style: TextStyle(
                                         fontSize: 9,
                                         fontWeight: FontWeight.bold,
-                                        color: WijiBumiColors.deepForest),
+                                        color: Color(0xFFA7F3D0)),
                                   ),
                                 ),
                               ],

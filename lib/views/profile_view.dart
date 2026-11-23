@@ -3,7 +3,6 @@ import 'package:get/get.dart';
 import '../app.dart';
 import '../services/api_service.dart';
 import '../controllers/auth_controller.dart';
-import '../widgets/custom_button.dart';
 import '../widgets/glass_feedback.dart';
 import 'about_view.dart';
 import 'login_view.dart';
@@ -265,11 +264,9 @@ class _ProfileViewState extends State<ProfileView> {
             ),
             const SizedBox(height: 24),
 
-            // 4. Tombol Logout
-            CustomButton(
-              text: 'Keluar dari Akun',
-              icon: Icons.logout_rounded,
-              onPressed: () async {
+            // 4. Tombol Logout Liquid Glass
+            InkWell(
+              onTap: () async {
                 final confirm = await GlassFeedback.showConfirmDialog(
                   context: context,
                   title: 'Keluar Akun?',
@@ -288,6 +285,46 @@ class _ProfileViewState extends State<ProfileView> {
                   }
                 }
               },
+              borderRadius: BorderRadius.circular(16),
+              child: Container(
+                width: double.infinity,
+                padding: const EdgeInsets.symmetric(vertical: 14),
+                decoration: BoxDecoration(
+                  color: Colors.white.withOpacity(0.08),
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(
+                    color: const Color(0xFFFCA5A5).withOpacity(0.40),
+                    width: 1.2,
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.18),
+                      blurRadius: 12,
+                      offset: const Offset(0, 4),
+                    ),
+                  ],
+                ),
+                child: const Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.logout_rounded,
+                      color: Color(0xFFFCA5A5),
+                      size: 20,
+                    ),
+                    SizedBox(width: 10),
+                    Text(
+                      'Keluar dari Akun',
+                      style: TextStyle(
+                        fontSize: 14.5,
+                        fontWeight: FontWeight.w700,
+                        color: Color(0xFFFCA5A5),
+                        letterSpacing: 0.3,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             ),
           ],
         ),
