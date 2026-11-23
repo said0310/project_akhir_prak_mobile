@@ -49,7 +49,8 @@ class OrderDetailView extends StatelessWidget {
           ),
         ),
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new_rounded, color: Colors.white),
+          icon:
+              const Icon(Icons.arrow_back_ios_new_rounded, color: Colors.white),
           tooltip: 'Kembali',
           onPressed: () {
             if (Navigator.of(context).canPop()) {
@@ -75,9 +76,12 @@ class OrderDetailView extends StatelessWidget {
           orElse: () => initialOrder,
         );
 
-        final canCancel = order.status == 'Menunggu Pembayaran' || order.status == 'Diproses';
-        final canAdvance = order.status != 'Selesai' && order.status != 'Dibatalkan';
-        final canChangePayment = order.status != 'Selesai' && order.status != 'Dibatalkan';
+        final canCancel =
+            order.status == 'Menunggu Pembayaran' || order.status == 'Diproses';
+        final canAdvance =
+            order.status != 'Selesai' && order.status != 'Dibatalkan';
+        final canChangePayment =
+            order.status != 'Selesai' && order.status != 'Dibatalkan';
 
         return SingleChildScrollView(
           physics: const BouncingScrollPhysics(),
@@ -110,7 +114,8 @@ class OrderDetailView extends StatelessWidget {
                         ),
                         const SizedBox(width: 8),
                         Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 10, vertical: 4),
                           decoration: DynamicGlassDecoration.accentPill(
                             radius: 8,
                             fillColor: WijiBumiColors.lightMint,
@@ -145,7 +150,8 @@ class OrderDetailView extends StatelessWidget {
                       'Waktu: ${dateFormatter.format(order.createdAt)}',
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(fontSize: 12, color: WijiBumiColors.textSecondary),
+                      style: const TextStyle(
+                          fontSize: 12, color: WijiBumiColors.textSecondary),
                     ),
                   ],
                 ),
@@ -155,7 +161,10 @@ class OrderDetailView extends StatelessWidget {
               // Kartu Alamat Pengiriman
               const Text(
                 'Alamat Pengiriman (Snapshot)',
-                style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700, color: WijiBumiColors.textPrimary),
+                style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w700,
+                    color: WijiBumiColors.textPrimary),
               ),
               const SizedBox(height: 8),
               Container(
@@ -169,20 +178,25 @@ class OrderDetailView extends StatelessWidget {
                       '${order.address.recipientName} (${order.address.phone})',
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: WijiBumiColors.textPrimary),
+                      style: const TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.bold,
+                          color: WijiBumiColors.textPrimary),
                     ),
                     const SizedBox(height: 4),
                     Text(
                       order.address.fullAddress,
                       maxLines: 3,
                       overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(fontSize: 12, color: WijiBumiColors.textSecondary),
+                      style: const TextStyle(
+                          fontSize: 12, color: WijiBumiColors.textSecondary),
                     ),
                     Text(
                       '${order.address.district}, ${order.address.city}',
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(fontSize: 12, color: WijiBumiColors.textMuted),
+                      style: const TextStyle(
+                          fontSize: 12, color: WijiBumiColors.textMuted),
                     ),
                   ],
                 ),
@@ -192,7 +206,10 @@ class OrderDetailView extends StatelessWidget {
               // Kartu Daftar Item Terbeli
               const Text(
                 'Daftar Produk',
-                style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700, color: WijiBumiColors.textPrimary),
+                style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w700,
+                    color: WijiBumiColors.textPrimary),
               ),
               const SizedBox(height: 8),
               Container(
@@ -216,13 +233,18 @@ class OrderDetailView extends StatelessWidget {
                                 item.name,
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
-                                style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: WijiBumiColors.textPrimary),
+                                style: const TextStyle(
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.w600,
+                                    color: WijiBumiColors.textPrimary),
                               ),
                               Text(
                                 '${item.quantity} ${item.unit} x ${currencyFormatter.format(item.price)}',
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
-                                style: const TextStyle(fontSize: 11, color: WijiBumiColors.textCardDark),
+                                style: const TextStyle(
+                                    fontSize: 11,
+                                    color: WijiBumiColors.textCardDark),
                               ),
                             ],
                           ),
@@ -232,7 +254,10 @@ class OrderDetailView extends StatelessWidget {
                           fit: BoxFit.scaleDown,
                           child: Text(
                             currencyFormatter.format(item.subtotal),
-                            style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: WijiBumiColors.textCardDark),
+                            style: const TextStyle(
+                                fontSize: 13,
+                                fontWeight: FontWeight.bold,
+                                color: WijiBumiColors.textCardDark),
                           ),
                         ),
                       ],
@@ -245,7 +270,10 @@ class OrderDetailView extends StatelessWidget {
               // Rincian Pembayaran
               const Text(
                 'Rincian Biaya & Metode Pembayaran',
-                style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700, color: WijiBumiColors.textPrimary),
+                style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w700,
+                    color: WijiBumiColors.textPrimary),
               ),
               const SizedBox(height: 8),
               Container(
@@ -261,7 +289,9 @@ class OrderDetailView extends StatelessWidget {
                             'Metode Pembayaran',
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
-                            style: TextStyle(fontSize: 12, color: WijiBumiColors.textSecondary),
+                            style: TextStyle(
+                                fontSize: 12,
+                                color: WijiBumiColors.textSecondary),
                           ),
                         ),
                         const SizedBox(width: 8),
@@ -284,10 +314,13 @@ class OrderDetailView extends StatelessWidget {
                               if (canChangePayment) ...[
                                 const SizedBox(width: 6),
                                 GestureDetector(
-                                  onTap: () => _showChangePaymentSheet(context, orderController, order),
+                                  onTap: () => _showChangePaymentSheet(
+                                      context, orderController, order),
                                   child: Container(
-                                    padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2.5),
-                                    decoration: DynamicGlassDecoration.accentPill(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 7, vertical: 2.5),
+                                    decoration:
+                                        DynamicGlassDecoration.accentPill(
                                       radius: 6,
                                       fillColor: WijiBumiColors.lightMint,
                                     ),
@@ -316,7 +349,9 @@ class OrderDetailView extends StatelessWidget {
                             'Subtotal Produk',
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
-                            style: TextStyle(fontSize: 12, color: WijiBumiColors.textSecondary),
+                            style: TextStyle(
+                                fontSize: 12,
+                                color: WijiBumiColors.textSecondary),
                           ),
                         ),
                         const SizedBox(width: 8),
@@ -342,18 +377,24 @@ class OrderDetailView extends StatelessWidget {
                             'Ongkos Kirim',
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
-                            style: TextStyle(fontSize: 12, color: WijiBumiColors.textSecondary),
+                            style: TextStyle(
+                                fontSize: 12,
+                                color: WijiBumiColors.textSecondary),
                           ),
                         ),
                         const SizedBox(width: 8),
                         FittedBox(
                           fit: BoxFit.scaleDown,
                           child: Text(
-                            order.shippingCost == 0 ? 'Gratis' : currencyFormatter.format(order.shippingCost),
+                            order.shippingCost == 0
+                                ? 'Gratis'
+                                : currencyFormatter.format(order.shippingCost),
                             style: TextStyle(
                               fontSize: 12,
                               fontWeight: FontWeight.w600,
-                              color: order.shippingCost == 0 ? WijiBumiColors.success : WijiBumiColors.textCardDark,
+                              color: order.shippingCost == 0
+                                  ? WijiBumiColors.success
+                                  : WijiBumiColors.textCardDark,
                             ),
                           ),
                         ),
@@ -368,7 +409,10 @@ class OrderDetailView extends StatelessWidget {
                             'Total Transaksi',
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
-                            style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: WijiBumiColors.textCardDark),
+                            style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                                color: WijiBumiColors.textCardDark),
                           ),
                         ),
                         const SizedBox(width: 8),
@@ -376,7 +420,10 @@ class OrderDetailView extends StatelessWidget {
                           fit: BoxFit.scaleDown,
                           child: Text(
                             currencyFormatter.format(order.total),
-                            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w800, color: WijiBumiColors.textCardDark),
+                            style: const TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w800,
+                                color: WijiBumiColors.textCardDark),
                           ),
                         ),
                       ],
@@ -392,7 +439,8 @@ class OrderDetailView extends StatelessWidget {
                   text: 'Ubah Metode Pembayaran',
                   icon: Icons.payment_rounded,
                   variant: ButtonVariant.secondaryGlass,
-                  onPressed: () => _showChangePaymentSheet(context, orderController, order),
+                  onPressed: () =>
+                      _showChangePaymentSheet(context, orderController, order),
                 ),
                 const SizedBox(height: 12),
               ],
@@ -400,7 +448,7 @@ class OrderDetailView extends StatelessWidget {
               // Tombol Aksi Simulasi Status & Batalkan
               if (canAdvance) ...[
                 CustomButton(
-                  text: '⚡ Lanjutkan Status Pesanan (Simulasi Demo)',
+                  text: 'Lanjutkan Status Pesanan',
                   icon: Icons.fast_forward_rounded,
                   variant: ButtonVariant.secondaryGlass,
                   onPressed: () {
@@ -418,7 +466,8 @@ class OrderDetailView extends StatelessWidget {
                     final confirm = await GlassFeedback.showConfirmDialog(
                       context: context,
                       title: 'Batalkan Pesanan?',
-                      message: 'Apakah Anda yakin ingin membatalkan pesanan ${order.orderNumber}?',
+                      message:
+                          'Apakah Anda yakin ingin membatalkan pesanan ${order.orderNumber}?',
                       confirmText: 'Ya, Batalkan',
                       isDestructive: true,
                     );
@@ -448,7 +497,8 @@ class OrderDetailView extends StatelessWidget {
             padding: const EdgeInsets.all(22),
             decoration: BoxDecoration(
               color: WijiBumiColors.surfaceDark.withOpacity(0.96),
-              borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+              borderRadius:
+                  const BorderRadius.vertical(top: Radius.circular(24)),
               border: Border(
                 top: BorderSide(
                   color: Colors.white.withOpacity(0.24),
@@ -512,12 +562,14 @@ class OrderDetailView extends StatelessWidget {
                           onTap: () async {
                             Get.back();
                             if (!isSelected) {
-                              await controller.updatePaymentMethod(order.id, method);
+                              await controller.updatePaymentMethod(
+                                  order.id, method);
                             }
                           },
                           borderRadius: BorderRadius.circular(12),
                           child: Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 14, vertical: 12),
                             child: Row(
                               children: [
                                 Icon(
@@ -538,7 +590,9 @@ class OrderDetailView extends StatelessWidget {
                                     style: TextStyle(
                                       fontFamily: 'Poppins',
                                       fontSize: 13,
-                                      fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
+                                      fontWeight: isSelected
+                                          ? FontWeight.w700
+                                          : FontWeight.w500,
                                       color: isSelected
                                           ? WijiBumiColors.textWhite
                                           : WijiBumiColors.textMutedLight,
@@ -548,8 +602,10 @@ class OrderDetailView extends StatelessWidget {
                                 if (method.startsWith('COD')) ...[
                                   const SizedBox(width: 6),
                                   Container(
-                                    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                                    decoration: DynamicGlassDecoration.accentPill(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 6, vertical: 2),
+                                    decoration:
+                                        DynamicGlassDecoration.accentPill(
                                       radius: 6,
                                       fillColor: WijiBumiColors.lightMint,
                                     ),

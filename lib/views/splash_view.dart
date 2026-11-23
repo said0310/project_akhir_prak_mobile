@@ -15,7 +15,8 @@ class SplashView extends StatefulWidget {
   State<SplashView> createState() => _SplashViewState();
 }
 
-class _SplashViewState extends State<SplashView> with SingleTickerProviderStateMixin {
+class _SplashViewState extends State<SplashView>
+    with SingleTickerProviderStateMixin {
   late AnimationController _animController;
   late Animation<double> _scaleAnimation;
   late Animation<double> _fadeAnimation;
@@ -110,7 +111,8 @@ class _SplashViewState extends State<SplashView> with SingleTickerProviderStateM
                       filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
                       child: Container(
                         width: 224,
-                        padding: const EdgeInsets.symmetric(vertical: 36, horizontal: 24),
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 36, horizontal: 24),
                         decoration: BoxDecoration(
                           gradient: LinearGradient(
                             begin: Alignment.topLeft,
@@ -162,7 +164,7 @@ class _SplashViewState extends State<SplashView> with SingleTickerProviderStateM
                                 fontSize: 22,
                                 fontWeight: FontWeight.w800,
                                 letterSpacing: 0.5,
-                                color: WijiBumiColors.textPrimary,
+                                color: Color.fromARGB(255, 19, 57, 17),
                               ),
                             ),
                             const SizedBox(height: 4),
@@ -171,7 +173,7 @@ class _SplashViewState extends State<SplashView> with SingleTickerProviderStateM
                               style: TextStyle(
                                 fontSize: 13,
                                 fontWeight: FontWeight.w500,
-                                color: WijiBumiColors.textSecondary,
+                                color: Color.fromARGB(255, 35, 79, 51),
                               ),
                             ),
                             const SizedBox(height: 24),
