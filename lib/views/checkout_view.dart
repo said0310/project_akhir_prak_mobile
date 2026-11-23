@@ -32,7 +32,8 @@ class _CheckoutViewState extends State<CheckoutView> {
       // Pastikan alamat utama terpilih
       if (locationController.selectedAddress.value == null &&
           locationController.addresses.isNotEmpty) {
-        locationController.selectedAddress.value = locationController.addresses.first;
+        locationController.selectedAddress.value =
+            locationController.addresses.first;
       }
 
       if (locationController.selectedAddress.value != null) {
@@ -143,7 +144,8 @@ class _CheckoutViewState extends State<CheckoutView> {
                       Row(
                         children: [
                           const Icon(Icons.location_on_rounded,
-                              color: WijiBumiColors.deepForest, size: 20),
+                              color: Color.fromARGB(255, 197, 208, 198),
+                              size: 20),
                           const SizedBox(width: 8),
                           Expanded(
                             child: Text(
@@ -165,7 +167,7 @@ class _CheckoutViewState extends State<CheckoutView> {
                               'Ganti Alamat',
                               style: TextStyle(
                                 fontSize: 12,
-                                color: WijiBumiColors.deepForest,
+                                color: Color.fromARGB(255, 221, 228, 222),
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
@@ -203,7 +205,7 @@ class _CheckoutViewState extends State<CheckoutView> {
                               style: TextStyle(
                                 fontSize: 12,
                                 fontWeight: FontWeight.w700,
-                                color: WijiBumiColors.deepForest,
+                                color: Color.fromARGB(255, 206, 206, 206),
                               ),
                             ),
                             const SizedBox(width: 8),
@@ -232,9 +234,11 @@ class _CheckoutViewState extends State<CheckoutView> {
                               showStoreMarker: true,
                               showPolyline: true,
                               isPickerMode: false,
-                              selectedBranch: locationController.selectedStore.value,
+                              selectedBranch:
+                                  locationController.selectedStore.value,
                               onBranchChanged: (branch) {
-                                locationController.setStoreBranch(branch, subtotal);
+                                locationController.setStoreBranch(
+                                    branch, subtotal);
                               },
                             )),
                         const SizedBox(height: 10),
@@ -251,8 +255,10 @@ class _CheckoutViewState extends State<CheckoutView> {
                                 const SizedBox(width: 6),
                                 Expanded(
                                   child: Obx(() {
-                                    final label = locationController.distanceLabel.value;
-                                    final km = locationController.distanceKm.value;
+                                    final label =
+                                        locationController.distanceLabel.value;
+                                    final km =
+                                        locationController.distanceKm.value;
                                     return Text(
                                       label.isNotEmpty
                                           ? '📍 $label'
@@ -278,12 +284,14 @@ class _CheckoutViewState extends State<CheckoutView> {
                             child: Text(
                               locationController.currentShippingCost.value == 0
                                   ? 'Gratis Ongkir'
-                                  : currencyFormatter.format(
-                                      locationController.currentShippingCost.value),
+                                  : currencyFormatter.format(locationController
+                                      .currentShippingCost.value),
                               style: TextStyle(
                                 fontSize: 12,
                                 fontWeight: FontWeight.bold,
-                                color: locationController.currentShippingCost.value == 0
+                                color: locationController
+                                            .currentShippingCost.value ==
+                                        0
                                     ? WijiBumiColors.success
                                     : WijiBumiColors.deepForest,
                               ),
@@ -368,7 +376,7 @@ class _CheckoutViewState extends State<CheckoutView> {
                                 style: const TextStyle(
                                   fontSize: 13,
                                   fontWeight: FontWeight.bold,
-                                  color: WijiBumiColors.deepForest,
+                                  color: Color.fromARGB(255, 181, 191, 182),
                                 ),
                               ),
                             ],
@@ -395,7 +403,8 @@ class _CheckoutViewState extends State<CheckoutView> {
                 decoration: DynamicGlassDecoration.cleanCard(radius: 14),
                 child: Obx(
                   () => Column(
-                    children: orderController.availablePaymentMethods.map((method) {
+                    children:
+                        orderController.availablePaymentMethods.map((method) {
                       final isSelected =
                           orderController.selectedPaymentMethod.value == method;
                       return InkWell(
@@ -501,7 +510,9 @@ class _CheckoutViewState extends State<CheckoutView> {
                             child: Text(
                               currencyFormatter.format(subtotal),
                               style: const TextStyle(
-                                  fontSize: 13, fontWeight: FontWeight.w600),
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.white),
                             ),
                           ),
                         ],
@@ -571,7 +582,7 @@ class _CheckoutViewState extends State<CheckoutView> {
                               style: TextStyle(
                                   fontSize: 15,
                                   fontWeight: FontWeight.w700,
-                                  color: WijiBumiColors.deepForest),
+                                  color: Color.fromARGB(255, 209, 209, 209)),
                             ),
                           ),
                           const SizedBox(width: 8),
@@ -582,7 +593,7 @@ class _CheckoutViewState extends State<CheckoutView> {
                               style: const TextStyle(
                                   fontSize: 17,
                                   fontWeight: FontWeight.w800,
-                                  color: WijiBumiColors.deepForest),
+                                  color: Color.fromARGB(255, 190, 190, 190)),
                             ),
                           ),
                         ],
@@ -620,7 +631,8 @@ class _CheckoutViewState extends State<CheckoutView> {
 
                     // Pastikan alamat telah terpilih
                     var address = locationController.selectedAddress.value;
-                    if (address == null && locationController.addresses.isNotEmpty) {
+                    if (address == null &&
+                        locationController.addresses.isNotEmpty) {
                       address = locationController.addresses.first;
                       locationController.selectedAddress.value = address;
                     }
@@ -639,7 +651,8 @@ class _CheckoutViewState extends State<CheckoutView> {
                     final order = await orderController.placeOrder(
                       address: address,
                       selectedItems: itemsToBuy,
-                      shippingCost: locationController.currentShippingCost.value,
+                      shippingCost:
+                          locationController.currentShippingCost.value,
                     );
 
                     if (order != null) {
