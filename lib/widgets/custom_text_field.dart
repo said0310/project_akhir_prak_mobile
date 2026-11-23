@@ -61,13 +61,13 @@ class _CustomTextFieldState extends State<CustomTextField> {
         hintText: widget.hintText,
         labelText: widget.labelText,
         prefixIcon: widget.prefixIcon != null
-            ? Icon(widget.prefixIcon, color: WijiBumiColors.deepForest, size: 20)
+            ? Icon(widget.prefixIcon, color: const Color(0xFFA7F3D0), size: 20)
             : null,
         suffixIcon: widget.isPassword
             ? IconButton(
                 icon: Icon(
                   _obscureText ? Icons.visibility_off_outlined : Icons.visibility_outlined,
-                  color: WijiBumiColors.textMuted,
+                  color: const Color(0xFFC8DDD0),
                   size: 20,
                 ),
                 onPressed: () {

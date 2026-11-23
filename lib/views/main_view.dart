@@ -36,71 +36,71 @@ class _MainViewState extends State<MainView> {
     ];
 
     return Scaffold(
-      backgroundColor: WijiBumiColors.bgPrimary,
+      backgroundColor: WijiBumiColors.backgroundCanvas,
       body: IndexedStack(
         index: _currentTabIndex,
         children: pages,
       ),
       extendBody: true,
-      // Bottom Navigation Bar Frosted Glass (4 Tab: Beranda, Pesanan Saya, Keranjang, Profil)
-      bottomNavigationBar: ClipRRect(
-        borderRadius: const BorderRadius.vertical(
-          top: Radius.circular(36),
-        ),
-        child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 18, sigmaY: 18),
-          child: Container(
-            width: double.infinity,
-            height: 80,
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [
-                  Colors.white.withOpacity(0.24),
-                  const Color(0xFF18261A).withOpacity(0.72),
-                ],
-              ),
-              borderRadius: const BorderRadius.vertical(
-                top: Radius.circular(36),
-              ),
-              border: Border(
-                top: BorderSide(
-                  color: Colors.white.withOpacity(0.35),
-                  width: 1.2,
+      // Bottom Navigation Bar Floating Liquid Glass (4 Tab: Beranda, Pesanan Saya, Keranjang, Profil)
+      bottomNavigationBar: SafeArea(
+        bottom: true,
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(28),
+            child: BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 18, sigmaY: 18),
+              child: Container(
+                width: double.infinity,
+                height: 68,
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [
+                      const Color(0xFF1C2B1E).withOpacity(0.94),
+                      const Color(0xFF243827).withOpacity(0.94),
+                    ],
+                  ),
+                  borderRadius: BorderRadius.circular(28),
+                  border: Border.all(
+                    color: Colors.white.withOpacity(0.28),
+                    width: 1.2,
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.25),
+                      blurRadius: 20,
+                      offset: const Offset(0, 4),
+                    ),
+                  ],
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    _buildNavItem(
+                      index: 0,
+                      icon: Icons.home_rounded,
+                    ),
+                    _buildOrderNavItem(
+                      index: 1,
+                      icon: Icons.local_shipping_rounded,
+                      shopController: shopController,
+                    ),
+                    _buildCartNavItem(
+                      index: 2,
+                      icon: Icons.shopping_cart_rounded,
+                      shopController: shopController,
+                    ),
+                    _buildNavItem(
+                      index: 3,
+                      icon: Icons.person_rounded,
+                    ),
+                  ],
                 ),
               ),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.35),
-                  blurRadius: 24,
-                  offset: const Offset(0, -6),
-                ),
-              ],
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                _buildNavItem(
-                  index: 0,
-                  icon: Icons.home_rounded,
-                ),
-                _buildOrderNavItem(
-                  index: 1,
-                  icon: Icons.local_shipping_rounded,
-                  shopController: shopController,
-                ),
-                _buildCartNavItem(
-                  index: 2,
-                  icon: Icons.shopping_cart_rounded,
-                  shopController: shopController,
-                ),
-                _buildNavItem(
-                  index: 3,
-                  icon: Icons.person_rounded,
-                ),
-              ],
             ),
           ),
         ),
@@ -119,23 +119,30 @@ class _MainViewState extends State<MainView> {
       behavior: HitTestBehavior.opaque,
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 200),
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         decoration: isSelected
             ? BoxDecoration(
-                color: Colors.white.withOpacity(0.18),
+                color: const Color(0xFF142117),
                 borderRadius: BorderRadius.circular(16),
                 border: Border.all(
                   color: Colors.white.withOpacity(0.28),
                   width: 1.0,
                 ),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.25),
+                    blurRadius: 8,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
               )
             : null,
         child: Icon(
           icon,
-          size: 27,
+          size: 24,
           color: isSelected
-              ? WijiBumiColors.textWhite
-              : WijiBumiColors.iconNavInactive,
+              ? const Color(0xFFA7F3D0)
+              : const Color(0xFF9EB5A4),
         ),
       ),
     );
@@ -153,15 +160,18 @@ class _MainViewState extends State<MainView> {
       behavior: HitTestBehavior.opaque,
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 200),
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         decoration: isSelected
             ? BoxDecoration(
-                color: Colors.white.withOpacity(0.18),
+                color: WijiBumiColors.deepForest,
                 borderRadius: BorderRadius.circular(16),
-                border: Border.all(
-                  color: Colors.white.withOpacity(0.28),
-                  width: 1.0,
-                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: WijiBumiColors.deepForest.withOpacity(0.30),
+                    blurRadius: 8,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
               )
             : null,
         child: Stack(
@@ -169,9 +179,9 @@ class _MainViewState extends State<MainView> {
           children: [
             Icon(
               icon,
-              size: 27,
+              size: 24,
               color: isSelected
-                  ? WijiBumiColors.textWhite
+                  ? Colors.white
                   : WijiBumiColors.iconNavInactive,
             ),
             Obx(() {
@@ -185,8 +195,8 @@ class _MainViewState extends State<MainView> {
                 right: -6,
                 child: Container(
                   padding: const EdgeInsets.all(3),
-                  decoration: const BoxDecoration(
-                    color: WijiBumiColors.freshLeaf,
+                  decoration: BoxDecoration(
+                    color: isSelected ? const Color(0xFF81C784) : WijiBumiColors.freshLeaf,
                     shape: BoxShape.circle,
                   ),
                   constraints: const BoxConstraints(
@@ -196,8 +206,8 @@ class _MainViewState extends State<MainView> {
                   child: Center(
                     child: Text(
                       activeCount > 99 ? '99+' : '$activeCount',
-                      style: const TextStyle(
-                        color: Colors.white,
+                      style: TextStyle(
+                        color: isSelected ? WijiBumiColors.deepForest : Colors.white,
                         fontSize: 9,
                         fontWeight: FontWeight.bold,
                         height: 1.0,
@@ -225,15 +235,18 @@ class _MainViewState extends State<MainView> {
       behavior: HitTestBehavior.opaque,
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 200),
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         decoration: isSelected
             ? BoxDecoration(
-                color: Colors.white.withOpacity(0.18),
+                color: WijiBumiColors.deepForest,
                 borderRadius: BorderRadius.circular(16),
-                border: Border.all(
-                  color: Colors.white.withOpacity(0.28),
-                  width: 1.0,
-                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: WijiBumiColors.deepForest.withOpacity(0.30),
+                    blurRadius: 8,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
               )
             : null,
         child: Stack(
@@ -241,9 +254,9 @@ class _MainViewState extends State<MainView> {
           children: [
             Icon(
               icon,
-              size: 27,
+              size: 24,
               color: isSelected
-                  ? WijiBumiColors.textWhite
+                  ? Colors.white
                   : WijiBumiColors.iconNavInactive,
             ),
             Obx(() {
@@ -255,8 +268,8 @@ class _MainViewState extends State<MainView> {
                 right: -6,
                 child: Container(
                   padding: const EdgeInsets.all(3),
-                  decoration: const BoxDecoration(
-                    color: WijiBumiColors.textWhite,
+                  decoration: BoxDecoration(
+                    color: isSelected ? const Color(0xFF81C784) : WijiBumiColors.freshLeaf,
                     shape: BoxShape.circle,
                   ),
                   constraints: const BoxConstraints(
@@ -266,8 +279,8 @@ class _MainViewState extends State<MainView> {
                   child: Center(
                     child: Text(
                       count > 99 ? '99+' : '$count',
-                      style: const TextStyle(
-                        color: Color(0xFF18261A),
+                      style: TextStyle(
+                        color: isSelected ? WijiBumiColors.deepForest : Colors.white,
                         fontSize: 9,
                         fontWeight: FontWeight.bold,
                         height: 1.0,

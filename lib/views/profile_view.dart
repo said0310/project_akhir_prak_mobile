@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import '../app.dart';
 import '../services/api_service.dart';
 import '../controllers/auth_controller.dart';
+import '../widgets/custom_button.dart';
 import '../widgets/glass_feedback.dart';
 import 'about_view.dart';
 import 'login_view.dart';
@@ -24,18 +25,28 @@ class _ProfileViewState extends State<ProfileView> {
     return Scaffold(
       backgroundColor: WijiBumiColors.backgroundCanvas,
       appBar: AppBar(
-        title: const Text('Profil Saya'),
+        backgroundColor: WijiBumiColors.deepForest,
+        elevation: 0,
+        centerTitle: true,
+        title: const Text(
+          'Profil Saya',
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 16.5,
+            fontWeight: FontWeight.w700,
+          ),
+        ),
       ),
       body: SingleChildScrollView(
         physics: const BouncingScrollPhysics(),
-        padding: const EdgeInsets.fromLTRB(16, 12, 16, 100),
+        padding: const EdgeInsets.fromLTRB(16, 16, 16, 100),
         child: Column(
           children: [
-            // 1. Header Profil Kaca dengan Avatar
+            // 1. Header Profil dengan Avatar
             Container(
               width: double.infinity,
               padding: const EdgeInsets.all(20),
-              decoration: DynamicGlassDecoration.cleanCard(radius: 16),
+              decoration: DynamicGlassDecoration.glassCard(radius: 16),
               child: Obx(() {
                 final user = authController.currentUser.value;
                 final name = user?.name ?? 'Sari Lestari';
@@ -55,8 +66,8 @@ class _ProfileViewState extends State<ProfileView> {
                         ),
                         boxShadow: [
                           BoxShadow(
-                            color: WijiBumiColors.deepForest.withOpacity(0.08),
-                            blurRadius: 12,
+                            color: Colors.black.withOpacity(0.06),
+                            blurRadius: 10,
                             offset: const Offset(0, 4),
                           ),
                         ],
@@ -87,7 +98,7 @@ class _ProfileViewState extends State<ProfileView> {
                       style: const TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.w800,
-                        color: WijiBumiColors.deepForest,
+                        color: WijiBumiColors.textPrimary,
                       ),
                     ),
                     const SizedBox(height: 4),
@@ -97,7 +108,7 @@ class _ProfileViewState extends State<ProfileView> {
                       overflow: TextOverflow.ellipsis,
                       style: const TextStyle(
                         fontSize: 12,
-                        color: WijiBumiColors.textMuted,
+                        color: WijiBumiColors.textSecondary,
                       ),
                     ),
                     const SizedBox(height: 2),
@@ -116,8 +127,9 @@ class _ProfileViewState extends State<ProfileView> {
                       icon: const Icon(Icons.edit_outlined, size: 14),
                       label: const Text('Edit Profil'),
                       style: OutlinedButton.styleFrom(
-                        foregroundColor: WijiBumiColors.deepForest,
-                        side: const BorderSide(color: WijiBumiColors.softSage),
+                        backgroundColor: Colors.white.withOpacity(0.12),
+                        foregroundColor: Colors.white,
+                        side: BorderSide(color: Colors.white.withOpacity(0.28)),
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
                         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
                       ),
@@ -129,12 +141,12 @@ class _ProfileViewState extends State<ProfileView> {
                 );
               }),
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 18),
 
             // 2. Daftar Menu
             Container(
               padding: const EdgeInsets.symmetric(vertical: 8),
-              decoration: DynamicGlassDecoration.cleanCard(radius: 16),
+              decoration: DynamicGlassDecoration.glassCard(radius: 16),
               child: Column(
                 children: [
                   _buildMenuItem(
@@ -143,72 +155,32 @@ class _ProfileViewState extends State<ProfileView> {
                     subtitle: 'Kelola alamat & koordinat GPS',
                     onTap: () => Get.toNamed(AppRoutes.ADDRESS),
                   ),
-                  const Divider(height: 1, indent: 56),
+                  const Divider(color: Color(0xFFEAF0EB), height: 1, indent: 64),
                   _buildMenuItem(
                     icon: Icons.receipt_long_outlined,
                     title: 'Pesanan Saya',
                     subtitle: 'Lacak status & transaksi belanja',
                     onTap: () => Get.toNamed(AppRoutes.ORDERS),
                   ),
-                  const Divider(height: 1, indent: 56),
+                  const Divider(color: Color(0xFFEAF0EB), height: 1, indent: 64),
                   _buildMenuItem(
                     icon: Icons.alarm_outlined,
-                    title: 'Pengingat Belanja',
-                    subtitle: 'Jadwal notifikasi belanja rutin',
+                    title: 'Pengingat Belanja Rutin',
+                    subtitle: 'Jadwalkan notifikasi lokal otomatis',
                     onTap: () => Get.toNamed(AppRoutes.REMINDERS),
                   ),
-                  const Divider(height: 1, indent: 56),
-
-                  // Toggle Simulasi Jaringan
-                  ListTile(
-                    leading: Container(
-                      padding: const EdgeInsets.all(8),
-                      decoration: BoxDecoration(
-                        color: _offlineMode ? WijiBumiColors.error.withOpacity(0.12) : WijiBumiColors.lightMint,
-                        shape: BoxShape.circle,
-                      ),
-                      child: Icon(
-                        _offlineMode ? Icons.wifi_off_rounded : Icons.wifi_rounded,
-                        color: _offlineMode ? WijiBumiColors.error : WijiBumiColors.deepForest,
-                        size: 20,
-                      ),
-                    ),
-                    title: const Text(
-                      'Simulasi Mode Offline (TC-08 / TC-15)',
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: WijiBumiColors.textPrimary),
-                    ),
-                    subtitle: Text(
-                      _offlineMode ? 'Mode simulasi mati jaringan aktif' : 'Jaringan online normal',
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(fontSize: 11, color: WijiBumiColors.textMuted),
-                    ),
-                    trailing: Switch(
-                      value: _offlineMode,
-                      activeColor: WijiBumiColors.error,
-                      onChanged: (val) {
-                        setState(() {
-                          _offlineMode = val;
-                          ApiService.simulateNetworkError = val;
-                        });
-                        GlassFeedback.showSnackbar(
-                          title: val ? 'Mode Offline Aktif' : 'Mode Online Aktif',
-                          message: val
-                              ? 'Request API sekarang akan gagal untuk pengujian Error State & Retry.'
-                              : 'Koneksi jaringan simulasi kembali normal.',
-                        );
-                      },
-                    ),
+                  Divider(color: Colors.white.withOpacity(0.14), height: 1, indent: 64),
+                  _buildMenuItem(
+                    icon: Icons.favorite_border_rounded,
+                    title: 'Wishlist Favorit',
+                    subtitle: 'Daftar produk sayuran & tanaman impian',
+                    onTap: () => Get.toNamed(AppRoutes.WISHLIST),
                   ),
-                  const Divider(height: 1, indent: 56),
-
-                  // Navigasi ke Tentang Aplikasi
+                  Divider(color: Colors.white.withOpacity(0.14), height: 1, indent: 64),
                   _buildMenuItem(
                     icon: Icons.info_outline_rounded,
                     title: 'Tentang Aplikasi',
-                    subtitle: 'Wiji Bumi v1.0 • Praktikum Mobile',
+                    subtitle: 'Wiji Bumi v1.0.0 & Informasi Pengembang',
                     onTap: () {
                       Navigator.of(context).push(
                         MaterialPageRoute(builder: (_) => const AboutView()),
@@ -218,65 +190,99 @@ class _ProfileViewState extends State<ProfileView> {
                 ],
               ),
             ),
+            const SizedBox(height: 18),
+
+            // 3. Pengaturan Simulasi Jaringan (Mode Offline)
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              decoration: DynamicGlassDecoration.glassCard(radius: 16),
+              child: Row(
+                children: [
+                  Container(
+                    width: 40,
+                    height: 40,
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.12),
+                      shape: BoxShape.circle,
+                      border: Border.all(color: Colors.white.withOpacity(0.24)),
+                    ),
+                    child: const Icon(
+                      Icons.wifi_off_rounded,
+                      color: Color(0xFFA7F3D0),
+                      size: 20,
+                    ),
+                  ),
+                  const SizedBox(width: 14),
+                  const Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Simulasi Mode Offline',
+                          style: TextStyle(
+                            fontSize: 13.5,
+                            fontWeight: FontWeight.w700,
+                            color: WijiBumiColors.textPrimary,
+                          ),
+                        ),
+                        SizedBox(height: 2),
+                        Text(
+                          'Uji coba error handling & data SQLite',
+                          style: TextStyle(
+                            fontSize: 11.5,
+                            color: WijiBumiColors.textSecondary,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Switch(
+                    value: _offlineMode,
+                    activeColor: WijiBumiColors.freshLeaf,
+                    onChanged: (val) {
+                      setState(() {
+                        _offlineMode = val;
+                        ApiService.simulateNetworkError = val;
+                      });
+                      GlassFeedback.showSnackbar(
+                        title: val ? 'Mode Offline Aktif' : 'Mode Offline Non-Aktif',
+                        message: val
+                            ? 'Aplikasi mensimulasikan kegagalan koneksi internet.'
+                            : 'Koneksi jaringan dikembalikan ke normal.',
+                        isError: val,
+                      );
+                    },
+                  ),
+                ],
+              ),
+            ),
             const SizedBox(height: 24),
 
-            // 3. Tombol Logout
-            Container(
-              decoration: DynamicGlassDecoration.cleanCard(radius: 14),
-              child: ListTile(
-                leading: Container(
-                  padding: const EdgeInsets.all(8),
-                  decoration: BoxDecoration(
-                    color: WijiBumiColors.error.withOpacity(0.1),
-                    shape: BoxShape.circle,
-                  ),
-                  child: const Icon(
-                    Icons.logout_rounded,
-                    color: WijiBumiColors.error,
-                    size: 20,
-                  ),
-                ),
-                title: const Text(
-                  'Keluar dari Akun (Logout)',
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.bold,
-                    color: WijiBumiColors.error,
-                  ),
-                ),
-                onTap: () async {
-                  final confirm = await GlassFeedback.showConfirmDialog(
-                    context: context,
-                    title: 'Konfirmasi Keluar',
-                    message: 'Apakah Anda yakin ingin keluar dari akun? Data keranjang dan wishlist Anda tetap tersimpan.',
-                    confirmText: 'Keluar',
-                    isDestructive: true,
-                  );
+            // 4. Tombol Logout
+            CustomButton(
+              text: 'Keluar dari Akun',
+              icon: Icons.logout_rounded,
+              onPressed: () async {
+                final confirm = await GlassFeedback.showConfirmDialog(
+                  context: context,
+                  title: 'Keluar Akun?',
+                  message: 'Sesi akun Anda akan diakhiri di perangkat ini.',
+                  confirmText: 'Keluar',
+                  isDestructive: true,
+                );
 
-                  if (confirm == true && context.mounted) {
-                    await authController.logout();
+                if (confirm == true) {
+                  await authController.logout();
+                  if (mounted) {
                     Navigator.of(context).pushAndRemoveUntil(
                       MaterialPageRoute(builder: (_) => const LoginView()),
                       (route) => false,
                     );
                   }
-                },
-              ),
+                }
+              },
             ),
           ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildAvatarFallback() {
-    return Container(
-      color: WijiBumiColors.lightMint,
-      child: const Center(
-        child: Icon(
-          Icons.person_rounded,
-          size: 44,
-          color: WijiBumiColors.deepForest,
         ),
       ),
     );
@@ -289,32 +295,51 @@ class _ProfileViewState extends State<ProfileView> {
     required VoidCallback onTap,
   }) {
     return ListTile(
+      onTap: onTap,
       leading: Container(
-        padding: const EdgeInsets.all(8),
-        decoration: const BoxDecoration(
-          color: WijiBumiColors.lightMint,
+        width: 40,
+        height: 40,
+        decoration: BoxDecoration(
+          color: Colors.white.withOpacity(0.12),
           shape: BoxShape.circle,
+          border: Border.all(color: Colors.white.withOpacity(0.24)),
         ),
-        child: Icon(icon, color: WijiBumiColors.deepForest, size: 20),
+        child: Icon(icon, color: const Color(0xFFA7F3D0), size: 20),
       ),
       title: Text(
         title,
-        maxLines: 1,
-        overflow: TextOverflow.ellipsis,
         style: const TextStyle(
-          fontSize: 13,
-          fontWeight: FontWeight.w600,
+          fontSize: 13.5,
+          fontWeight: FontWeight.w700,
           color: WijiBumiColors.textPrimary,
         ),
       ),
       subtitle: Text(
         subtitle,
-        maxLines: 1,
-        overflow: TextOverflow.ellipsis,
-        style: const TextStyle(fontSize: 11, color: WijiBumiColors.textMuted),
+        style: const TextStyle(
+          fontSize: 11.5,
+          color: WijiBumiColors.textSecondary,
+        ),
       ),
-      trailing: const Icon(Icons.arrow_forward_ios_rounded, size: 14, color: WijiBumiColors.textMuted),
-      onTap: onTap,
+      trailing: const Icon(
+        Icons.chevron_right_rounded,
+        size: 22,
+        color: WijiBumiColors.textSecondary,
+      ),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 2),
+    );
+  }
+
+  Widget _buildAvatarFallback() {
+    return Container(
+      color: Colors.white.withOpacity(0.12),
+      child: const Center(
+        child: Icon(
+          Icons.person_rounded,
+          size: 46,
+          color: Color(0xFFA7F3D0),
+        ),
+      ),
     );
   }
 }

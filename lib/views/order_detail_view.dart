@@ -36,9 +36,20 @@ class OrderDetailView extends StatelessWidget {
     return Scaffold(
       backgroundColor: WijiBumiColors.backgroundCanvas,
       appBar: AppBar(
-        title: const Text('Detail Pesanan'),
+        backgroundColor: WijiBumiColors.deepForest,
+        elevation: 0,
+        scrolledUnderElevation: 0,
+        centerTitle: true,
+        title: const Text(
+          'Detail Pesanan',
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.w700,
+            fontSize: 16.5,
+          ),
+        ),
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new_rounded),
+          icon: const Icon(Icons.arrow_back_ios_new_rounded, color: Colors.white),
           tooltip: 'Kembali',
           onPressed: () {
             if (Navigator.of(context).canPop()) {
@@ -50,7 +61,7 @@ class OrderDetailView extends StatelessWidget {
         ),
         actions: [
           IconButton(
-            icon: const Icon(Icons.home_rounded),
+            icon: const Icon(Icons.home_rounded, color: Colors.white),
             tooltip: 'Ke Beranda',
             onPressed: () {
               Get.offAllNamed(AppRoutes.MAIN);
@@ -112,7 +123,7 @@ class OrderDetailView extends StatelessWidget {
                             style: const TextStyle(
                               fontSize: 12,
                               fontWeight: FontWeight.bold,
-                              color: WijiBumiColors.deepForest,
+                              color: Color(0xFFA7F3D0),
                             ),
                           ),
                         ),
@@ -126,7 +137,7 @@ class OrderDetailView extends StatelessWidget {
                       style: const TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w800,
-                        color: WijiBumiColors.deepForest,
+                        color: Colors.white,
                       ),
                     ),
                     const SizedBox(height: 4),
@@ -285,7 +296,7 @@ class OrderDetailView extends StatelessWidget {
                                       style: TextStyle(
                                         fontSize: 10,
                                         fontWeight: FontWeight.bold,
-                                        color: WijiBumiColors.deepForest,
+                                        color: Color(0xFFA7F3D0),
                                       ),
                                     ),
                                   ),
@@ -547,7 +558,7 @@ class OrderDetailView extends StatelessWidget {
                                       style: TextStyle(
                                         fontSize: 9,
                                         fontWeight: FontWeight.bold,
-                                        color: WijiBumiColors.deepForest,
+                                        color: Color(0xFFA7F3D0),
                                       ),
                                     ),
                                   ),

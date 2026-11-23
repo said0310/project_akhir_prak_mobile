@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../app.dart';
 
 enum ButtonVariant { primary, secondaryGlass }
 
@@ -34,11 +33,11 @@ class CustomButton extends StatelessWidget {
         child: OutlinedButton(
           onPressed: isEnabled ? onPressed : null,
           style: OutlinedButton.styleFrom(
-            backgroundColor: WijiBumiColors.lightMint.withOpacity(0.85),
-            foregroundColor: WijiBumiColors.deepForest,
-            side: const BorderSide(color: WijiBumiColors.freshLeaf, width: 1.2),
+            backgroundColor: Colors.white.withOpacity(0.12),
+            foregroundColor: Colors.white,
+            side: BorderSide(color: Colors.white.withOpacity(0.28), width: 1.2),
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(14),
             ),
             padding: const EdgeInsets.symmetric(horizontal: 16),
           ),
@@ -48,7 +47,7 @@ class CustomButton extends StatelessWidget {
                   height: 20,
                   child: CircularProgressIndicator(
                     strokeWidth: 2,
-                    valueColor: AlwaysStoppedAnimation<Color>(WijiBumiColors.deepForest),
+                    valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                   ),
                 )
               : Row(
@@ -56,15 +55,15 @@ class CustomButton extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     if (icon != null) ...[
-                      Icon(icon, size: 18, color: WijiBumiColors.deepForest),
+                      Icon(icon, size: 18, color: Colors.white),
                       const SizedBox(width: 8),
                     ],
                     Text(
                       text,
                       style: const TextStyle(
                         fontSize: 14,
-                        fontWeight: FontWeight.w600,
-                        color: WijiBumiColors.deepForest,
+                        fontWeight: FontWeight.w700,
+                        color: Colors.white,
                       ),
                     ),
                   ],
@@ -79,11 +78,10 @@ class CustomButton extends StatelessWidget {
       child: ElevatedButton(
         onPressed: isEnabled ? onPressed : null,
         style: ElevatedButton.styleFrom(
-          backgroundColor: WijiBumiColors.surfaceDark,
-          foregroundColor: Colors.white,
-          side: BorderSide(color: Colors.white.withOpacity(0.18), width: 1.0),
-          disabledBackgroundColor: Colors.white.withOpacity(0.10),
-          disabledForegroundColor: Colors.white38,
+          backgroundColor: const Color(0xFFA7F3D0), // Hijau Mint Cerah
+          foregroundColor: const Color(0xFF142117), // Hijau Hutan Sangat Gelap
+          disabledBackgroundColor: const Color(0xFFA7F3D0).withOpacity(0.4),
+          disabledForegroundColor: const Color(0xFF142117).withOpacity(0.4),
           elevation: 2,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(14),
@@ -96,7 +94,7 @@ class CustomButton extends StatelessWidget {
                 height: 20,
                 child: CircularProgressIndicator(
                   strokeWidth: 2,
-                  valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                  valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF142117)),
                 ),
               )
             : Row(
@@ -104,15 +102,15 @@ class CustomButton extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   if (icon != null) ...[
-                    Icon(icon, size: 18, color: Colors.white),
+                    Icon(icon, size: 18, color: const Color(0xFF142117)),
                     const SizedBox(width: 8),
                   ],
                   Text(
                     text,
                     style: const TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.white,
+                      fontSize: 14.5,
+                      fontWeight: FontWeight.w800,
+                      color: Color(0xFF142117),
                     ),
                   ),
                 ],

@@ -1,4 +1,3 @@
-import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -126,6 +125,7 @@ class _ProductDetailViewState extends State<ProductDetailView> {
                             decoration: DynamicGlassDecoration.accentPill(
                               radius: 8,
                               fillColor: WijiBumiColors.lightMint,
+                              borderColor: WijiBumiColors.softSage,
                             ),
                             child: Text(
                               product.categoryId.toUpperCase(),
@@ -158,65 +158,107 @@ class _ProductDetailViewState extends State<ProductDetailView> {
                       Text(
                         product.name,
                         style: const TextStyle(
-                          fontSize: 20,
+                          fontSize: 22,
                           fontWeight: FontWeight.w800,
                           color: WijiBumiColors.textPrimary,
                           height: 1.25,
                         ),
                       ),
-                      const SizedBox(height: 10),
+                      const SizedBox(height: 8),
 
-                      // Harga & Satuan
+                      // Harga & Stok
                       Row(
-                        crossAxisAlignment: CrossAxisAlignment.baseline,
-                        textBaseline: TextBaseline.alphabetic,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           Text(
-                            currencyFormatter.format(product.price),
+                            '${currencyFormatter.format(product.price)} /${product.unit}',
                             style: const TextStyle(
-                              fontSize: 22,
+                              fontSize: 20,
                               fontWeight: FontWeight.w800,
-                              color: WijiBumiColors.deepForest,
+                              color: WijiBumiColors.textPrimary,
                             ),
                           ),
-                          const SizedBox(width: 4),
-                          Text(
-                            '/${product.unit}',
-                            style: const TextStyle(
-                              fontSize: 14,
-                              color: WijiBumiColors.textMuted,
-                              fontWeight: FontWeight.w500,
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                            decoration: BoxDecoration(
+                              color: isOutOfStock
+                                  ? WijiBumiColors.error.withOpacity(0.12)
+                                  : WijiBumiColors.lightMint,
+                              borderRadius: BorderRadius.circular(8),
+                              border: Border.all(
+                                color: isOutOfStock
+                                    ? WijiBumiColors.error.withOpacity(0.4)
+                                    : WijiBumiColors.softSage,
+                                width: 1.0,
+                              ),
                             ),
-                          ),
-                          const Spacer(),
-                          Text(
-                            isOutOfStock ? 'Stok Habis' : 'Stok: ${product.stock} ${product.unit}',
-                            style: TextStyle(
-                              fontSize: 13,
-                              fontWeight: FontWeight.w600,
-                              color: isOutOfStock ? WijiBumiColors.error : WijiBumiColors.textSecondary,
+                            child: Text(
+                              isOutOfStock ? 'Stok Habis' : 'Stok: ${product.stock} ${product.unit}',
+                              style: TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.bold,
+                                color: isOutOfStock
+                                    ? WijiBumiColors.error
+                                    : const Color(0xFFA7F3D0),
+                              ),
                             ),
                           ),
                         ],
                       ),
-                      const SizedBox(height: 18),
+                      const SizedBox(height: 16),
 
-                      // Info Penjual & Jarak GPS
+                      // Kartu Deskripsi
+                      Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.all(16),
+                        decoration: DynamicGlassDecoration.glassCard(radius: 16),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text(
+                              'Deskripsi Produk',
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w700,
+                                color: WijiBumiColors.textPrimary,
+                              ),
+                            ),
+                            const SizedBox(height: 8),
+                            Text(
+                              product.description,
+                              style: const TextStyle(
+                                fontSize: 13,
+                                color: WijiBumiColors.textSecondary,
+                                height: 1.5,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 14),
+
+                      // Kartu Petani Mitra / Kebun
                       Container(
                         padding: const EdgeInsets.all(14),
-                        decoration: DynamicGlassDecoration.cleanCard(radius: 12),
+                        decoration: DynamicGlassDecoration.glassCard(radius: 16),
                         child: Row(
                           children: [
                             Container(
-                              padding: const EdgeInsets.all(10),
-                              decoration: const BoxDecoration(
-                                color: WijiBumiColors.lightMint,
+                              width: 44,
+                              height: 44,
+                              decoration: BoxDecoration(
+                                color: Colors.white.withOpacity(0.12),
                                 shape: BoxShape.circle,
+                                border: Border.all(
+                                  color: Colors.white.withOpacity(0.24),
+                                  width: 1.0,
+                                ),
                               ),
                               child: const Icon(
-                                Icons.storefront_rounded,
-                                color: WijiBumiColors.deepForest,
-                                size: 22,
+                                Icons.eco_rounded,
+                                color: Color(0xFFA7F3D0),
+                                size: 24,
                               ),
                             ),
                             const SizedBox(width: 12),
@@ -226,74 +268,28 @@ class _ProductDetailViewState extends State<ProductDetailView> {
                                 children: [
                                   Text(
                                     product.sellerName,
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
                                     style: const TextStyle(
-                                      fontSize: 13,
+                                      fontSize: 14,
                                       fontWeight: FontWeight.w700,
                                       color: WijiBumiColors.textPrimary,
                                     ),
                                   ),
                                   const SizedBox(height: 2),
                                   Text(
-                                    product.sellerLocation,
+                                    'Lokasi Kebun: ${product.sellerLocation}',
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
                                     style: const TextStyle(
-                                      fontSize: 11,
-                                      color: WijiBumiColors.textMuted,
+                                      fontSize: 12,
+                                      color: WijiBumiColors.textSecondary,
                                     ),
                                   ),
                                 ],
                               ),
                             ),
-                            Obx(() {
-                              final dist = locationController.distanceKm.value;
-                              return Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                                decoration: DynamicGlassDecoration.accentPill(
-                                  radius: 10,
-                                  fillColor: WijiBumiColors.lightMint,
-                                  borderColor: WijiBumiColors.freshLeaf,
-                                ),
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    const Icon(
-                                      Icons.location_on_rounded,
-                                      size: 13,
-                                      color: WijiBumiColors.deepForest,
-                                    ),
-                                    const SizedBox(width: 4),
-                                    Text(
-                                      dist > 0 ? '${dist.toStringAsFixed(1)} km' : '2.5 km',
-                                      style: const TextStyle(
-                                        fontSize: 11,
-                                        fontWeight: FontWeight.bold,
-                                        color: WijiBumiColors.deepForest,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              );
-                            }),
                           ],
-                        ),
-                      ),
-                      const SizedBox(height: 20),
-
-                      // Deskripsi Produk
-                      const Text(
-                        'Deskripsi Produk',
-                        style: TextStyle(
-                          fontSize: 15,
-                          fontWeight: FontWeight.w700,
-                          color: WijiBumiColors.textPrimary,
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        product.description,
-                        style: const TextStyle(
-                          fontSize: 13,
-                          height: 1.6,
-                          color: WijiBumiColors.textSecondary,
                         ),
                       ),
                     ],
@@ -303,154 +299,136 @@ class _ProductDetailViewState extends State<ProductDetailView> {
             ),
           ),
 
-          // 2. Tombol Navigasi Mengambang Atas (Back)
-          SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(20),
-                child: BackdropFilter(
-                  filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-                  child: Container(
-                    width: 40,
-                    height: 40,
-                    decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.85),
-                      shape: BoxShape.circle,
-                      border: Border.all(
-                        color: WijiBumiColors.softSage.withOpacity(0.7),
-                        width: 1,
+          // 2. Tombol Navigasi Mengambang (Kembali & Wishlist)
+          Positioned(
+            top: 0,
+            left: 0,
+            right: 0,
+            child: SafeArea(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    InkWell(
+                      onTap: () => Get.back(),
+                      borderRadius: BorderRadius.circular(20),
+                      child: Container(
+                        padding: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          color: WijiBumiColors.deepForest,
+                          shape: BoxShape.circle,
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.20),
+                              blurRadius: 8,
+                              offset: const Offset(0, 2),
+                            ),
+                          ],
+                        ),
+                        child: const Icon(
+                          Icons.chevron_left_rounded,
+                          size: 28,
+                          color: Colors.white,
+                        ),
                       ),
                     ),
-                    child: IconButton(
-                      padding: EdgeInsets.zero,
-                      icon: const Icon(Icons.arrow_back_ios_new_rounded, size: 18),
-                      color: WijiBumiColors.deepForest,
-                      onPressed: () => Get.back(),
-                    ),
-                  ),
+                    Obx(() {
+                      final isFav = cartController.isFavorite(product.id);
+                      return InkWell(
+                        onTap: () => cartController.toggleFavorite(product),
+                        borderRadius: BorderRadius.circular(20),
+                        child: Container(
+                          padding: const EdgeInsets.all(10),
+                          decoration: BoxDecoration(
+                            color: WijiBumiColors.deepForest,
+                            shape: BoxShape.circle,
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.20),
+                                blurRadius: 8,
+                                offset: const Offset(0, 2),
+                              ),
+                            ],
+                          ),
+                          child: Icon(
+                            isFav ? Icons.favorite_rounded : Icons.favorite_border_rounded,
+                            color: isFav ? const Color(0xFFEF5350) : Colors.white,
+                            size: 22,
+                          ),
+                        ),
+                      );
+                    }),
+                  ],
                 ),
               ),
             ),
           ),
 
-          // 3. Bar Kaca Bawah
+          // 3. Panel Kuantitas & Tambah ke Keranjang
           Positioned(
+            bottom: 0,
             left: 0,
             right: 0,
-            bottom: 0,
-            child: ClipRRect(
-              borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
-              child: BackdropFilter(
-                filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
-                child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-                  decoration: DynamicGlassDecoration.glassBar(
-                    radius: 20,
-                    fullTopRadius: true,
-                    fullBottomRadius: false,
-                  ),
-                  child: SafeArea(
-                    top: false,
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        if (!isOutOfStock)
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              const Text(
-                                'Jumlah Pembelian:',
-                                style: TextStyle(
-                                  fontSize: 13,
-                                  fontWeight: FontWeight.w600,
-                                  color: WijiBumiColors.textPrimary,
-                                ),
-                              ),
-                              Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
-                                decoration: BoxDecoration(
-                                  color: WijiBumiColors.lightMint.withOpacity(0.8),
-                                  borderRadius: BorderRadius.circular(10),
-                                  border: Border.all(color: WijiBumiColors.softSage, width: 1),
-                                ),
-                                child: Row(
-                                  children: [
-                                    InkWell(
-                                      onTap: _decrementQty,
-                                      borderRadius: BorderRadius.circular(6),
-                                      child: Container(
-                                        padding: const EdgeInsets.all(4),
-                                        decoration: BoxDecoration(
-                                          color: Colors.white,
-                                          borderRadius: BorderRadius.circular(6),
-                                        ),
-                                        child: const Icon(Icons.remove, size: 16, color: WijiBumiColors.deepForest),
-                                      ),
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.symmetric(horizontal: 14),
-                                      child: Text(
-                                        '$_quantity',
-                                        style: const TextStyle(
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.bold,
-                                          color: WijiBumiColors.textPrimary,
-                                        ),
-                                      ),
-                                    ),
-                                    InkWell(
-                                      onTap: _incrementQty,
-                                      borderRadius: BorderRadius.circular(6),
-                                      child: Container(
-                                        padding: const EdgeInsets.all(4),
-                                        decoration: BoxDecoration(
-                                          color: Colors.white,
-                                          borderRadius: BorderRadius.circular(6),
-                                        ),
-                                        child: const Icon(Icons.add, size: 16, color: WijiBumiColors.deepForest),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                        if (!isOutOfStock) const SizedBox(height: 14),
-
-                        Row(
-                          children: [
-                            Expanded(
-                              child: CustomButton(
-                                text: '+ Keranjang',
-                                variant: ButtonVariant.secondaryGlass,
-                                icon: Icons.shopping_cart_outlined,
-                                height: 46,
-                                onPressed: isOutOfStock
-                                    ? null
-                                    : () {
-                                        cartController.addToCart(product, _quantity);
-                                      },
-                              ),
-                            ),
-                            const SizedBox(width: 12),
-                            Expanded(
-                              child: CustomButton(
-                                text: isOutOfStock ? 'Stok Habis' : 'Beli Sekarang',
-                                height: 46,
-                                onPressed: isOutOfStock
-                                    ? null
-                                    : () {
-                                        cartController.addToCart(product, _quantity);
-                                        Get.toNamed(AppRoutes.CHECKOUT);
-                                      },
-                              ),
-                            ),
-                          ],
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+              decoration: DynamicGlassDecoration.glassBar(radius: 20, fullBottomRadius: false),
+              child: SafeArea(
+                top: false,
+                child: Row(
+                  children: [
+                    // Pengatur Kuantitas
+                    Container(
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.12),
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(
+                          color: Colors.white.withOpacity(0.24),
+                          width: 1.0,
                         ),
-                      ],
+                      ),
+                      child: Row(
+                        children: [
+                          IconButton(
+                            icon: const Icon(Icons.remove, size: 16, color: Colors.white),
+                            onPressed: isOutOfStock ? null : _decrementQty,
+                          ),
+                          Text(
+                            '$_quantity',
+                            style: const TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                            ),
+                          ),
+                          IconButton(
+                            icon: const Icon(Icons.add, size: 16, color: Colors.white),
+                            onPressed: isOutOfStock ? null : _incrementQty,
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
+                    const SizedBox(width: 12),
+
+                    // Tombol Tambah ke Keranjang
+                    Expanded(
+                      child: CustomButton(
+                        text: isOutOfStock ? 'Stok Kosong' : '+ Keranjang',
+                        icon: Icons.add_shopping_cart_rounded,
+                        onPressed: isOutOfStock
+                            ? null
+                            : () {
+                                cartController.addToCart(product, _quantity);
+                                if (locationController.selectedAddress.value != null) {
+                                  locationController.updateDistanceAndShipping(
+                                    locationController.selectedAddress.value!,
+                                    cartController.getTotalPrice(),
+                                  );
+                                }
+                              },
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),
@@ -465,7 +443,7 @@ class _ProductDetailViewState extends State<ProductDetailView> {
     final fallback = Container(
       color: WijiBumiColors.lightMint,
       child: const Center(
-        child: Icon(Icons.eco_rounded, size: 64, color: WijiBumiColors.freshLeaf),
+        child: Icon(Icons.eco_rounded, size: 80, color: WijiBumiColors.freshLeaf),
       ),
     );
 

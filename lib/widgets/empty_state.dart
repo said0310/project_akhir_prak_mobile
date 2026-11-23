@@ -23,21 +23,7 @@ class EmptyState extends StatelessWidget {
         child: Container(
           width: double.infinity,
           padding: const EdgeInsets.all(28),
-          decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.88),
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(
-              color: WijiBumiColors.softSage.withOpacity(0.7),
-              width: 1.0,
-            ),
-            boxShadow: [
-              BoxShadow(
-                color: WijiBumiColors.deepForest.withOpacity(0.04),
-                blurRadius: 16,
-                offset: const Offset(0, 4),
-              ),
-            ],
-          ),
+          decoration: DynamicGlassDecoration.glassCard(radius: 20),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -45,17 +31,17 @@ class EmptyState extends StatelessWidget {
                 width: 72,
                 height: 72,
                 decoration: BoxDecoration(
-                  color: WijiBumiColors.lightMint.withOpacity(0.9),
+                  color: Colors.white.withOpacity(0.14),
                   shape: BoxShape.circle,
                   border: Border.all(
-                    color: WijiBumiColors.softSage,
-                    width: 1.0,
+                    color: Colors.white.withOpacity(0.25),
+                    width: 1.2,
                   ),
                 ),
                 child: Icon(
                   icon,
                   size: 38,
-                  color: WijiBumiColors.freshLeaf,
+                  color: const Color(0xFFA7F3D0),
                 ),
               ),
               const SizedBox(height: 18),
@@ -65,7 +51,7 @@ class EmptyState extends StatelessWidget {
                 style: const TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w700,
-                  color: WijiBumiColors.textCardDark,
+                  color: WijiBumiColors.textPrimary,
                 ),
               ),
               const SizedBox(height: 8),
@@ -75,7 +61,7 @@ class EmptyState extends StatelessWidget {
                 style: const TextStyle(
                   fontSize: 13,
                   fontWeight: FontWeight.w400,
-                  color: WijiBumiColors.textCardDark,
+                  color: WijiBumiColors.textSecondary,
                   height: 1.4,
                 ),
               ),

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../app.dart';
 import '../models/models.dart';
 
 class CategoryCard extends StatelessWidget {
@@ -32,21 +31,21 @@ class CategoryCard extends StatelessWidget {
               style: TextStyle(
                 fontFamily: 'Poppins',
                 fontSize: 15,
-                fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
+                fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
                 color: isSelected
-                    ? WijiBumiColors.textWhite
-                    : WijiBumiColors.textMutedLight,
+                    ? Colors.white
+                    : const Color(0xFFD8E8DC),
                 height: 1.3,
               ),
             ),
             const SizedBox(height: 6),
-            // Indikator tab aktif: garis putih horizontal lebar 18 px, tinggi 2.5 px, radius 2 px
+            // Indikator tab aktif: garis hijau terang horizontal lebar 18 px, tinggi 2.5 px, radius 2 px
             AnimatedContainer(
               duration: const Duration(milliseconds: 200),
-              width: isSelected ? 18 : 0,
+              width: isSelected ? 20 : 0,
               height: 2.5,
               decoration: BoxDecoration(
-                color: WijiBumiColors.textWhite,
+                color: const Color(0xFF81C784),
                 borderRadius: BorderRadius.circular(2),
               ),
             ),

@@ -1,4 +1,3 @@
-import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -24,7 +23,17 @@ class CartView extends StatelessWidget {
     return Scaffold(
       backgroundColor: WijiBumiColors.backgroundCanvas,
       appBar: AppBar(
-        title: const Text('Keranjang Belanja'),
+        backgroundColor: WijiBumiColors.deepForest,
+        elevation: 0,
+        centerTitle: true,
+        title: const Text(
+          'Keranjang Belanja',
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 16.5,
+            fontWeight: FontWeight.w700,
+          ),
+        ),
         actions: [
           Obx(() {
             if (cartController.items.isEmpty) return const SizedBox.shrink();
@@ -45,7 +54,7 @@ class CartView extends StatelessWidget {
                 'Kosongkan',
                 style: TextStyle(
                   color: WijiBumiColors.error,
-                  fontSize: 12,
+                  fontSize: 13,
                   fontWeight: FontWeight.w600,
                 ),
               ),
@@ -84,7 +93,7 @@ class CartView extends StatelessWidget {
           children: [
             // 2. Daftar Item Keranjang
             ListView.builder(
-              padding: const EdgeInsets.fromLTRB(16, 8, 16, 140),
+              padding: const EdgeInsets.fromLTRB(16, 12, 16, 110),
               physics: const BouncingScrollPhysics(),
               itemCount: items.length + 1,
               itemBuilder: (context, index) {
@@ -94,12 +103,13 @@ class CartView extends StatelessWidget {
                     padding: const EdgeInsets.only(bottom: 12),
                     child: Container(
                       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-                      decoration: DynamicGlassDecoration.cleanCard(radius: 12),
+                      decoration: DynamicGlassDecoration.glassCard(radius: 14),
                       child: Row(
                         children: [
                           Checkbox(
                             value: allSelected,
-                            activeColor: WijiBumiColors.deepForest,
+                            activeColor: const Color(0xFFA7F3D0),
+                            checkColor: const Color(0xFF142117),
                             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
                             onChanged: (val) {
                               cartController.toggleSelectAll(val ?? false);
@@ -113,7 +123,7 @@ class CartView extends StatelessWidget {
                               style: TextStyle(
                                 fontSize: 14,
                                 fontWeight: FontWeight.w700,
-                                color: WijiBumiColors.textCardDark,
+                                color: WijiBumiColors.textPrimary,
                               ),
                             ),
                           ),
@@ -125,7 +135,7 @@ class CartView extends StatelessWidget {
                             style: const TextStyle(
                               fontSize: 12,
                               fontWeight: FontWeight.w600,
-                              color: Color(0xFF1B3320),
+                              color: WijiBumiColors.textSecondary,
                             ),
                           ),
                         ],
@@ -140,14 +150,15 @@ class CartView extends StatelessWidget {
                   padding: const EdgeInsets.only(bottom: 12),
                   child: Container(
                     padding: const EdgeInsets.all(12),
-                    decoration: DynamicGlassDecoration.cleanCard(radius: 14),
+                    decoration: DynamicGlassDecoration.glassCard(radius: 16),
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         // Checkbox Beli per Item
                         Checkbox(
                           value: item.isSelected,
-                          activeColor: WijiBumiColors.deepForest,
+                          activeColor: const Color(0xFFA7F3D0),
+                          checkColor: const Color(0xFF142117),
                           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
                           onChanged: (val) {
                             cartController.toggleSelection(item.productId, val ?? false);
@@ -177,7 +188,7 @@ class CartView extends StatelessWidget {
                                 style: const TextStyle(
                                   fontSize: 14,
                                   fontWeight: FontWeight.w700,
-                                  color: WijiBumiColors.textCardDark,
+                                  color: WijiBumiColors.textPrimary,
                                 ),
                               ),
                               const SizedBox(height: 4),
@@ -187,8 +198,8 @@ class CartView extends StatelessWidget {
                                 overflow: TextOverflow.ellipsis,
                                 style: const TextStyle(
                                   fontSize: 13,
-                                  fontWeight: FontWeight.w800,
-                                  color: Color(0xFF0C2411),
+                                  fontWeight: FontWeight.w700,
+                                  color: WijiBumiColors.textPrimary,
                                 ),
                               ),
                               const SizedBox(height: 8),
@@ -200,10 +211,10 @@ class CartView extends StatelessWidget {
                                   // Kontrol Kuantitas
                                   Container(
                                     decoration: BoxDecoration(
-                                      color: Colors.white.withOpacity(0.55),
+                                      color: WijiBumiColors.lightMint,
                                       borderRadius: BorderRadius.circular(8),
                                       border: Border.all(
-                                        color: Colors.white.withOpacity(0.4),
+                                        color: WijiBumiColors.softSage,
                                         width: 1,
                                       ),
                                     ),
@@ -216,7 +227,7 @@ class CartView extends StatelessWidget {
                                           borderRadius: BorderRadius.circular(6),
                                           child: Container(
                                             padding: const EdgeInsets.all(4),
-                                            child: const Icon(Icons.remove, size: 14, color: WijiBumiColors.textCardDark),
+                                            child: const Icon(Icons.remove, size: 14, color: WijiBumiColors.deepForest),
                                           ),
                                         ),
                                         Padding(
@@ -226,7 +237,7 @@ class CartView extends StatelessWidget {
                                             style: const TextStyle(
                                               fontSize: 12,
                                               fontWeight: FontWeight.bold,
-                                              color: WijiBumiColors.textCardDark,
+                                              color: WijiBumiColors.deepForest,
                                             ),
                                           ),
                                         ),
@@ -237,7 +248,7 @@ class CartView extends StatelessWidget {
                                           borderRadius: BorderRadius.circular(6),
                                           child: Container(
                                             padding: const EdgeInsets.all(4),
-                                            child: const Icon(Icons.add, size: 14, color: WijiBumiColors.textCardDark),
+                                            child: const Icon(Icons.add, size: 14, color: WijiBumiColors.deepForest),
                                           ),
                                         ),
                                       ],
@@ -263,69 +274,59 @@ class CartView extends StatelessWidget {
               },
             ),
 
-            // 3. Panel Kaca Bawah: Total & Tombol Checkout
+            // 3. Panel Bawah: Total & Tombol Checkout
             Positioned(
               left: 0,
               right: 0,
               bottom: 0,
-              child: ClipRRect(
-                borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
-                child: BackdropFilter(
-                  filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
-                    decoration: DynamicGlassDecoration.glassBar(
-                      radius: 20,
-                      fullTopRadius: true,
-                      fullBottomRadius: false,
-                    ),
-                    child: SafeArea(
-                      top: false,
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                const Text(
-                                  'Total Harga:',
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: TextStyle(
-                                    fontSize: 12,
-                                    color: WijiBumiColors.textMutedLight,
-                                  ),
-                                ),
-                                FittedBox(
-                                  fit: BoxFit.scaleDown,
-                                  alignment: Alignment.centerLeft,
-                                  child: Text(
-                                    currencyFormatter.format(cartController.getTotalPrice()),
-                                    style: const TextStyle(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.w900,
-                                      color: WijiBumiColors.textWhite,
-                                    ),
-                                  ),
-                                ),
-                              ],
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+                decoration: DynamicGlassDecoration.glassBar(radius: 20, fullBottomRadius: false),
+                child: SafeArea(
+                  top: false,
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text(
+                              'Total Harga:',
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: WijiBumiColors.textSecondary,
+                              ),
                             ),
-                          ),
-                          const SizedBox(width: 12),
-                          CustomButton(
-                            text: 'Checkout (${items.where((i) => i.isSelected).length})',
-                            width: 150,
-                            height: 44,
-                            onPressed: cartController.getTotalPrice() > 0
-                                ? () {
-                                    Get.toNamed(AppRoutes.CHECKOUT);
-                                  }
-                                : null,
-                          ),
-                        ],
+                            FittedBox(
+                              fit: BoxFit.scaleDown,
+                              alignment: Alignment.centerLeft,
+                              child: Text(
+                                currencyFormatter.format(cartController.getTotalPrice()),
+                                style: const TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w800,
+                                  color: WijiBumiColors.textPrimary,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
+                      const SizedBox(width: 12),
+                      CustomButton(
+                        text: 'Checkout (${items.where((i) => i.isSelected).length})',
+                        width: 150,
+                        height: 44,
+                        onPressed: cartController.getTotalPrice() > 0
+                            ? () {
+                                Get.toNamed(AppRoutes.CHECKOUT);
+                              }
+                            : null,
+                      ),
+                    ],
                   ),
                 ),
               ),

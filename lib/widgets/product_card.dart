@@ -41,11 +41,11 @@ class ProductCard extends StatelessWidget {
       child: Container(
         width: width,
         height: height,
-        decoration: DynamicGlassDecoration.glassCard(radius: 20),
+        decoration: DynamicGlassDecoration.glassCard(radius: 16),
         child: ClipRRect(
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(16),
           child: BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 14, sigmaY: 14),
+            filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
             child: Padding(
               padding: const EdgeInsets.all(9.0),
               child: Column(
@@ -57,7 +57,7 @@ class ProductCard extends StatelessWidget {
                       fit: StackFit.expand,
                       children: [
                         ClipRRect(
-                          borderRadius: BorderRadius.circular(14),
+                          borderRadius: BorderRadius.circular(12),
                           child: Hero(
                             tag: '${heroTagPrefix ?? 'product'}_img_${product.id}',
                             child: _buildPlantImage(product.imageUrl),
@@ -107,7 +107,7 @@ class ProductCard extends StatelessWidget {
                               style: const TextStyle(
                                 fontSize: 13,
                                 fontWeight: FontWeight.w700,
-                                color: WijiBumiColors.textCardDark,
+                                color: WijiBumiColors.textPrimary,
                                 height: 1.2,
                                 fontFamily: 'Poppins',
                                 letterSpacing: -0.2,
@@ -121,7 +121,7 @@ class ProductCard extends StatelessWidget {
                               style: const TextStyle(
                                 fontSize: 12.5,
                                 fontWeight: FontWeight.w800,
-                                color: WijiBumiColors.textCardDark,
+                                color: WijiBumiColors.textPrimary,
                                 height: 1.15,
                                 fontFamily: 'Poppins',
                               ),
@@ -140,17 +140,17 @@ class ProductCard extends StatelessWidget {
                           height: 28,
                           decoration: BoxDecoration(
                             color: isOutOfStock
-                                ? WijiBumiColors.textPlaceholder.withOpacity(0.5)
-                                : WijiBumiColors.surfaceDark,
+                                ? Colors.white.withOpacity(0.10)
+                                : const Color(0xFF142117),
                             borderRadius: BorderRadius.circular(8),
                             border: Border.all(
-                              color: Colors.white.withOpacity(0.22),
+                              color: Colors.white.withOpacity(0.25),
                               width: 1.0,
                             ),
                             boxShadow: [
                               BoxShadow(
-                                color: Colors.black.withOpacity(0.25),
-                                blurRadius: 6,
+                                color: Colors.black.withOpacity(0.20),
+                                blurRadius: 4,
                                 offset: const Offset(0, 2),
                               ),
                             ],
@@ -161,7 +161,9 @@ class ProductCard extends StatelessWidget {
                                   ? Icons.remove_shopping_cart_rounded
                                   : Icons.add_rounded,
                               size: 16,
-                              color: Colors.white,
+                              color: isOutOfStock
+                                  ? const Color(0xFF9EB5A4)
+                                  : Colors.white,
                             ),
                           ),
                         ),
@@ -219,14 +221,14 @@ class ProductCard extends StatelessWidget {
   Widget _buildFallbackPlant() {
     return Container(
       decoration: BoxDecoration(
-        color: WijiBumiColors.surfaceDark.withOpacity(0.6),
-        borderRadius: BorderRadius.circular(14),
+        color: WijiBumiColors.lightMint,
+        borderRadius: BorderRadius.circular(12),
       ),
       child: const Center(
         child: Icon(
-          Icons.park_rounded,
-          size: 36,
-          color: WijiBumiColors.textMutedLight,
+          Icons.eco_rounded,
+          size: 32,
+          color: WijiBumiColors.freshLeaf,
         ),
       ),
     );

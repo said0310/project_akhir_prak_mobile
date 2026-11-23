@@ -39,13 +39,27 @@ class _EditProfileViewState extends State<EditProfileView> {
     return Scaffold(
       backgroundColor: WijiBumiColors.backgroundCanvas,
       appBar: AppBar(
-        title: const Text('Edit Profil'),
+        backgroundColor: WijiBumiColors.deepForest,
+        elevation: 0,
+        centerTitle: true,
+        leading: IconButton(
+          icon: const Icon(Icons.chevron_left_rounded, size: 30, color: Colors.white),
+          onPressed: () => Get.back(),
+        ),
+        title: const Text(
+          'Edit Profil',
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 16.5,
+            fontWeight: FontWeight.w700,
+          ),
+        ),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
         child: Container(
           padding: const EdgeInsets.all(20),
-          decoration: DynamicGlassDecoration.cleanCard(radius: 16),
+          decoration: DynamicGlassDecoration.glassCard(radius: 16),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -53,8 +67,8 @@ class _EditProfileViewState extends State<EditProfileView> {
                 'Perbarui Informasi Akun',
                 style: TextStyle(
                   fontSize: 16,
-                  fontWeight: FontWeight.w700,
-                  color: WijiBumiColors.deepForest,
+                  fontWeight: FontWeight.w800,
+                  color: WijiBumiColors.textPrimary,
                 ),
               ),
               const SizedBox(height: 16),
@@ -67,6 +81,7 @@ class _EditProfileViewState extends State<EditProfileView> {
                 controller: _nameController,
                 hintText: 'Nama lengkap Anda',
                 prefixIcon: Icons.badge_outlined,
+                textColor: WijiBumiColors.textPrimary,
               ),
               const SizedBox(height: 14),
               const Text(
@@ -79,6 +94,7 @@ class _EditProfileViewState extends State<EditProfileView> {
                 hintText: '08xxxxxxxxxx',
                 prefixIcon: Icons.phone_outlined,
                 keyboardType: TextInputType.phone,
+                textColor: WijiBumiColors.textPrimary,
               ),
               const SizedBox(height: 24),
               Obx(

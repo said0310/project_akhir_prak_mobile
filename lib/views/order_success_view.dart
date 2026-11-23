@@ -58,14 +58,14 @@ class OrderSuccessView extends StatelessWidget {
     final formattedDate = _formatTransactionTime(finalOrder.createdAt);
 
     return Scaffold(
-      backgroundColor: const Color(0xFFEAF2EB),
+      backgroundColor: WijiBumiColors.backgroundCanvas,
       appBar: AppBar(
-        backgroundColor: const Color(0xFFEAF2EB),
+        backgroundColor: WijiBumiColors.deepForest,
         elevation: 0,
         scrolledUnderElevation: 0,
         centerTitle: true,
         leading: IconButton(
-          icon: const Icon(Icons.chevron_left_rounded, size: 30, color: Color(0xFF1C2B1E)),
+          icon: const Icon(Icons.chevron_left_rounded, size: 30, color: Colors.white),
           onPressed: () {
             Get.offAllNamed(AppRoutes.MAIN);
           },
@@ -73,9 +73,9 @@ class OrderSuccessView extends StatelessWidget {
         title: const Text(
           'Konfirmasi Pesanan',
           style: TextStyle(
-            fontSize: 16,
+            fontSize: 16.5,
             fontWeight: FontWeight.w700,
-            color: Color(0xFF1C2B1E),
+            color: Colors.white,
           ),
         ),
       ),
@@ -123,7 +123,7 @@ class OrderSuccessView extends StatelessWidget {
                   fontSize: 22,
                   fontWeight: FontWeight.w800,
                   letterSpacing: -0.3,
-                  color: Color(0xFF1C2B1E),
+                  color: Colors.white,
                 ),
               ),
               const SizedBox(height: 8),
@@ -135,7 +135,7 @@ class OrderSuccessView extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 12.5,
                     height: 1.45,
-                    color: Color(0xFF5A6E5D),
+                    color: Color(0xFFC8DDD0),
                     fontWeight: FontWeight.w400,
                   ),
                 ),
@@ -146,17 +146,7 @@ class OrderSuccessView extends StatelessWidget {
               // 2. KARTU STRUK TRANSAKSI DIGITAL
               // ==========================================
               Container(
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(22),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.04),
-                      blurRadius: 18,
-                      offset: const Offset(0, 6),
-                    ),
-                  ],
-                ),
+                decoration: DynamicGlassDecoration.glassCard(radius: 22),
                 child: Column(
                   children: [
                     // --- HEADER STRUK ---
@@ -170,7 +160,7 @@ class OrderSuccessView extends StatelessWidget {
                               Icon(
                                 Icons.eco_rounded,
                                 size: 20,
-                                color: Color(0xFF38A169),
+                                color: Color(0xFFA7F3D0),
                               ),
                               SizedBox(width: 8),
                               Text(
@@ -179,7 +169,7 @@ class OrderSuccessView extends StatelessWidget {
                                   fontSize: 16,
                                   fontWeight: FontWeight.w900,
                                   letterSpacing: 1.5,
-                                  color: Color(0xFF1C2B1E),
+                                  color: Colors.white,
                                 ),
                               ),
                             ],
@@ -191,11 +181,11 @@ class OrderSuccessView extends StatelessWidget {
                               fontSize: 10,
                               fontWeight: FontWeight.w600,
                               letterSpacing: 2.2,
-                              color: Color(0xFF7A8B7C),
+                              color: Color(0xFFC8DDD0),
                             ),
                           ),
                           SizedBox(height: 16),
-                          Divider(height: 1, thickness: 0.8, color: Color(0xFFEAF0EB)),
+                          Divider(height: 1, thickness: 0.8, color: Color(0x26FFFFFF)),
                         ],
                       ),
                     ),
@@ -210,16 +200,16 @@ class OrderSuccessView extends StatelessWidget {
                             customValueWidget: Container(
                               padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 3.5),
                               decoration: BoxDecoration(
-                                color: const Color(0xFFF3F7F4),
+                                color: Colors.white.withOpacity(0.12),
                                 borderRadius: BorderRadius.circular(6),
-                                border: Border.all(color: const Color(0xFFD6E2D8), width: 0.8),
+                                border: Border.all(color: Colors.white.withOpacity(0.25), width: 0.8),
                               ),
                               child: Text(
                                 finalOrder.orderNumber,
                                 style: const TextStyle(
                                   fontSize: 11.5,
                                   fontWeight: FontWeight.w700,
-                                  color: Color(0xFF1C2B1E),
+                                  color: Colors.white,
                                 ),
                               ),
                             ),
@@ -240,10 +230,10 @@ class OrderSuccessView extends StatelessWidget {
                             customValueWidget: Container(
                               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 3.5),
                               decoration: BoxDecoration(
-                                color: const Color(0xFFFEF3C7).withOpacity(0.7),
+                                color: const Color(0xFFFEF3C7).withOpacity(0.18),
                                 borderRadius: BorderRadius.circular(12),
                                 border: Border.all(
-                                  color: const Color(0xFFF59E0B).withOpacity(0.5),
+                                  color: const Color(0xFFF59E0B).withOpacity(0.7),
                                   width: 0.8,
                                 ),
                               ),
@@ -252,7 +242,7 @@ class OrderSuccessView extends StatelessWidget {
                                 style: const TextStyle(
                                   fontSize: 11,
                                   fontWeight: FontWeight.w600,
-                                  color: Color(0xFFB45309),
+                                  color: Color(0xFFFBBF24),
                                 ),
                               ),
                             ),
@@ -280,21 +270,25 @@ class OrderSuccessView extends StatelessWidget {
                                   fontSize: 11.5,
                                   fontWeight: FontWeight.w700,
                                   letterSpacing: 0.6,
-                                  color: Color(0xFF5A6E5D),
+                                  color: Color(0xFFC8DDD0),
                                 ),
                               ),
                               Container(
                                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3.5),
                                 decoration: BoxDecoration(
-                                  color: const Color(0xFFE6F4EA),
+                                  color: const Color(0xFF2E7D32).withOpacity(0.35),
                                   borderRadius: BorderRadius.circular(6),
+                                  border: Border.all(
+                                    color: const Color(0xFFA7F3D0).withOpacity(0.5),
+                                    width: 0.8,
+                                  ),
                                 ),
                                 child: Text(
                                   '${finalOrder.items.length} Macam Produk',
                                   style: const TextStyle(
                                     fontSize: 11,
                                     fontWeight: FontWeight.w600,
-                                    color: Color(0xFF2E7D32),
+                                    color: Color(0xFFA7F3D0),
                                   ),
                                 ),
                               ),
@@ -318,7 +312,7 @@ class OrderSuccessView extends StatelessWidget {
                                           style: const TextStyle(
                                             fontSize: 13.5,
                                             fontWeight: FontWeight.w700,
-                                            color: Color(0xFF1C2B1E),
+                                            color: Colors.white,
                                           ),
                                         ),
                                         const SizedBox(height: 2),
@@ -326,7 +320,7 @@ class OrderSuccessView extends StatelessWidget {
                                           '${item.quantity} ${item.unit} × ${currencyFormatter.format(item.price)}',
                                           style: const TextStyle(
                                             fontSize: 11.5,
-                                            color: Color(0xFF7A8B7C),
+                                            color: Color(0xFFC8DDD0),
                                           ),
                                         ),
                                       ],
@@ -338,7 +332,7 @@ class OrderSuccessView extends StatelessWidget {
                                     style: const TextStyle(
                                       fontSize: 13.5,
                                       fontWeight: FontWeight.w700,
-                                      color: Color(0xFF1C2B1E),
+                                      color: Colors.white,
                                     ),
                                   ),
                                 ],
@@ -347,7 +341,7 @@ class OrderSuccessView extends StatelessWidget {
                           }),
 
                           const SizedBox(height: 6),
-                          const Divider(height: 1, thickness: 0.8, color: Color(0xFFEAF0EB)),
+                          const Divider(height: 1, thickness: 0.8, color: Color(0x26FFFFFF)),
                           const SizedBox(height: 14),
 
                           // Subtotal Produk
@@ -358,7 +352,7 @@ class OrderSuccessView extends StatelessWidget {
                                 'Subtotal Produk',
                                 style: TextStyle(
                                   fontSize: 12.5,
-                                  color: Color(0xFF7A8B7C),
+                                  color: Color(0xFFC8DDD0),
                                   fontWeight: FontWeight.w500,
                                 ),
                               ),
@@ -367,7 +361,7 @@ class OrderSuccessView extends StatelessWidget {
                                 style: const TextStyle(
                                   fontSize: 12.5,
                                   fontWeight: FontWeight.w700,
-                                  color: Color(0xFF1C2B1E),
+                                  color: Colors.white,
                                 ),
                               ),
                             ],
@@ -382,7 +376,7 @@ class OrderSuccessView extends StatelessWidget {
                                 'Biaya Pengiriman',
                                 style: TextStyle(
                                   fontSize: 12.5,
-                                  color: Color(0xFF7A8B7C),
+                                  color: Color(0xFFC8DDD0),
                                   fontWeight: FontWeight.w500,
                                 ),
                               ),
@@ -390,15 +384,19 @@ class OrderSuccessView extends StatelessWidget {
                                 Container(
                                   padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2.5),
                                   decoration: BoxDecoration(
-                                    color: const Color(0xFFE6F4EA),
+                                    color: const Color(0xFF2E7D32).withOpacity(0.35),
                                     borderRadius: BorderRadius.circular(5),
+                                    border: Border.all(
+                                      color: const Color(0xFFA7F3D0).withOpacity(0.5),
+                                      width: 0.8,
+                                    ),
                                   ),
                                   child: const Text(
                                     'GRATIS',
                                     style: TextStyle(
                                       fontSize: 11,
                                       fontWeight: FontWeight.w700,
-                                      color: Color(0xFF2E7D32),
+                                      color: Color(0xFFA7F3D0),
                                     ),
                                   ),
                                 )
@@ -408,14 +406,14 @@ class OrderSuccessView extends StatelessWidget {
                                   style: const TextStyle(
                                     fontSize: 12.5,
                                     fontWeight: FontWeight.w700,
-                                    color: Color(0xFF1C2B1E),
+                                    color: Colors.white,
                                   ),
                                 ),
                             ],
                           ),
 
                           const SizedBox(height: 14),
-                          const Divider(height: 1, thickness: 0.8, color: Color(0xFFEAF0EB)),
+                          const Divider(height: 1, thickness: 0.8, color: Color(0x26FFFFFF)),
                           const SizedBox(height: 14),
 
                           // Total Tagihan
@@ -430,7 +428,7 @@ class OrderSuccessView extends StatelessWidget {
                                   style: TextStyle(
                                     fontSize: 14.5,
                                     fontWeight: FontWeight.w800,
-                                    color: Color(0xFF1C2B1E),
+                                    color: Colors.white,
                                   ),
                                 ),
                               ),
@@ -442,7 +440,7 @@ class OrderSuccessView extends StatelessWidget {
                                     style: const TextStyle(
                                       fontSize: 18,
                                       fontWeight: FontWeight.w900,
-                                      color: Color(0xFF1C2B1E),
+                                      color: Colors.white,
                                     ),
                                   ),
                                   const SizedBox(height: 2),
@@ -450,7 +448,7 @@ class OrderSuccessView extends StatelessWidget {
                                     'Sudah termasuk PPN',
                                     style: TextStyle(
                                       fontSize: 9.5,
-                                      color: Color(0xFF7A8B7C),
+                                      color: Color(0xFFC8DDD0),
                                     ),
                                   ),
                                 ],
@@ -459,7 +457,7 @@ class OrderSuccessView extends StatelessWidget {
                           ),
 
                           const SizedBox(height: 20),
-                          const Divider(height: 1, thickness: 0.8, color: Color(0xFFEAF0EB)),
+                          const Divider(height: 1, thickness: 0.8, color: Color(0x26FFFFFF)),
                           const SizedBox(height: 20),
 
                           // Barcode Digital Native
@@ -482,7 +480,7 @@ class OrderSuccessView extends StatelessWidget {
                   const Icon(
                     Icons.monetization_on_outlined,
                     size: 16,
-                    color: Color(0xFF38A169),
+                    color: Color(0xFFA7F3D0),
                   ),
                   const SizedBox(width: 6),
                   Flexible(
@@ -493,7 +491,7 @@ class OrderSuccessView extends StatelessWidget {
                       style: const TextStyle(
                         fontSize: 11.5,
                         fontWeight: FontWeight.w500,
-                        color: Color(0xFF5A6E5D),
+                        color: Color(0xFFC8DDD0),
                       ),
                       textAlign: TextAlign.center,
                     ),
@@ -508,15 +506,14 @@ class OrderSuccessView extends StatelessWidget {
                 height: 50,
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF1C2B1E),
-                    foregroundColor: Colors.white,
-                    elevation: 0,
+                    backgroundColor: const Color(0xFFA7F3D0),
+                    foregroundColor: const Color(0xFF142117),
+                    elevation: 2,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(14),
                     ),
                   ),
                   onPressed: () {
-                    // Pastikan order tersimpan di currentOrder dan navigasi ke detail
                     if (Get.isRegistered<ShopController>()) {
                       Get.find<ShopController>().currentOrder.value = finalOrder;
                     }
@@ -528,16 +525,16 @@ class OrderSuccessView extends StatelessWidget {
                       Text(
                         'Lihat Rincian Pesanan',
                         style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w700,
-                          color: Colors.white,
+                          fontSize: 14.5,
+                          fontWeight: FontWeight.w800,
+                          color: Color(0xFF142117),
                         ),
                       ),
                       SizedBox(width: 8),
                       Icon(
                         Icons.arrow_forward_rounded,
                         size: 18,
-                        color: Color(0xFF38A169),
+                        color: Color(0xFF142117),
                       ),
                     ],
                   ),
@@ -551,10 +548,10 @@ class OrderSuccessView extends StatelessWidget {
                 height: 50,
                 child: OutlinedButton(
                   style: OutlinedButton.styleFrom(
-                    backgroundColor: Colors.white,
-                    foregroundColor: const Color(0xFF1C2B1E),
+                    backgroundColor: Colors.white.withOpacity(0.12),
+                    foregroundColor: Colors.white,
                     elevation: 0,
-                    side: const BorderSide(color: Color(0xFFD6E2D8), width: 1.0),
+                    side: BorderSide(color: Colors.white.withOpacity(0.28), width: 1.2),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(14),
                     ),
@@ -567,7 +564,7 @@ class OrderSuccessView extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w700,
-                      color: Color(0xFF1C2B1E),
+                      color: Colors.white,
                     ),
                   ),
                 ),
@@ -607,7 +604,7 @@ class OrderSuccessView extends StatelessWidget {
           label,
           style: const TextStyle(
             fontSize: 12.5,
-            color: Color(0xFF7A8B7C),
+            color: Color(0xFFC8DDD0),
             fontWeight: FontWeight.w500,
           ),
         ),
@@ -619,7 +616,7 @@ class OrderSuccessView extends StatelessWidget {
             style: const TextStyle(
               fontSize: 12.5,
               fontWeight: FontWeight.w700,
-              color: Color(0xFF1C2B1E),
+              color: Colors.white,
             ),
           ),
       ],
@@ -649,7 +646,7 @@ class OrderSuccessView extends StatelessWidget {
                       width: dashWidth,
                       height: 1.2,
                       child: DecoratedBox(
-                        decoration: BoxDecoration(color: Color(0xFFD6E2D8)),
+                        decoration: BoxDecoration(color: Color(0x38FFFFFF)),
                       ),
                     );
                   }),
@@ -664,7 +661,7 @@ class OrderSuccessView extends StatelessWidget {
               width: 24,
               height: 24,
               decoration: const BoxDecoration(
-                color: Color(0xFFEAF2EB), // Senada dengan latar belakang
+                color: Color(0xFF1C2B1E), // Senada dengan latar belakang Dark Forest
                 shape: BoxShape.circle,
               ),
             ),
@@ -676,7 +673,7 @@ class OrderSuccessView extends StatelessWidget {
               width: 24,
               height: 24,
               decoration: const BoxDecoration(
-                color: Color(0xFFEAF2EB), // Senada dengan latar belakang
+                color: Color(0xFF1C2B1E), // Senada dengan latar belakang Dark Forest
                 shape: BoxShape.circle,
               ),
             ),
@@ -710,7 +707,7 @@ class OrderSuccessView extends StatelessWidget {
               return Container(
                 margin: const EdgeInsets.symmetric(horizontal: 0.9),
                 width: w * 1.2,
-                color: const Color(0xFF1C2B1E),
+                color: Colors.white.withOpacity(0.9),
               );
             }).toList(),
           ),
@@ -722,7 +719,7 @@ class OrderSuccessView extends StatelessWidget {
             fontSize: 9.5,
             fontWeight: FontWeight.w600,
             letterSpacing: 2.2,
-            color: Color(0xFF7A8B7C),
+            color: Color(0xFFC8DDD0),
           ),
         ),
       ],

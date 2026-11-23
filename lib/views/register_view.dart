@@ -54,11 +54,21 @@ class _RegisterViewState extends State<RegisterView> {
     final authController = Get.find<AuthController>();
 
     return Scaffold(
-      backgroundColor: WijiBumiColors.lightMint,
+      backgroundColor: WijiBumiColors.backgroundCanvas,
       appBar: AppBar(
-        title: const Text('Registrasi Akun'),
+        backgroundColor: WijiBumiColors.deepForest,
+        elevation: 0,
+        centerTitle: true,
+        title: const Text(
+          'Registrasi Akun',
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 16.5,
+            fontWeight: FontWeight.w700,
+          ),
+        ),
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new_rounded),
+          icon: const Icon(Icons.chevron_left_rounded, size: 30, color: Colors.white),
           onPressed: () => Navigator.of(context).pop(),
         ),
       ),
@@ -70,17 +80,17 @@ class _RegisterViewState extends State<RegisterView> {
               Container(
                 padding: const EdgeInsets.all(22),
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.88),
+                  color: Colors.white,
                   borderRadius: BorderRadius.circular(16),
                   border: Border.all(
-                    color: WijiBumiColors.softSage,
+                    color: WijiBumiColors.borderSage,
                     width: 1.0,
                   ),
                   boxShadow: [
                     BoxShadow(
-                      color: WijiBumiColors.deepForest.withOpacity(0.06),
-                      blurRadius: 20,
-                      offset: const Offset(0, 6),
+                      color: Colors.black.withOpacity(0.04),
+                      blurRadius: 16,
+                      offset: const Offset(0, 4),
                     ),
                   ],
                 ),
@@ -102,7 +112,7 @@ class _RegisterViewState extends State<RegisterView> {
                         controller: _nameController,
                         hintText: 'Misal: Sari Lestari',
                         prefixIcon: Icons.badge_outlined,
-                        textColor: WijiBumiColors.textCardDark,
+                        textColor: WijiBumiColors.textPrimary,
                         validator: (val) {
                           if (val == null || val.trim().isEmpty) {
                             return 'Nama tidak boleh kosong';
@@ -126,7 +136,7 @@ class _RegisterViewState extends State<RegisterView> {
                         hintText: 'nama@domain.com',
                         prefixIcon: Icons.email_outlined,
                         keyboardType: TextInputType.emailAddress,
-                        textColor: WijiBumiColors.textCardDark,
+                        textColor: WijiBumiColors.textPrimary,
                         validator: (val) {
                           if (val == null || val.trim().isEmpty) {
                             return 'Email tidak boleh kosong';
@@ -150,12 +160,15 @@ class _RegisterViewState extends State<RegisterView> {
                       const SizedBox(height: 6),
                       CustomTextField(
                         controller: _usernameController,
-                        hintText: 'username_anda',
-                        prefixIcon: Icons.alternate_email_rounded,
-                        textColor: WijiBumiColors.textCardDark,
+                        hintText: 'Pilih username unik',
+                        prefixIcon: Icons.person_outline_rounded,
+                        textColor: WijiBumiColors.textPrimary,
                         validator: (val) {
                           if (val == null || val.trim().isEmpty) {
                             return 'Username tidak boleh kosong';
+                          }
+                          if (val.trim().length < 3) {
+                            return 'Username minimal 3 karakter';
                           }
                           return null;
                         },
@@ -173,10 +186,16 @@ class _RegisterViewState extends State<RegisterView> {
                       const SizedBox(height: 6),
                       CustomTextField(
                         controller: _phoneController,
-                        hintText: '08xxxxxxxxxx',
+                        hintText: '081234567890',
                         prefixIcon: Icons.phone_outlined,
                         keyboardType: TextInputType.phone,
-                        textColor: WijiBumiColors.textCardDark,
+                        textColor: WijiBumiColors.textPrimary,
+                        validator: (val) {
+                          if (val == null || val.trim().isEmpty) {
+                            return 'Nomor telepon tidak boleh kosong';
+                          }
+                          return null;
+                        },
                       ),
                       const SizedBox(height: 14),
 
@@ -194,7 +213,7 @@ class _RegisterViewState extends State<RegisterView> {
                         hintText: 'Minimal 6 karakter',
                         prefixIcon: Icons.lock_outline_rounded,
                         isPassword: true,
-                        textColor: WijiBumiColors.textCardDark,
+                        textColor: WijiBumiColors.textPrimary,
                         validator: (val) {
                           if (val == null || val.isEmpty) {
                             return 'Password tidak boleh kosong';
@@ -218,13 +237,16 @@ class _RegisterViewState extends State<RegisterView> {
                       const SizedBox(height: 6),
                       CustomTextField(
                         controller: _confirmPasswordController,
-                        hintText: 'Ulangi password',
-                        prefixIcon: Icons.lock_clock_outlined,
+                        hintText: 'Ulangi password di atas',
+                        prefixIcon: Icons.lock_reset_rounded,
                         isPassword: true,
-                        textColor: WijiBumiColors.textCardDark,
+                        textColor: WijiBumiColors.textPrimary,
                         validator: (val) {
+                          if (val == null || val.isEmpty) {
+                            return 'Konfirmasi password tidak boleh kosong';
+                          }
                           if (val != _passwordController.text) {
-                            return 'Konfirmasi password tidak cocok';
+                            return 'Password konfirmasi tidak cocok';
                           }
                           return null;
                         },
@@ -233,7 +255,7 @@ class _RegisterViewState extends State<RegisterView> {
 
                       Obx(
                         () => CustomButton(
-                          text: 'Daftar Sekarang',
+                          text: 'Daftar Akun',
                           isLoading: authController.isLoading.value,
                           onPressed: _onRegister,
                         ),

@@ -18,276 +18,335 @@ class HomeView extends StatelessWidget {
     final authController = Get.find<AuthController>();
 
     return Scaffold(
-      backgroundColor: WijiBumiColors.bgPrimary,
-      body: SafeArea(
-        bottom: false,
-        child: CustomScrollView(
-          physics: const BouncingScrollPhysics(),
-          slivers: [
-            SliverToBoxAdapter(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const SizedBox(height: 12),
+      backgroundColor: WijiBumiColors.backgroundCanvas,
+      body: Stack(
+        children: [
+          // 1. Latar Belakang Gradasi Hijau Botani yang Kaya & Cahaya Ambient
+          Positioned(
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            child: Container(
+              decoration: const BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    Color(0xFF1C2B1E),
+                    Color(0xFF243827),
+                    Color(0xFF1C2B1E),
+                  ],
+                  stops: [0.0, 0.50, 1.0],
+                ),
+              ),
+            ),
+          ),
 
-                  // 1. Header Bar: Sapaan User & Tombol Notifikasi
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 24.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              const Text(
-                                'Hello!',
-                                style: TextStyle(
-                                  fontFamily: 'Poppins',
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w400,
-                                  color: WijiBumiColors.textMutedLight,
-                                  height: 1.3,
-                                ),
-                              ),
-                              const SizedBox(height: 4),
-                              Obx(() {
-                                final name =
-                                    authController.currentUser.value?.name ??
-                                        'Nuril Anggara';
-                                return Text(
-                                  name,
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: const TextStyle(
-                                    fontFamily: 'Poppins',
-                                    fontSize: 19,
-                                    fontWeight: FontWeight.w600,
-                                    color: WijiBumiColors.textWhite,
-                                    height: 1.3,
-                                  ),
-                                );
-                              }),
-                            ],
-                          ),
-                        ),
-                        const SizedBox(width: 12),
-
-                        // Tombol Notifikasi 48 x 48 px, radius 14 px dengan Badge Jumlah Belum Dibaca
-                        Obx(() {
-                          final notifCtrl = Get.isRegistered<NotificationController>()
-                              ? Get.find<NotificationController>()
-                              : Get.put(NotificationController());
-                          final unreadCount = notifCtrl.unreadCount;
-
-                          return Stack(
-                            clipBehavior: Clip.none,
-                            children: [
-                              GestureDetector(
-                                onTap: () => Get.toNamed(AppRoutes.REMINDERS),
-                                behavior: HitTestBehavior.opaque,
-                                child: Container(
-                                  width: 48,
-                                  height: 48,
-                                  decoration: BoxDecoration(
-                                    color: WijiBumiColors.surfaceDark,
-                                    borderRadius: BorderRadius.circular(14),
-                                    border: Border.all(
-                                      color: Colors.white.withOpacity(0.16),
-                                      width: 1.0,
-                                    ),
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: Colors.black.withOpacity(0.20),
-                                        blurRadius: 10,
-                                        offset: const Offset(0, 4),
-                                      ),
-                                    ],
-                                  ),
-                                  child: const Center(
-                                    child: Icon(
-                                      Icons.notifications_rounded,
-                                      size: 22,
-                                      color: WijiBumiColors.textWhite,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              if (unreadCount > 0)
-                                Positioned(
-                                  top: -4,
-                                  right: -4,
-                                  child: Container(
-                                    padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
-                                    constraints: const BoxConstraints(minWidth: 18, minHeight: 18),
-                                    decoration: BoxDecoration(
-                                      color: WijiBumiColors.error,
-                                      borderRadius: BorderRadius.circular(10),
-                                      border: Border.all(
-                                        color: WijiBumiColors.bgPrimary,
-                                        width: 2.0,
-                                      ),
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: Colors.black.withOpacity(0.35),
-                                          blurRadius: 4,
-                                          offset: const Offset(0, 2),
-                                        ),
-                                      ],
-                                    ),
-                                    child: Center(
-                                      child: Text(
-                                        unreadCount > 99 ? '99+' : '$unreadCount',
-                                        style: const TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 10,
-                                          fontWeight: FontWeight.w800,
-                                          height: 1.0,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                            ],
-                          );
-                        }),
-                      ],
-                    ),
+          // Glowing Emerald Orb Kanan Atas
+          Positioned(
+            top: -40,
+            right: -30,
+            child: IgnorePointer(
+              child: Container(
+                width: 240,
+                height: 240,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  gradient: RadialGradient(
+                    colors: [
+                      const Color(0xFF4CAF50).withOpacity(0.35),
+                      const Color(0xFF2E7D32).withOpacity(0.12),
+                      Colors.transparent,
+                    ],
                   ),
+                ),
+              ),
+            ),
+          ),
 
-                  const SizedBox(height: 24),
+          // Glowing Mint Orb Kiri Tengah
+          Positioned(
+            top: 90,
+            left: -40,
+            child: IgnorePointer(
+              child: Container(
+                width: 190,
+                height: 190,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  gradient: RadialGradient(
+                    colors: [
+                      const Color(0xFF81C784).withOpacity(0.30),
+                      Colors.transparent,
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
 
-                  // 2. Search & Filter Row
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 24.0),
-                    child: Row(
-                      children: [
-                        // Search Input Bar
-                        Expanded(
-                          child: Container(
-                            height: 52,
-                            padding: const EdgeInsets.symmetric(horizontal: 14),
-                            decoration: BoxDecoration(
-                              color: WijiBumiColors.surfaceDark,
-                              borderRadius: BorderRadius.circular(16),
-                              border: Border.all(
-                                color: Colors.white.withOpacity(0.12),
-                                width: 1.0,
-                              ),
-                            ),
-                            child: Row(
-                              children: [
-                                const Icon(
-                                  Icons.search_rounded,
-                                  size: 22,
-                                  color: WijiBumiColors.textPlaceholder,
-                                ),
-                                const SizedBox(width: 10),
-                                Expanded(
-                                  child: TextField(
-                                    controller:
-                                        productController.searchInputController,
-                                    onChanged:
-                                        productController.onSearchChanged,
-                                    style: const TextStyle(
+          // 2. Konten Halaman Scrollable
+          SafeArea(
+            bottom: false,
+            child: CustomScrollView(
+              physics: const BouncingScrollPhysics(),
+              slivers: [
+                SliverToBoxAdapter(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const SizedBox(height: 12),
+
+                      // Header Bar: Sapaan User & Tombol Notifikasi Liquid Glass
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  const Text(
+                                    'Hello!',
+                                    style: TextStyle(
                                       fontFamily: 'Poppins',
                                       fontSize: 14,
-                                      color: WijiBumiColors.textWhite,
+                                      fontWeight: FontWeight.w500,
+                                      color: Color(0xFFD8E8DC),
+                                      height: 1.3,
                                     ),
-                                    decoration: const InputDecoration(
-                                      isDense: true,
-                                      hintText: 'search...',
-                                      hintStyle: TextStyle(
+                                  ),
+                                  const SizedBox(height: 2),
+                                  Obx(() {
+                                    final name =
+                                        authController.currentUser.value?.name ??
+                                            'Nuril Anggara';
+                                    return Text(
+                                      name,
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: const TextStyle(
                                         fontFamily: 'Poppins',
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w400,
-                                        color: WijiBumiColors.textPlaceholder,
+                                        fontSize: 19,
+                                        fontWeight: FontWeight.w700,
+                                        color: Colors.white,
+                                        height: 1.3,
                                       ),
-                                      border: InputBorder.none,
-                                      contentPadding: EdgeInsets.zero,
+                                    );
+                                  }),
+                                ],
+                              ),
+                            ),
+                            const SizedBox(width: 12),
+
+                            // Tombol Notifikasi Liquid Glass 48 x 48 px dengan Specular Border
+                            Obx(() {
+                              final notifCtrl = Get.isRegistered<NotificationController>()
+                                  ? Get.find<NotificationController>()
+                                  : Get.put(NotificationController());
+                              final unreadCount = notifCtrl.unreadCount;
+
+                              return Stack(
+                                clipBehavior: Clip.none,
+                                children: [
+                                  GestureDetector(
+                                    onTap: () => Get.toNamed(AppRoutes.REMINDERS),
+                                    behavior: HitTestBehavior.opaque,
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(14),
+                                      child: BackdropFilter(
+                                        filter: ImageFilter.blur(sigmaX: 14, sigmaY: 14),
+                                        child: Container(
+                                          width: 48,
+                                          height: 48,
+                                          decoration: DynamicGlassDecoration.liquidGlassDark(radius: 14),
+                                          child: const Center(
+                                            child: Icon(
+                                              Icons.notifications_rounded,
+                                              size: 22,
+                                              color: Colors.white,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  if (unreadCount > 0)
+                                    Positioned(
+                                      top: -4,
+                                      right: -4,
+                                      child: Container(
+                                        padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
+                                        constraints: const BoxConstraints(minWidth: 18, minHeight: 18),
+                                        decoration: BoxDecoration(
+                                          color: WijiBumiColors.error,
+                                          borderRadius: BorderRadius.circular(10),
+                                          border: Border.all(
+                                            color: const Color(0xFF1C2B1E),
+                                            width: 2.0,
+                                          ),
+                                          boxShadow: [
+                                            BoxShadow(
+                                              color: Colors.black.withOpacity(0.25),
+                                              blurRadius: 4,
+                                              offset: const Offset(0, 2),
+                                            ),
+                                          ],
+                                        ),
+                                        child: Center(
+                                          child: Text(
+                                            unreadCount > 99 ? '99+' : '$unreadCount',
+                                            style: const TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 10,
+                                              fontWeight: FontWeight.w800,
+                                              height: 1.0,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                ],
+                              );
+                            }),
+                          ],
+                        ),
+                      ),
+
+                      const SizedBox(height: 20),
+
+                      // 2. Search & Filter Row dengan Liquid Glass
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                        child: Row(
+                          children: [
+                            // Search Input Bar Liquid Glass
+                            Expanded(
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(16),
+                                child: BackdropFilter(
+                                  filter: ImageFilter.blur(sigmaX: 14, sigmaY: 14),
+                                  child: Container(
+                                    height: 52,
+                                    padding: const EdgeInsets.symmetric(horizontal: 14),
+                                    decoration: DynamicGlassDecoration.liquidGlassDark(radius: 16),
+                                    child: Row(
+                                      children: [
+                                        const Icon(
+                                          Icons.search_rounded,
+                                          size: 22,
+                                          color: Color(0xFFD8E8DC),
+                                        ),
+                                        const SizedBox(width: 10),
+                                        Expanded(
+                                          child: TextField(
+                                            controller:
+                                                productController.searchInputController,
+                                            onChanged:
+                                                productController.onSearchChanged,
+                                            cursorColor: Colors.white,
+                                            style: const TextStyle(
+                                              fontFamily: 'Poppins',
+                                              fontSize: 14,
+                                              color: Colors.white,
+                                            ),
+                                            decoration: const InputDecoration(
+                                              isDense: true,
+                                              hintText: 'Cari sayuran, buah, atau tanaman...',
+                                              hintStyle: TextStyle(
+                                                fontFamily: 'Poppins',
+                                                fontSize: 13,
+                                                fontWeight: FontWeight.w400,
+                                                color: Color(0xFFD8E8DC),
+                                              ),
+                                              border: InputBorder.none,
+                                              contentPadding: EdgeInsets.zero,
+                                            ),
+                                          ),
+                                        ),
+                                        Obx(() {
+                                          if (productController
+                                              .searchQuery.value.isNotEmpty) {
+                                            return GestureDetector(
+                                              onTap: productController.clearSearch,
+                                              behavior: HitTestBehavior.opaque,
+                                              child: const Padding(
+                                                padding: EdgeInsets.all(6.0),
+                                                child: Icon(
+                                                  Icons.clear_rounded,
+                                                  size: 18,
+                                                  color: Color(0xFFD8E8DC),
+                                                ),
+                                              ),
+                                            );
+                                          }
+                                          return const SizedBox.shrink();
+                                        }),
+                                      ],
                                     ),
                                   ),
                                 ),
-                                Obx(() {
-                                  if (productController
-                                      .searchQuery.value.isNotEmpty) {
-                                    return GestureDetector(
-                                      onTap: productController.clearSearch,
-                                      behavior: HitTestBehavior.opaque,
-                                      child: const Padding(
-                                        padding: EdgeInsets.all(6.0),
-                                        child: Icon(
-                                          Icons.clear_rounded,
-                                          size: 18,
-                                          color: WijiBumiColors.textPlaceholder,
-                                        ),
-                                      ),
-                                    );
-                                  }
-                                  return const SizedBox.shrink();
-                                }),
-                              ],
-                            ),
-                          ),
-                        ),
-                        const SizedBox(width: 14),
-
-                        // Tombol Toggle Filter & Sort Modal (52 x 52 px)
-                        GestureDetector(
-                          onTap: () => _showFilterBottomSheet(
-                              context, productController),
-                          behavior: HitTestBehavior.opaque,
-                          child: Container(
-                            width: 52,
-                            height: 52,
-                            decoration: BoxDecoration(
-                              color: WijiBumiColors.surfaceDark,
-                              borderRadius: BorderRadius.circular(16),
-                              border: Border.all(
-                                color: Colors.white.withOpacity(0.12),
-                                width: 1.0,
                               ),
                             ),
-                            child: Stack(
-                              alignment: Alignment.center,
-                              children: [
-                                Obx(() {
-                                  final isFiltered =
-                                      productController.hasActiveFilter;
-                                  return Icon(
-                                    Icons.tune_rounded,
-                                    size: 22,
-                                    color: isFiltered
-                                        ? WijiBumiColors.textWhite
-                                        : WijiBumiColors.textPlaceholder,
-                                  );
-                                }),
-                                Obx(() {
-                                  if (!productController.hasActiveFilter) {
-                                    return const SizedBox.shrink();
-                                  }
-                                  return Positioned(
-                                    top: 11,
-                                    right: 11,
-                                    child: Container(
-                                      width: 8,
-                                      height: 8,
-                                      decoration: const BoxDecoration(
-                                        color: WijiBumiColors.freshLeaf,
-                                        shape: BoxShape.circle,
-                                      ),
+                            const SizedBox(width: 12),
+
+                            // Tombol Toggle Filter Liquid Glass (52 x 52 px)
+                            GestureDetector(
+                              onTap: () => _showFilterBottomSheet(
+                                  context, productController),
+                              behavior: HitTestBehavior.opaque,
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(16),
+                                child: BackdropFilter(
+                                  filter: ImageFilter.blur(sigmaX: 14, sigmaY: 14),
+                                  child: Container(
+                                    width: 52,
+                                    height: 52,
+                                    decoration: DynamicGlassDecoration.liquidGlassDark(radius: 16),
+                                    child: Stack(
+                                      alignment: Alignment.center,
+                                      children: [
+                                        Obx(() {
+                                          final isFiltered =
+                                              productController.hasActiveFilter;
+                                          return Icon(
+                                            Icons.tune_rounded,
+                                            size: 22,
+                                            color: isFiltered
+                                                ? const Color(0xFF81C784)
+                                                : Colors.white,
+                                          );
+                                        }),
+                                        Obx(() {
+                                          if (!productController.hasActiveFilter) {
+                                            return const SizedBox.shrink();
+                                          }
+                                          return Positioned(
+                                            top: 11,
+                                            right: 11,
+                                            child: Container(
+                                              width: 8,
+                                              height: 8,
+                                              decoration: const BoxDecoration(
+                                                color: Color(0xFF81C784),
+                                                shape: BoxShape.circle,
+                                              ),
+                                            ),
+                                          );
+                                        }),
+                                      ],
                                     ),
-                                  );
-                                }),
-                              ],
+                                  ),
+                                ),
+                              ),
                             ),
-                          ),
+                          ],
                         ),
-                      ],
-                    ),
-                  ),
+                      ),
 
                   // Category Tabs (All, Buah, Sayuran, Bunga, Beras & Umbi, Rempah)
                   const SizedBox(height: 18),
@@ -385,7 +444,7 @@ class HomeView extends StatelessWidget {
                                   style: TextStyle(
                                     fontSize: 12,
                                     fontWeight: FontWeight.w600,
-                                    color: WijiBumiColors.textPlaceholder,
+                                    color: WijiBumiColors.textSecondary,
                                     decoration: TextDecoration.underline,
                                   ),
                                 ),
@@ -407,146 +466,147 @@ class HomeView extends StatelessWidget {
                       }
 
                       return Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          // Header Section Unggulan
-                          Padding(
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 24.0),
-                            child: Obx(() {
-                              final selected =
-                                  productController.selectedCategory.value;
-                              String title = 'Pilihan Unggulan';
-                              if (selected != 'semua') {
-                                final cat = productController.categories
-                                    .firstWhereOrNull((c) => c.id == selected);
-                                if (cat != null) {
-                                  title =
-                                      '${_categoryFilterLabel(cat.id, cat.name)} Pilihan';
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            // Header Section Unggulan
+                            Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 24.0),
+                              child: Obx(() {
+                                final selected =
+                                    productController.selectedCategory.value;
+                                String title = 'Pilihan Unggulan';
+                                if (selected != 'semua') {
+                                  final cat = productController.categories
+                                      .firstWhereOrNull((c) => c.id == selected);
+                                  if (cat != null) {
+                                    title =
+                                        '${_categoryFilterLabel(cat.id, cat.name)} Pilihan';
+                                  }
                                 }
-                              }
-                              return Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Expanded(
-                                    child: Text(
-                                      title,
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
-                                      style: const TextStyle(
-                                        fontFamily: 'Poppins',
-                                        fontSize: 24,
-                                        fontWeight: FontWeight.w900,
-                                        color: WijiBumiColors.textWhite,
-                                        height: 1.15,
-                                        letterSpacing: -0.5,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              );
-                            }),
-                          ),
-
-                          const SizedBox(height: 12),
-
-                          // Carousel Horizontal Glass Card (Scroll ke Samping)
-                          SizedBox(
-                            height: 226,
-                            child: ListView.separated(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 24, vertical: 6),
-                              scrollDirection: Axis.horizontal,
-                              physics: const BouncingScrollPhysics(),
-                              itemCount: products.length,
-                              separatorBuilder: (_, __) =>
-                                  const SizedBox(width: 14),
-                              itemBuilder: (context, index) {
-                                final product = products[index];
-                                return ProductCard(
-                                  key: ValueKey('top_${product.id}'),
-                                  product: product,
-                                  heroTagPrefix: 'top',
-                                  width: 156,
-                                  height: 206,
-                                  onQuickAdd: () =>
-                                      cartController.addToCart(product, 1),
-                                );
-                              },
-                            ),
-                          ),
-
-                          const SizedBox(height: 28),
-
-                          // 4. Section "Promotion"
-                          _buildPromotionBanner(),
-
-                          const SizedBox(height: 28),
-
-                          // 5. Section "Katalog Lengkap" (2 Kolom Kanan & Kiri, Scroll ke Bawah)
-                          Padding(
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 24.0),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              crossAxisAlignment: CrossAxisAlignment.end,
-                              children: [
-                                const Expanded(
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        'Katalog Lengkap',
+                                return Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Expanded(
+                                      child: Text(
+                                        title,
                                         maxLines: 1,
                                         overflow: TextOverflow.ellipsis,
-                                        style: TextStyle(
+                                        style: const TextStyle(
                                           fontFamily: 'Poppins',
-                                          fontSize: 24,
-                                          fontWeight: FontWeight.w900,
-                                          color: WijiBumiColors.textWhite,
+                                          fontSize: 22,
+                                          fontWeight: FontWeight.w800,
+                                          color: WijiBumiColors.textPrimary,
                                           height: 1.15,
                                           letterSpacing: -0.5,
                                         ),
                                       ),
-                                      SizedBox(height: 4),
-                                      Text(
-                                        'Koleksi segar siap panen & tanaman asri',
-                                        maxLines: 1,
-                                        overflow: TextOverflow.ellipsis,
-                                        style: TextStyle(
-                                          fontFamily: 'Poppins',
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.w400,
-                                          color: WijiBumiColors.textMutedLight,
+                                    ),
+                                  ],
+                                );
+                              }),
+                            ),
+
+                            const SizedBox(height: 12),
+
+                            // Carousel Horizontal Glass Card (Scroll ke Samping)
+                            SizedBox(
+                              height: 226,
+                              child: ListView.separated(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 24, vertical: 6),
+                                scrollDirection: Axis.horizontal,
+                                physics: const BouncingScrollPhysics(),
+                                itemCount: products.length,
+                                separatorBuilder: (_, __) =>
+                                    const SizedBox(width: 14),
+                                itemBuilder: (context, index) {
+                                  final product = products[index];
+                                  return ProductCard(
+                                    key: ValueKey('top_${product.id}'),
+                                    product: product,
+                                    heroTagPrefix: 'top',
+                                    width: 156,
+                                    height: 206,
+                                    onQuickAdd: () =>
+                                        cartController.addToCart(product, 1),
+                                  );
+                                },
+                              ),
+                            ),
+
+                            const SizedBox(height: 28),
+
+                            // 4. Section "Promotion"
+                            _buildPromotionBanner(),
+
+                            const SizedBox(height: 28),
+
+                            // 5. Section "Katalog Lengkap" (2 Kolom Kanan & Kiri, Scroll ke Bawah)
+                            Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 24.0),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                children: [
+                                  const Expanded(
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          'Katalog Lengkap',
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: TextStyle(
+                                            fontFamily: 'Poppins',
+                                            fontSize: 22,
+                                            fontWeight: FontWeight.w800,
+                                            color: WijiBumiColors.textPrimary,
+                                            height: 1.15,
+                                            letterSpacing: -0.5,
+                                          ),
                                         ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                const SizedBox(width: 8),
-                                Container(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 10, vertical: 4),
-                                  decoration: DynamicGlassDecoration.accentPill(
-                                    radius: 8,
-                                    fillColor: WijiBumiColors.surfaceDark,
-                                  ),
-                                  child: Text(
-                                    '${products.length} Produk',
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: const TextStyle(
-                                      fontFamily: 'Poppins',
-                                      fontSize: 11,
-                                      fontWeight: FontWeight.w700,
-                                      color: WijiBumiColors.freshLeaf,
+                                        SizedBox(height: 4),
+                                        Text(
+                                          'Koleksi segar siap panen & tanaman asri',
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: TextStyle(
+                                            fontFamily: 'Poppins',
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.w400,
+                                            color: WijiBumiColors.textSecondary,
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                   ),
-                                ),
-                              ],
+                                  const SizedBox(width: 8),
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 10, vertical: 4),
+                                    decoration: DynamicGlassDecoration.accentPill(
+                                      radius: 8,
+                                      fillColor: WijiBumiColors.lightMint,
+                                      borderColor: WijiBumiColors.softSage,
+                                    ),
+                                    child: Text(
+                                      '${products.length} Produk',
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: const TextStyle(
+                                        fontFamily: 'Poppins',
+                                        fontSize: 11,
+                                        fontWeight: FontWeight.w700,
+                                        color: WijiBumiColors.deepForest,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
-                          ),
 
                           const SizedBox(height: 16),
 
@@ -583,7 +643,7 @@ class HomeView extends StatelessWidget {
                       child: Center(
                         child: CircularProgressIndicator(
                           valueColor: AlwaysStoppedAnimation<Color>(
-                              WijiBumiColors.textWhite),
+                              WijiBumiColors.deepForest),
                         ),
                       ),
                     ),
@@ -592,7 +652,7 @@ class HomeView extends StatelessWidget {
                       child: Text(
                         err ?? 'Gagal memuat produk',
                         style: const TextStyle(
-                            color: WijiBumiColors.textMutedLight),
+                            color: WijiBumiColors.textSecondary),
                       ),
                     ),
                   ),
@@ -604,8 +664,10 @@ class HomeView extends StatelessWidget {
           ],
         ),
       ),
-    );
-  }
+    ],
+  ),
+);
+}
 
   Widget _buildActiveFilterChip(
       {required String label, required VoidCallback onRemove}) {
@@ -613,9 +675,16 @@ class HomeView extends StatelessWidget {
       margin: const EdgeInsets.only(right: 8),
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
       decoration: BoxDecoration(
-        color: WijiBumiColors.surfaceDark,
+        color: Colors.white.withOpacity(0.92),
         borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: Colors.white.withOpacity(0.18), width: 1.0),
+        border: Border.all(color: WijiBumiColors.borderSage, width: 1.0),
+        boxShadow: [
+          BoxShadow(
+            color: const Color(0xFF1C2B1E).withOpacity(0.06),
+            blurRadius: 6,
+            offset: const Offset(0, 2),
+          ),
+        ],
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -624,8 +693,8 @@ class HomeView extends StatelessWidget {
             label,
             style: const TextStyle(
               fontSize: 12,
-              fontWeight: FontWeight.w500,
-              color: WijiBumiColors.textWhite,
+              fontWeight: FontWeight.w600,
+              color: WijiBumiColors.textPrimary,
             ),
           ),
           const SizedBox(width: 4),
@@ -634,7 +703,7 @@ class HomeView extends StatelessWidget {
             child: const Icon(
               Icons.close_rounded,
               size: 14,
-              color: WijiBumiColors.textPlaceholder,
+              color: WijiBumiColors.textSecondary,
             ),
           ),
         ],
@@ -652,9 +721,9 @@ class HomeView extends StatelessWidget {
             'Promotion',
             style: TextStyle(
               fontFamily: 'Poppins',
-              fontSize: 24,
-              fontWeight: FontWeight.w900,
-              color: WijiBumiColors.textWhite,
+              fontSize: 22,
+              fontWeight: FontWeight.w800,
+              color: WijiBumiColors.textPrimary,
               height: 1.15,
               letterSpacing: -0.5,
             ),
@@ -668,7 +737,7 @@ class HomeView extends StatelessWidget {
                 fontFamily: 'Poppins',
                 fontSize: 13,
                 fontWeight: FontWeight.w400,
-                color: WijiBumiColors.textMutedLight,
+                color: WijiBumiColors.textSecondary,
                 height: 1.4,
               ),
             ),
@@ -677,13 +746,13 @@ class HomeView extends StatelessWidget {
 
           // Kartu Promosi Glassmorphism Luminous
           ClipRRect(
-            borderRadius: BorderRadius.circular(24),
+            borderRadius: BorderRadius.circular(20),
             child: BackdropFilter(
               filter: ImageFilter.blur(sigmaX: 14, sigmaY: 14),
               child: Container(
                 width: double.infinity,
                 padding: const EdgeInsets.all(18),
-                decoration: DynamicGlassDecoration.glassCard(radius: 24),
+                decoration: DynamicGlassDecoration.glassCard(radius: 20),
                 child: Row(
                   children: [
                     Expanded(
@@ -694,10 +763,10 @@ class HomeView extends StatelessWidget {
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 8, vertical: 3),
                             decoration: BoxDecoration(
-                              color: WijiBumiColors.surfaceDark,
+                              color: const Color(0xFF142117),
                               borderRadius: BorderRadius.circular(8),
                               border: Border.all(
-                                color: Colors.white.withOpacity(0.16),
+                                color: Colors.white.withOpacity(0.25),
                                 width: 1.0,
                               ),
                             ),
@@ -707,7 +776,7 @@ class HomeView extends StatelessWidget {
                                 fontFamily: 'Poppins',
                                 fontSize: 10,
                                 fontWeight: FontWeight.w700,
-                                color: WijiBumiColors.textWhite,
+                                color: Colors.white,
                                 letterSpacing: 0.5,
                               ),
                             ),
@@ -719,7 +788,7 @@ class HomeView extends StatelessWidget {
                               fontFamily: 'Poppins',
                               fontSize: 17,
                               fontWeight: FontWeight.w800,
-                              color: WijiBumiColors.textCardDark,
+                              color: Colors.white,
                               height: 1.2,
                             ),
                           ),
@@ -729,8 +798,8 @@ class HomeView extends StatelessWidget {
                             style: TextStyle(
                               fontFamily: 'Poppins',
                               fontSize: 12,
-                              fontWeight: FontWeight.w600,
-                              color: Color(0xFF1A3320),
+                              fontWeight: FontWeight.w500,
+                              color: Color(0xFFC8DDD0),
                             ),
                           ),
                         ],
@@ -740,18 +809,21 @@ class HomeView extends StatelessWidget {
                       width: 40,
                       height: 40,
                       decoration: BoxDecoration(
-                        color: WijiBumiColors.surfaceDark,
+                        color: const Color(0xFFA7F3D0),
                         shape: BoxShape.circle,
-                        border: Border.all(
-                          color: Colors.white.withOpacity(0.18),
-                          width: 1.0,
-                        ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: const Color(0xFFA7F3D0).withOpacity(0.30),
+                            blurRadius: 8,
+                            offset: const Offset(0, 2),
+                          ),
+                        ],
                       ),
                       child: const Center(
                         child: Icon(
                           Icons.arrow_forward_rounded,
                           size: 18,
-                          color: WijiBumiColors.textWhite,
+                          color: Color(0xFF142117),
                         ),
                       ),
                     ),
@@ -775,7 +847,7 @@ class HomeView extends StatelessWidget {
           const Icon(
             Icons.search_off_rounded,
             size: 44,
-            color: WijiBumiColors.textPlaceholder,
+            color: WijiBumiColors.textSecondary,
           ),
           const SizedBox(height: 10),
           const Text(
@@ -783,8 +855,8 @@ class HomeView extends StatelessWidget {
             style: TextStyle(
               fontFamily: 'Poppins',
               fontSize: 15,
-              fontWeight: FontWeight.w600,
-              color: WijiBumiColors.textWhite,
+              fontWeight: FontWeight.w700,
+              color: WijiBumiColors.textPrimary,
             ),
           ),
           const SizedBox(height: 4),
@@ -793,7 +865,7 @@ class HomeView extends StatelessWidget {
             style: TextStyle(
               fontFamily: 'Poppins',
               fontSize: 12,
-              color: WijiBumiColors.textMutedLight,
+              color: WijiBumiColors.textSecondary,
             ),
           ),
           const SizedBox(height: 12),
@@ -804,10 +876,6 @@ class HomeView extends StatelessWidget {
               decoration: BoxDecoration(
                 color: WijiBumiColors.surfaceDark,
                 borderRadius: BorderRadius.circular(12),
-                border: Border.all(
-                  color: Colors.white.withOpacity(0.18),
-                  width: 1.0,
-                ),
               ),
               child: const Text(
                 'Reset Filter',
@@ -815,7 +883,7 @@ class HomeView extends StatelessWidget {
                   fontFamily: 'Poppins',
                   fontSize: 12,
                   fontWeight: FontWeight.w600,
-                  color: WijiBumiColors.textWhite,
+                  color: Colors.white,
                 ),
               ),
             ),
@@ -829,38 +897,30 @@ class HomeView extends StatelessWidget {
     Get.bottomSheet(
       ClipRRect(
         borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
-        child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 18, sigmaY: 18),
-          child: Container(
-            padding: const EdgeInsets.all(24),
-            decoration: BoxDecoration(
-              color: const Color(0xFF18261A).withOpacity(0.94),
-              borderRadius:
-                  const BorderRadius.vertical(top: Radius.circular(28)),
-              border: Border(
-                top: BorderSide(
-                  color: Colors.white.withOpacity(0.24),
-                  width: 1.2,
-                ),
-              ),
-            ),
-            child: SafeArea(
-              child: SingleChildScrollView(
-                physics: const BouncingScrollPhysics(),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Center(
-                      child: Container(
-                        width: 40,
-                        height: 4,
-                        decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.3),
-                          borderRadius: BorderRadius.circular(2),
-                        ),
+        child: Container(
+          padding: const EdgeInsets.all(24),
+          decoration: const BoxDecoration(
+            color: Colors.white,
+            borderRadius:
+                BorderRadius.vertical(top: Radius.circular(28)),
+          ),
+          child: SafeArea(
+            child: SingleChildScrollView(
+              physics: const BouncingScrollPhysics(),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Center(
+                    child: Container(
+                      width: 40,
+                      height: 4,
+                      decoration: BoxDecoration(
+                        color: WijiBumiColors.borderSage,
+                        borderRadius: BorderRadius.circular(2),
                       ),
                     ),
+                  ),
                   const SizedBox(height: 18),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -870,7 +930,7 @@ class HomeView extends StatelessWidget {
                         style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.w700,
-                          color: WijiBumiColors.textWhite,
+                          color: WijiBumiColors.textPrimary,
                         ),
                       ),
                       GestureDetector(
@@ -892,7 +952,7 @@ class HomeView extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w600,
-                      color: WijiBumiColors.textMutedLight,
+                      color: WijiBumiColors.textSecondary,
                     ),
                   ),
                   const SizedBox(height: 10),
@@ -946,7 +1006,7 @@ class HomeView extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w600,
-                      color: WijiBumiColors.textMutedLight,
+                      color: WijiBumiColors.textSecondary,
                     ),
                   ),
                   const SizedBox(height: 10),
@@ -955,14 +1015,7 @@ class HomeView extends StatelessWidget {
                     return Container(
                       padding: const EdgeInsets.symmetric(
                           horizontal: 14, vertical: 8),
-                      decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.06),
-                        borderRadius: BorderRadius.circular(14),
-                        border: Border.all(
-                          color: Colors.white.withOpacity(0.12),
-                          width: 1.0,
-                        ),
-                      ),
+                      decoration: DynamicGlassDecoration.glassCard(radius: 14),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -970,8 +1023,8 @@ class HomeView extends StatelessWidget {
                             'Hanya Stok Tersedia (Ready)',
                             style: TextStyle(
                               fontSize: 14,
-                              fontWeight: FontWeight.w500,
-                              color: WijiBumiColors.textWhite,
+                              fontWeight: FontWeight.w600,
+                              color: WijiBumiColors.textPrimary,
                             ),
                           ),
                           Switch(
@@ -990,8 +1043,9 @@ class HomeView extends StatelessWidget {
                     child: ElevatedButton(
                       onPressed: () => Get.back(),
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: WijiBumiColors.freshLeaf,
-                        foregroundColor: Colors.white,
+                        backgroundColor: const Color(0xFFA7F3D0),
+                        foregroundColor: const Color(0xFF142117),
+                        elevation: 2,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(14),
                         ),
@@ -999,8 +1053,9 @@ class HomeView extends StatelessWidget {
                       child: const Text(
                         'Terapkan Filter',
                         style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w700,
+                          fontSize: 14.5,
+                          fontWeight: FontWeight.w800,
+                          color: Color(0xFF142117),
                         ),
                       ),
                     ),
@@ -1010,7 +1065,6 @@ class HomeView extends StatelessWidget {
             ),
           ),
         ),
-      ),
       ),
       isScrollControlled: true,
     );
@@ -1029,13 +1083,13 @@ class HomeView extends StatelessWidget {
         alignment: Alignment.center,
         decoration: BoxDecoration(
           color: isSelected
-              ? WijiBumiColors.freshLeaf
-              : Colors.white.withOpacity(0.06),
+              ? const Color(0xFFA7F3D0)
+              : Colors.white.withOpacity(0.08),
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
             color: isSelected
-                ? WijiBumiColors.freshLeaf
-                : Colors.white.withOpacity(0.12),
+                ? const Color(0xFFA7F3D0)
+                : Colors.white.withOpacity(0.20),
             width: 1.0,
           ),
         ),
@@ -1043,8 +1097,8 @@ class HomeView extends StatelessWidget {
           label,
           style: TextStyle(
             fontSize: 13,
-            fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
-            color: isSelected ? Colors.white : WijiBumiColors.textMutedLight,
+            fontWeight: isSelected ? FontWeight.w800 : FontWeight.w600,
+            color: isSelected ? const Color(0xFF142117) : const Color(0xFFC8DDD0),
           ),
         ),
       ),

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../app.dart';
@@ -66,96 +67,133 @@ class _SplashViewState extends State<SplashView> with SingleTickerProviderStateM
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        width: double.infinity,
-        height: double.infinity,
         decoration: const BoxDecoration(
           gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
             colors: [
-              WijiBumiColors.lightMint,
-              WijiBumiColors.softSage,
+              Color(0xFF1C2B1E),
+              Color(0xFF2E5E3A),
             ],
           ),
         ),
-        child: Center(
-          child: FadeTransition(
-            opacity: _fadeAnimation,
-            child: ScaleTransition(
-              scale: _scaleAnimation,
-              child: Container(
-                width: 200,
-                padding: const EdgeInsets.symmetric(vertical: 36, horizontal: 24),
-                decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.85),
-                  borderRadius: BorderRadius.circular(20),
-                  border: Border.all(
-                    color: WijiBumiColors.softSage.withOpacity(0.6),
-                    width: 1.5,
+        child: Stack(
+          children: [
+            // Ambient glowing emerald orb
+            Positioned(
+              top: -40,
+              right: -30,
+              child: IgnorePointer(
+                child: Container(
+                  width: 260,
+                  height: 260,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    gradient: RadialGradient(
+                      colors: [
+                        const Color(0xFF4CAF50).withOpacity(0.35),
+                        Colors.transparent,
+                      ],
+                    ),
                   ),
-                  boxShadow: [
-                    BoxShadow(
-                      color: WijiBumiColors.deepForest.withOpacity(0.12),
-                      blurRadius: 24,
-                      offset: const Offset(0, 8),
-                    ),
-                  ],
-                ),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Container(
-                      width: 76,
-                      height: 76,
-                      decoration: BoxDecoration(
-                        color: WijiBumiColors.lightMint,
-                        shape: BoxShape.circle,
-                        border: Border.all(
-                          color: WijiBumiColors.freshLeaf.withOpacity(0.4),
-                          width: 2,
-                        ),
-                      ),
-                      child: const Center(
-                        child: Icon(
-                          Icons.eco_rounded,
-                          size: 44,
-                          color: WijiBumiColors.deepForest,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 20),
-                    const Text(
-                      'Wiji Bumi',
-                      style: TextStyle(
-                        fontSize: 22,
-                        fontWeight: FontWeight.w800,
-                        letterSpacing: 0.5,
-                        color: WijiBumiColors.deepForest,
-                      ),
-                    ),
-                    const SizedBox(height: 6),
-                    const Text(
-                      'Segar & Alami',
-                      style: TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w500,
-                        color: WijiBumiColors.textMuted,
-                      ),
-                    ),
-                    const SizedBox(height: 24),
-                    const SizedBox(
-                      width: 24,
-                      height: 24,
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2.5,
-                        valueColor: AlwaysStoppedAnimation<Color>(WijiBumiColors.deepForest),
-                      ),
-                    ),
-                  ],
                 ),
               ),
             ),
-          ),
+            Center(
+              child: FadeTransition(
+                opacity: _fadeAnimation,
+                child: ScaleTransition(
+                  scale: _scaleAnimation,
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(24),
+                    child: BackdropFilter(
+                      filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
+                      child: Container(
+                        width: 224,
+                        padding: const EdgeInsets.symmetric(vertical: 36, horizontal: 24),
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                            colors: [
+                              Colors.white.withOpacity(0.92),
+                              const Color(0xFFE8F5E9).withOpacity(0.85),
+                            ],
+                          ),
+                          borderRadius: BorderRadius.circular(24),
+                          border: Border.all(
+                            color: Colors.white.withOpacity(0.70),
+                            width: 1.2,
+                          ),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.20),
+                              blurRadius: 24,
+                              offset: const Offset(0, 8),
+                            ),
+                          ],
+                        ),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Container(
+                              width: 76,
+                              height: 76,
+                              decoration: BoxDecoration(
+                                color: WijiBumiColors.lightMint,
+                                shape: BoxShape.circle,
+                                border: Border.all(
+                                  color: WijiBumiColors.softSage,
+                                  width: 1.5,
+                                ),
+                              ),
+                              child: const Center(
+                                child: Icon(
+                                  Icons.eco_rounded,
+                                  size: 44,
+                                  color: WijiBumiColors.deepForest,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 20),
+                            const Text(
+                              'Wiji Bumi',
+                              style: TextStyle(
+                                fontSize: 22,
+                                fontWeight: FontWeight.w800,
+                                letterSpacing: 0.5,
+                                color: WijiBumiColors.textPrimary,
+                              ),
+                            ),
+                            const SizedBox(height: 4),
+                            const Text(
+                              'Segar & Alami',
+                              style: TextStyle(
+                                fontSize: 13,
+                                fontWeight: FontWeight.w500,
+                                color: WijiBumiColors.textSecondary,
+                              ),
+                            ),
+                            const SizedBox(height: 24),
+                            const SizedBox(
+                              width: 24,
+                              height: 24,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2.5,
+                                valueColor: AlwaysStoppedAnimation<Color>(
+                                  WijiBumiColors.deepForest,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );

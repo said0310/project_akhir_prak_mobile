@@ -48,16 +48,14 @@ class _OrderHistoryViewState extends State<OrderHistoryView> {
       case 'Dibatalkan':
         return WijiBumiColors.error;
       default:
-        return WijiBumiColors.textMuted;
+        return WijiBumiColors.textSecondary;
     }
   }
 
   Color _getStatusBg(String status) {
     switch (status) {
       case 'Selesai':
-        return WijiBumiColors.lightMint;
       case 'Dikirim':
-        return WijiBumiColors.lightMint;
       case 'Diproses':
       case 'Dikemas':
         return WijiBumiColors.lightMint;
@@ -66,7 +64,7 @@ class _OrderHistoryViewState extends State<OrderHistoryView> {
       case 'Dibatalkan':
         return WijiBumiColors.error.withOpacity(0.12);
       default:
-        return Colors.grey.shade100;
+        return WijiBumiColors.lightMint;
     }
   }
 
@@ -104,7 +102,7 @@ class _OrderHistoryViewState extends State<OrderHistoryView> {
       if (orderController.isLoading.value) {
         return const Center(
           child: CircularProgressIndicator(
-            valueColor: AlwaysStoppedAnimation<Color>(WijiBumiColors.freshLeaf),
+            valueColor: AlwaysStoppedAnimation<Color>(WijiBumiColors.deepForest),
           ),
         );
       }
@@ -136,7 +134,14 @@ class _OrderHistoryViewState extends State<OrderHistoryView> {
                           message: 'Anda belum memiliki transaksi pesanan di Wiji Bumi.',
                           action: ElevatedButton(
                             onPressed: () => Get.offAllNamed(AppRoutes.MAIN),
-                            child: const Text('Mulai Belanja'),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: WijiBumiColors.deepForest,
+                              foregroundColor: Colors.white,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                            ),
+                            child: const Text('Mulai Belanja', style: TextStyle(fontWeight: FontWeight.w700)),
                           ),
                         )
                       : EmptyState(
@@ -156,10 +161,10 @@ class _OrderHistoryViewState extends State<OrderHistoryView> {
                           onTap: () {
                             Get.toNamed(AppRoutes.ORDER_DETAIL, arguments: order);
                           },
-                          borderRadius: BorderRadius.circular(14),
+                          borderRadius: BorderRadius.circular(16),
                           child: Container(
                             padding: const EdgeInsets.all(16),
-                            decoration: DynamicGlassDecoration.cleanCard(radius: 14),
+                            decoration: DynamicGlassDecoration.glassCard(radius: 16),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
@@ -173,19 +178,22 @@ class _OrderHistoryViewState extends State<OrderHistoryView> {
                                         maxLines: 1,
                                         overflow: TextOverflow.ellipsis,
                                         style: const TextStyle(
-                                          fontSize: 13,
-                                          fontWeight: FontWeight.bold,
-                                          color: WijiBumiColors.deepForest,
+                                          fontSize: 13.5,
+                                          fontWeight: FontWeight.w800,
+                                          color: WijiBumiColors.textPrimary,
                                         ),
                                       ),
                                     ),
                                     const SizedBox(width: 8),
                                     Container(
                                       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                                      decoration: DynamicGlassDecoration.accentPill(
-                                        radius: 8,
-                                        fillColor: _getStatusBg(order.status),
-                                        borderColor: _getStatusColor(order.status).withOpacity(0.5),
+                                      decoration: BoxDecoration(
+                                        color: _getStatusBg(order.status),
+                                        borderRadius: BorderRadius.circular(8),
+                                        border: Border.all(
+                                          color: _getStatusColor(order.status).withOpacity(0.4),
+                                          width: 1.0,
+                                        ),
                                       ),
                                       child: Row(
                                         mainAxisSize: MainAxisSize.min,
@@ -219,11 +227,18 @@ class _OrderHistoryViewState extends State<OrderHistoryView> {
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
                                   style: const TextStyle(
-                                    fontSize: 11,
-                                    color: WijiBumiColors.textMuted,
+                                    fontSize: 11.5,
+                                    color: WijiBumiColors.textSecondary,
                                   ),
                                 ),
-                                const Divider(height: 18),
+                                const Padding(
+                                  padding: EdgeInsets.symmetric(vertical: 10),
+                                  child: Divider(
+                                    color: Color(0x26FFFFFF),
+                                    height: 1,
+                                    thickness: 1,
+                                  ),
+                                ),
 
                                 // Item Ringkas
                                 Text(
@@ -261,9 +276,9 @@ class _OrderHistoryViewState extends State<OrderHistoryView> {
                                       child: Text(
                                         currencyFormatter.format(order.total),
                                         style: const TextStyle(
-                                          fontSize: 14,
+                                          fontSize: 14.5,
                                           fontWeight: FontWeight.w800,
-                                          color: WijiBumiColors.deepForest,
+                                          color: WijiBumiColors.textPrimary,
                                         ),
                                       ),
                                     ),
@@ -284,12 +299,22 @@ class _OrderHistoryViewState extends State<OrderHistoryView> {
     return Scaffold(
       backgroundColor: WijiBumiColors.backgroundCanvas,
       appBar: AppBar(
-        title: const Text('Pesanan Saya'),
+        backgroundColor: WijiBumiColors.deepForest,
+        elevation: 0,
+        centerTitle: true,
+        title: const Text(
+          'Pesanan Saya',
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 16.5,
+            fontWeight: FontWeight.w700,
+          ),
+        ),
         automaticallyImplyLeading: !widget.isEmbedded,
         leading: widget.isEmbedded
             ? null
             : IconButton(
-                icon: const Icon(Icons.arrow_back_ios_new_rounded),
+                icon: const Icon(Icons.chevron_left_rounded, size: 30, color: Colors.white),
                 tooltip: 'Kembali ke Beranda',
                 onPressed: () {
                   if (Navigator.of(context).canPop()) {
@@ -302,7 +327,7 @@ class _OrderHistoryViewState extends State<OrderHistoryView> {
         actions: [
           if (!widget.isEmbedded)
             IconButton(
-              icon: const Icon(Icons.home_rounded),
+              icon: const Icon(Icons.home_outlined, size: 24, color: Colors.white),
               tooltip: 'Ke Beranda',
               onPressed: () {
                 Get.offAllNamed(AppRoutes.MAIN);
@@ -329,7 +354,7 @@ class _OrderHistoryViewState extends State<OrderHistoryView> {
 
   Widget _buildStatusFilterBar(List<OrderModel> allOrders) {
     return Container(
-      padding: const EdgeInsets.symmetric(vertical: 8),
+      padding: const EdgeInsets.symmetric(vertical: 10),
       child: SingleChildScrollView(
         scrollDirection: Axis.horizontal,
         physics: const BouncingScrollPhysics(),
@@ -361,15 +386,22 @@ class _OrderHistoryViewState extends State<OrderHistoryView> {
                   padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                   decoration: BoxDecoration(
                     color: isSelected
-                        ? WijiBumiColors.freshLeaf
+                        ? const Color(0xFFA7F3D0)
                         : Colors.white.withOpacity(0.08),
                     borderRadius: BorderRadius.circular(12),
                     border: Border.all(
                       color: isSelected
-                          ? WijiBumiColors.freshLeaf
-                          : Colors.white.withOpacity(0.16),
+                          ? const Color(0xFFA7F3D0)
+                          : Colors.white.withOpacity(0.20),
                       width: 1.0,
                     ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.08),
+                        blurRadius: 4,
+                        offset: const Offset(0, 2),
+                      ),
+                    ],
                   ),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
@@ -377,25 +409,25 @@ class _OrderHistoryViewState extends State<OrderHistoryView> {
                       Icon(
                         icon,
                         size: 15,
-                        color: isSelected ? Colors.white : WijiBumiColors.textMutedLight,
+                        color: isSelected ? const Color(0xFF142117) : const Color(0xFFC8DDD0),
                       ),
                       const SizedBox(width: 6),
                       Text(
                         label,
                         style: TextStyle(
                           fontSize: 12,
-                          fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
-                          color: isSelected ? Colors.white : WijiBumiColors.textMutedLight,
+                          fontWeight: isSelected ? FontWeight.w800 : FontWeight.w600,
+                          color: isSelected ? const Color(0xFF142117) : const Color(0xFFC8DDD0),
                         ),
                       ),
                       if (count > 0) ...[
                         const SizedBox(width: 6),
                         Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 1),
+                          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 1.5),
                           decoration: BoxDecoration(
                             color: isSelected
-                                ? Colors.white.withOpacity(0.25)
-                                : Colors.white.withOpacity(0.12),
+                                ? const Color(0xFF142117).withOpacity(0.18)
+                                : Colors.white.withOpacity(0.14),
                             borderRadius: BorderRadius.circular(8),
                           ),
                           child: Text(
@@ -403,7 +435,7 @@ class _OrderHistoryViewState extends State<OrderHistoryView> {
                             style: TextStyle(
                               fontSize: 10,
                               fontWeight: FontWeight.bold,
-                              color: isSelected ? Colors.white : WijiBumiColors.textMutedLight,
+                              color: isSelected ? const Color(0xFF142117) : Colors.white,
                             ),
                           ),
                         ),

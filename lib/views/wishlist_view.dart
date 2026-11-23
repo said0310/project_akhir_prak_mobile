@@ -15,7 +15,27 @@ class WishlistView extends StatelessWidget {
     return Scaffold(
       backgroundColor: WijiBumiColors.backgroundCanvas,
       appBar: AppBar(
-        title: const Text('Produk Favorit (Wishlist)'),
+        backgroundColor: WijiBumiColors.deepForest,
+        elevation: 0,
+        centerTitle: true,
+        leading: IconButton(
+          icon: const Icon(Icons.chevron_left_rounded, size: 30, color: Colors.white),
+          onPressed: () {
+            if (Navigator.of(context).canPop()) {
+              Navigator.of(context).pop();
+            } else {
+              Get.back();
+            }
+          },
+        ),
+        title: const Text(
+          'Produk Favorit (Wishlist)',
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 16.5,
+            fontWeight: FontWeight.w700,
+          ),
+        ),
       ),
       body: Obx(() {
         final items = shopController.wishlistItems;
@@ -33,19 +53,29 @@ class WishlistView extends StatelessWidget {
                   Get.offAllNamed(AppRoutes.MAIN);
                 }
               },
-              child: const Text('Jelajahi Produk'),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFFA7F3D0),
+                foregroundColor: const Color(0xFF142117),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
+              child: const Text(
+                'Jelajahi Produk',
+                style: TextStyle(fontWeight: FontWeight.w800, color: Color(0xFF142117)),
+              ),
             ),
           );
         }
 
         return GridView.builder(
-          padding: const EdgeInsets.fromLTRB(16, 12, 16, 90),
+          padding: const EdgeInsets.fromLTRB(16, 16, 16, 90),
           physics: const BouncingScrollPhysics(),
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 2,
-            crossAxisSpacing: 12,
-            mainAxisSpacing: 12,
-            childAspectRatio: 0.72,
+            crossAxisSpacing: 14,
+            mainAxisSpacing: 16,
+            childAspectRatio: 0.70,
           ),
           itemCount: items.length,
           itemBuilder: (context, index) {

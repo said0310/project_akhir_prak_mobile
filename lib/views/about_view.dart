@@ -9,9 +9,19 @@ class AboutView extends StatelessWidget {
     return Scaffold(
       backgroundColor: WijiBumiColors.backgroundCanvas,
       appBar: AppBar(
-        title: const Text('Tentang Aplikasi'),
+        backgroundColor: WijiBumiColors.deepForest,
+        elevation: 0,
+        centerTitle: true,
+        title: const Text(
+          'Tentang Aplikasi',
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 16.5,
+            fontWeight: FontWeight.w700,
+          ),
+        ),
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new_rounded),
+          icon: const Icon(Icons.chevron_left_rounded, size: 30, color: Colors.white),
           onPressed: () => Navigator.of(context).pop(),
         ),
       ),
@@ -23,22 +33,22 @@ class AboutView extends StatelessWidget {
             // Logo Banner
             Container(
               padding: const EdgeInsets.all(24),
-              decoration: DynamicGlassDecoration.cleanCard(radius: 16),
+              decoration: DynamicGlassDecoration.glassCard(radius: 16),
               child: Column(
                 children: [
                   Container(
                     width: 72,
                     height: 72,
                     decoration: BoxDecoration(
-                      color: WijiBumiColors.lightMint,
+                      color: Colors.white.withOpacity(0.12),
                       shape: BoxShape.circle,
-                      border: Border.all(color: WijiBumiColors.softSage, width: 2),
+                      border: Border.all(color: Colors.white.withOpacity(0.24), width: 1.5),
                     ),
                     child: const Center(
                       child: Icon(
                         Icons.eco_rounded,
                         size: 40,
-                        color: WijiBumiColors.deepForest,
+                        color: Color(0xFFA7F3D0),
                       ),
                     ),
                   ),
@@ -48,7 +58,7 @@ class AboutView extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 22,
                       fontWeight: FontWeight.w800,
-                      color: WijiBumiColors.deepForest,
+                      color: WijiBumiColors.textPrimary,
                     ),
                   ),
                   const SizedBox(height: 4),
@@ -56,7 +66,7 @@ class AboutView extends StatelessWidget {
                     'Versi 1.0.0 (Tugas Akhir Praktikum Mobile)',
                     style: TextStyle(
                       fontSize: 12,
-                      color: WijiBumiColors.textMuted,
+                      color: WijiBumiColors.textSecondary,
                     ),
                   ),
                   const SizedBox(height: 12),
@@ -77,7 +87,7 @@ class AboutView extends StatelessWidget {
             // Rincian Integrasi Modul Praktikum
             Container(
               padding: const EdgeInsets.all(18),
-              decoration: DynamicGlassDecoration.cleanCard(radius: 16),
+              decoration: DynamicGlassDecoration.glassCard(radius: 16),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -86,7 +96,7 @@ class AboutView extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 15,
                       fontWeight: FontWeight.w700,
-                      color: WijiBumiColors.deepForest,
+                      color: WijiBumiColors.textPrimary,
                     ),
                   ),
                   const SizedBox(height: 12),
@@ -139,16 +149,17 @@ class AboutView extends StatelessWidget {
         children: [
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-            decoration: DynamicGlassDecoration.accentPill(
-              radius: 6,
-              fillColor: WijiBumiColors.lightMint,
+            decoration: BoxDecoration(
+              color: Colors.white.withOpacity(0.12),
+              borderRadius: BorderRadius.circular(6),
+              border: Border.all(color: Colors.white.withOpacity(0.24)),
             ),
             child: Text(
               module,
               style: const TextStyle(
                 fontSize: 10,
                 fontWeight: FontWeight.bold,
-                color: WijiBumiColors.deepForest,
+                color: Color(0xFFA7F3D0),
               ),
             ),
           ),
