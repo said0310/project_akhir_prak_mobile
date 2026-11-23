@@ -211,7 +211,7 @@ class OrderDetailView extends StatelessWidget {
                                 '${item.quantity} ${item.unit} x ${currencyFormatter.format(item.price)}',
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
-                                style: const TextStyle(fontSize: 11, color: WijiBumiColors.textMuted),
+                                style: const TextStyle(fontSize: 11, color: WijiBumiColors.textCardDark),
                               ),
                             ],
                           ),
@@ -221,7 +221,7 @@ class OrderDetailView extends StatelessWidget {
                           fit: BoxFit.scaleDown,
                           child: Text(
                             currencyFormatter.format(item.subtotal),
-                            style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: WijiBumiColors.deepForest),
+                            style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: WijiBumiColors.textCardDark),
                           ),
                         ),
                       ],
@@ -311,7 +311,14 @@ class OrderDetailView extends StatelessWidget {
                         const SizedBox(width: 8),
                         FittedBox(
                           fit: BoxFit.scaleDown,
-                          child: Text(currencyFormatter.format(order.subtotal), style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600)),
+                          child: Text(
+                            currencyFormatter.format(order.subtotal),
+                            style: const TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w600,
+                              color: WijiBumiColors.textCardDark,
+                            ),
+                          ),
                         ),
                       ],
                     ),
@@ -335,7 +342,7 @@ class OrderDetailView extends StatelessWidget {
                             style: TextStyle(
                               fontSize: 12,
                               fontWeight: FontWeight.w600,
-                              color: order.shippingCost == 0 ? WijiBumiColors.success : WijiBumiColors.textPrimary,
+                              color: order.shippingCost == 0 ? WijiBumiColors.success : WijiBumiColors.textCardDark,
                             ),
                           ),
                         ),
@@ -350,7 +357,7 @@ class OrderDetailView extends StatelessWidget {
                             'Total Transaksi',
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
-                            style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: WijiBumiColors.deepForest),
+                            style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: WijiBumiColors.textCardDark),
                           ),
                         ),
                         const SizedBox(width: 8),
@@ -358,7 +365,7 @@ class OrderDetailView extends StatelessWidget {
                           fit: BoxFit.scaleDown,
                           child: Text(
                             currencyFormatter.format(order.total),
-                            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w800, color: WijiBumiColors.deepForest),
+                            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w800, color: WijiBumiColors.textCardDark),
                           ),
                         ),
                       ],
