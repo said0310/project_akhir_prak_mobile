@@ -27,7 +27,7 @@ class LocationService {
     return await Geolocator.openLocationSettings();
   }
 
-  /// Dapatkan posisi pengguna saat ini
+  /// Dapatkan posisi pengguna saat ini dengan akurasi presisi tinggi (Best/High Accuracy)
   static Future<Position?> getCurrentPosition() async {
     final serviceEnabled = await isServiceEnabled();
     if (!serviceEnabled) {
@@ -46,16 +46,26 @@ class LocationService {
       return null;
     }
 
+    // 1. Prioritas Utama: Ambil posisi GPS akurasi presisi terbaik (LocationAccuracy.best)
     try {
       return await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high,
-        timeLimit: const Duration(seconds: 10),
+        desiredAccuracy: LocationAccuracy.best,
+        timeLimit: const Duration(seconds: 15),
       );
     } catch (_) {
+      // 2. Fallback jika satelit GPS butuh waktu: Gunakan akurasi High
       try {
-        return await Geolocator.getLastKnownPosition();
+        return await Geolocator.getCurrentPosition(
+          desiredAccuracy: LocationAccuracy.high,
+          timeLimit: const Duration(seconds: 8),
+        );
       } catch (_) {
-        return null;
+        // 3. Fallback terakhir: Ambil posisi terakhir yang tercatat di sistem
+        try {
+          return await Geolocator.getLastKnownPosition();
+        } catch (_) {
+          return null;
+        }
       }
     }
   }

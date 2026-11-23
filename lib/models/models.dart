@@ -813,3 +813,44 @@ class OrderModel {
     );
   }
 }
+
+/// ============================================================================
+/// 8. MODEL CABANG TOKO (STORE BRANCH - SLEMAN & BANTUL)
+/// ============================================================================
+class StoreBranch {
+  final String id;
+  final String name;
+  final String city;
+  final String address;
+  final double latitude;
+  final double longitude;
+
+  const StoreBranch({
+    required this.id,
+    required this.name,
+    required this.city,
+    required this.address,
+    required this.latitude,
+    required this.longitude,
+  });
+
+  static const StoreBranch sleman = StoreBranch(
+    id: 'sleman',
+    name: 'Wiji Bumi Cabang Sleman',
+    city: 'Sleman',
+    address: 'Jl. Padjajaran No. 88, Condongcatur, Sleman, DIY',
+    latitude: -7.7600,
+    longitude: 110.4080,
+  );
+
+  static const StoreBranch bantul = StoreBranch(
+    id: 'bantul',
+    name: 'Wiji Bumi Cabang Bantul',
+    city: 'Bantul',
+    address: 'Jl. Bantul Km 7.5, Pendowoharjo, Sewon, Bantul, DIY',
+    latitude: -7.8750,
+    longitude: 110.3550,
+  );
+
+  static const List<StoreBranch> branches = [sleman, bantul];
+}

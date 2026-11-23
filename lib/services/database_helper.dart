@@ -19,11 +19,16 @@ class DatabaseHelper {
   static const String tableOrders = 'orders';
   static const String tableOrderItems = 'order_items';
 
-  // Default Lokasi Toko Pusat Wiji Bumi
-  static const double storeLatitude = -6.2088;
-  static const double storeLongitude = 106.8456;
-  static const String storeName = 'Kebun Pusat Wiji Bumi';
-  static const String storeLocationName = 'Jakarta Selatan';
+  // Lokasi Toko Cabang Wiji Bumi (Sleman & Bantul)
+  static const double storeLatitude = -7.7600; // Cabang Sleman (Pusat)
+  static const double storeLongitude = 110.4080;
+  static const String storeName = 'Wiji Bumi Cabang Sleman';
+  static const String storeLocationName = 'Sleman, DIY';
+
+  static const double storeBantulLatitude = -7.8750; // Cabang Bantul
+  static const double storeBantulLongitude = 110.3550;
+  static const String storeBantulName = 'Wiji Bumi Cabang Bantul';
+  static const String storeBantulLocationName = 'Bantul, DIY';
 
   // Biaya Ongkir Default
   static const double baseDistanceKm = 5.0;
