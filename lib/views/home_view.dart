@@ -8,8 +8,22 @@ import '../controllers/notification_controller.dart';
 import '../widgets/product_card.dart';
 import '../widgets/category_card.dart';
 
-class HomeView extends StatelessWidget {
+class HomeView extends StatefulWidget {
   const HomeView({super.key});
+
+  @override
+  State<HomeView> createState() => _HomeViewState();
+}
+
+class _HomeViewState extends State<HomeView> {
+  final ScrollController _scrollController = ScrollController();
+  final GlobalKey _catalogKey = GlobalKey();
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -90,6 +104,7 @@ class HomeView extends StatelessWidget {
           SafeArea(
             bottom: false,
             child: CustomScrollView(
+              controller: _scrollController,
               physics: const BouncingScrollPhysics(),
               slivers: [
                 SliverToBoxAdapter(
@@ -457,18 +472,30 @@ class HomeView extends StatelessWidget {
                                     onRemove: () =>
                                         productController.setFilterStock(false),
                                   ),
-                                GestureDetector(
-                                  onTap: productController.resetAllFilters,
-                                  child: const Padding(
-                                    padding: EdgeInsets.symmetric(
-                                        horizontal: 8, vertical: 4),
-                                    child: Text(
-                                      'Reset',
-                                      style: TextStyle(
-                                        fontSize: 12,
-                                        fontWeight: FontWeight.w600,
-                                        color: WijiBumiColors.textSecondary,
-                                        decoration: TextDecoration.underline,
+                                Padding(
+                                  padding: const EdgeInsets.only(left: 4.0),
+                                  child: InkWell(
+                                    borderRadius: BorderRadius.circular(20),
+                                    onTap: productController.resetAllFilters,
+                                    child: Container(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 10, vertical: 5),
+                                      decoration: BoxDecoration(
+                                        color: Colors.white.withOpacity(0.08),
+                                        borderRadius: BorderRadius.circular(20),
+                                        border: Border.all(
+                                          color: Colors.white.withOpacity(0.20),
+                                          width: 1.0,
+                                        ),
+                                      ),
+                                      child: const Text(
+                                        'Reset',
+                                        style: TextStyle(
+                                          fontFamily: 'Poppins',
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w600,
+                                          color: Color(0xFFA7F3D0),
+                                        ),
                                       ),
                                     ),
                                   ),
@@ -563,12 +590,13 @@ class HomeView extends StatelessWidget {
                               const SizedBox(height: 28),
 
                               // 4. Section "Promotion"
-                              _buildPromotionBanner(),
+                              _buildPromotionBanner(context, productController),
 
                               const SizedBox(height: 28),
 
                               // 5. Section "Katalog Lengkap" (2 Kolom Kanan & Kiri, Scroll ke Bawah)
                               Padding(
+                                key: _catalogKey,
                                 padding: const EdgeInsets.symmetric(
                                     horizontal: 24.0),
                                 child: Row(
@@ -614,11 +642,13 @@ class HomeView extends StatelessWidget {
                                     Container(
                                       padding: const EdgeInsets.symmetric(
                                           horizontal: 10, vertical: 4),
-                                      decoration:
-                                          DynamicGlassDecoration.accentPill(
-                                        radius: 8,
-                                        fillColor: WijiBumiColors.lightMint,
-                                        borderColor: WijiBumiColors.softSage,
+                                      decoration: BoxDecoration(
+                                        color: Colors.white.withOpacity(0.12),
+                                        borderRadius: BorderRadius.circular(10),
+                                        border: Border.all(
+                                          color: Colors.white.withOpacity(0.28),
+                                          width: 1.0,
+                                        ),
                                       ),
                                       child: Text(
                                         '${products.length} Produk',
@@ -626,9 +656,9 @@ class HomeView extends StatelessWidget {
                                         overflow: TextOverflow.ellipsis,
                                         style: const TextStyle(
                                           fontFamily: 'Poppins',
-                                          fontSize: 11,
+                                          fontSize: 11.5,
                                           fontWeight: FontWeight.w700,
-                                          color: WijiBumiColors.deepForest,
+                                          color: Color(0xFFA7F3D0),
                                         ),
                                       ),
                                     ),
@@ -702,15 +732,18 @@ class HomeView extends StatelessWidget {
       {required String label, required VoidCallback onRemove}) {
     return Container(
       margin: const EdgeInsets.only(right: 8),
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.92),
-        borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: WijiBumiColors.borderSage, width: 1.0),
+        color: const Color(0xFF253A28).withOpacity(0.85),
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(
+          color: const Color(0xFFA7F3D0).withOpacity(0.45),
+          width: 1.2,
+        ),
         boxShadow: [
           BoxShadow(
-            color: const Color(0xFF1C2B1E).withOpacity(0.06),
-            blurRadius: 6,
+            color: Colors.black.withOpacity(0.25),
+            blurRadius: 8,
             offset: const Offset(0, 2),
           ),
         ],
@@ -721,18 +754,19 @@ class HomeView extends StatelessWidget {
           Text(
             label,
             style: const TextStyle(
+              fontFamily: 'Poppins',
               fontSize: 12,
               fontWeight: FontWeight.w600,
-              color: WijiBumiColors.textPrimary,
+              color: Colors.white,
             ),
           ),
-          const SizedBox(width: 4),
+          const SizedBox(width: 6),
           GestureDetector(
             onTap: onRemove,
             child: const Icon(
               Icons.close_rounded,
-              size: 14,
-              color: WijiBumiColors.textSecondary,
+              size: 15,
+              color: Color(0xFFA7F3D0),
             ),
           ),
         ],
@@ -740,7 +774,212 @@ class HomeView extends StatelessWidget {
     );
   }
 
-  Widget _buildPromotionBanner() {
+  void _showOfferDialog(BuildContext context, ShopController productController) {
+    showDialog(
+      context: context,
+      barrierColor: Colors.black.withOpacity(0.70),
+      builder: (dialogContext) {
+        return Dialog(
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          insetPadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(20),
+            child: BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
+              child: Container(
+                padding: const EdgeInsets.all(22),
+                decoration: BoxDecoration(
+                  color: const Color(0xFF1E2F21).withOpacity(0.92),
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(
+                    color: Colors.white.withOpacity(0.25),
+                    width: 1.2,
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.40),
+                      blurRadius: 24,
+                      offset: const Offset(0, 8),
+                    ),
+                  ],
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Badge kecil: "OFFER OF THE WEEK" berwarna hijau mint cerah
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 10, vertical: 4),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.12),
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(
+                          color: Colors.white.withOpacity(0.28),
+                          width: 1.0,
+                        ),
+                      ),
+                      child: const Text(
+                        'OFFER OF THE WEEK',
+                        style: TextStyle(
+                          fontFamily: 'Poppins',
+                          fontSize: 10.5,
+                          fontWeight: FontWeight.w700,
+                          color: Color(0xFFA7F3D0),
+                          letterSpacing: 0.5,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 14),
+
+                    // Judul tebal putih: "Gratis Pot & Pupuk Organik"
+                    const Text(
+                      'Gratis Pot & Pupuk Organik',
+                      style: TextStyle(
+                        fontFamily: 'Poppins',
+                        fontSize: 18,
+                        fontWeight: FontWeight.w800,
+                        color: Colors.white,
+                        height: 1.25,
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+
+                    // Deskripsi teks kontras tinggi
+                    const Text(
+                      'Dapatkan bonus 1 set pot eksklusif dan pupuk organik gratis untuk setiap pembelian produk tanaman/bunga dengan total belanja di atas Rp 150.000.',
+                      style: TextStyle(
+                        fontFamily: 'Poppins',
+                        fontSize: 13,
+                        fontWeight: FontWeight.w400,
+                        color: Color(0xFFC8DDD0),
+                        height: 1.45,
+                      ),
+                    ),
+                    const SizedBox(height: 22),
+
+                    // Tombol Aksi
+                    Row(
+                      children: [
+                        // Tombol Tutup
+                        Expanded(
+                          flex: 1,
+                          child: InkWell(
+                            borderRadius: BorderRadius.circular(12),
+                            onTap: () => Navigator.of(dialogContext).pop(),
+                            child: Container(
+                              height: 44,
+                              decoration: BoxDecoration(
+                                color: Colors.white.withOpacity(0.08),
+                                borderRadius: BorderRadius.circular(12),
+                                border: Border.all(
+                                  color: Colors.white.withOpacity(0.20),
+                                  width: 1.0,
+                                ),
+                              ),
+                              child: const Center(
+                                child: Text(
+                                  'Tutup',
+                                  style: TextStyle(
+                                    fontFamily: 'Poppins',
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.w600,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 10),
+
+                        // Tombol Utama "Lihat Koleksi Tanaman"
+                        Expanded(
+                          flex: 2,
+                          child: InkWell(
+                            borderRadius: BorderRadius.circular(12),
+                            onTap: () {
+                              Navigator.of(dialogContext).pop();
+                              // Filter kategori tanaman/bunga di katalog beranda
+                              final plantCategory = productController.categories.firstWhereOrNull(
+                                (c) {
+                                  final id = c.id.toLowerCase();
+                                  final name = c.name.toLowerCase();
+                                  return id.contains('tanaman') ||
+                                      id.contains('bunga') ||
+                                      name.contains('tanaman') ||
+                                      name.contains('bunga') ||
+                                      name.contains('plant') ||
+                                      id.contains('outdoor') ||
+                                      name.contains('outdoor');
+                                },
+                              );
+                              if (plantCategory != null) {
+                                productController.selectCategory(plantCategory.id);
+                              } else if (productController.categories.any((c) => c.id == 'tanaman_hias')) {
+                                productController.selectCategory('tanaman_hias');
+                              }
+
+                              // Smooth scroll ke Katalog Lengkap
+                              WidgetsBinding.instance.addPostFrameCallback((_) {
+                                if (_catalogKey.currentContext != null) {
+                                  Scrollable.ensureVisible(
+                                    _catalogKey.currentContext!,
+                                    duration: const Duration(milliseconds: 600),
+                                    curve: Curves.easeInOutCubic,
+                                  );
+                                } else if (_scrollController.hasClients) {
+                                  _scrollController.animateTo(
+                                    520.0,
+                                    duration: const Duration(milliseconds: 600),
+                                    curve: Curves.easeInOutCubic,
+                                  );
+                                }
+                              });
+                            },
+                            child: Container(
+                              height: 44,
+                              decoration: BoxDecoration(
+                                color: const Color(0xFFA7F3D0),
+                                borderRadius: BorderRadius.circular(12),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: const Color(0xFFA7F3D0).withOpacity(0.30),
+                                    blurRadius: 8,
+                                    offset: const Offset(0, 2),
+                                  ),
+                                ],
+                              ),
+                              child: const Center(
+                                child: Text(
+                                  'Lihat Koleksi Tanaman',
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(
+                                    fontFamily: 'Poppins',
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.w700,
+                                    color: Color(0xFF142117),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildPromotionBanner(BuildContext context, ShopController productController) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 24.0),
       child: Column(
@@ -773,90 +1012,98 @@ class HomeView extends StatelessWidget {
           ),
           const SizedBox(height: 14),
 
-          // Kartu Promosi Glassmorphism Luminous
-          ClipRRect(
+          // Kartu Promosi Glassmorphism Luminous (Interaktif dengan InkWell)
+          Material(
+            color: Colors.transparent,
             borderRadius: BorderRadius.circular(20),
-            child: BackdropFilter(
-              filter: ImageFilter.blur(sigmaX: 14, sigmaY: 14),
-              child: Container(
-                width: double.infinity,
-                padding: const EdgeInsets.all(18),
-                decoration: DynamicGlassDecoration.glassCard(radius: 20),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 8, vertical: 3),
-                            decoration: BoxDecoration(
-                              color: const Color(0xFF142117),
-                              borderRadius: BorderRadius.circular(8),
-                              border: Border.all(
-                                color: Colors.white.withOpacity(0.25),
-                                width: 1.0,
+            child: InkWell(
+              borderRadius: BorderRadius.circular(20),
+              onTap: () => _showOfferDialog(context, productController),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(20),
+                child: BackdropFilter(
+                  filter: ImageFilter.blur(sigmaX: 14, sigmaY: 14),
+                  child: Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.all(18),
+                    decoration: DynamicGlassDecoration.glassCard(radius: 20),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Container(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 8, vertical: 3),
+                                decoration: BoxDecoration(
+                                  color: const Color(0xFF142117),
+                                  borderRadius: BorderRadius.circular(8),
+                                  border: Border.all(
+                                    color: Colors.white.withOpacity(0.25),
+                                    width: 1.0,
+                                  ),
+                                ),
+                                child: const Text(
+                                  'OFFER OF THE WEEK',
+                                  style: TextStyle(
+                                    fontFamily: 'Poppins',
+                                    fontSize: 10,
+                                    fontWeight: FontWeight.w700,
+                                    color: Color(0xFFA7F3D0),
+                                    letterSpacing: 0.5,
+                                  ),
+                                ),
                               ),
-                            ),
-                            child: const Text(
-                              'OFFER OF THE WEEK',
-                              style: TextStyle(
-                                fontFamily: 'Poppins',
-                                fontSize: 10,
-                                fontWeight: FontWeight.w700,
-                                color: Colors.white,
-                                letterSpacing: 0.5,
+                              const SizedBox(height: 8),
+                              const Text(
+                                'Free Pot & Fertilizer',
+                                style: TextStyle(
+                                  fontFamily: 'Poppins',
+                                  fontSize: 17,
+                                  fontWeight: FontWeight.w800,
+                                  color: Colors.white,
+                                  height: 1.2,
+                                ),
                               ),
-                            ),
+                              const SizedBox(height: 3),
+                              const Text(
+                                'For all big plants orders above Rp 150.000',
+                                style: TextStyle(
+                                  fontFamily: 'Poppins',
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w500,
+                                  color: Color(0xFFC8DDD0),
+                                ),
+                              ),
+                            ],
                           ),
-                          const SizedBox(height: 8),
-                          const Text(
-                            'Free Pot & Fertilizer',
-                            style: TextStyle(
-                              fontFamily: 'Poppins',
-                              fontSize: 17,
-                              fontWeight: FontWeight.w800,
-                              color: Colors.white,
-                              height: 1.2,
-                            ),
-                          ),
-                          const SizedBox(height: 3),
-                          const Text(
-                            'For all big plants orders above Rp 150.000',
-                            style: TextStyle(
-                              fontFamily: 'Poppins',
-                              fontSize: 12,
-                              fontWeight: FontWeight.w500,
-                              color: Color(0xFFC8DDD0),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Container(
-                      width: 40,
-                      height: 40,
-                      decoration: BoxDecoration(
-                        color: const Color(0xFFA7F3D0),
-                        shape: BoxShape.circle,
-                        boxShadow: [
-                          BoxShadow(
-                            color: const Color(0xFFA7F3D0).withOpacity(0.30),
-                            blurRadius: 8,
-                            offset: const Offset(0, 2),
-                          ),
-                        ],
-                      ),
-                      child: const Center(
-                        child: Icon(
-                          Icons.arrow_forward_rounded,
-                          size: 18,
-                          color: Color(0xFF142117),
                         ),
-                      ),
+                        Container(
+                          width: 40,
+                          height: 40,
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFA7F3D0),
+                            shape: BoxShape.circle,
+                            boxShadow: [
+                              BoxShadow(
+                                color: const Color(0xFFA7F3D0).withOpacity(0.30),
+                                blurRadius: 8,
+                                offset: const Offset(0, 2),
+                              ),
+                            ],
+                          ),
+                          child: const Center(
+                            child: Icon(
+                              Icons.arrow_forward_rounded,
+                              size: 18,
+                              color: Color(0xFF142117),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
-                  ],
+                  ),
                 ),
               ),
             ),
@@ -964,9 +1211,10 @@ class HomeView extends StatelessWidget {
                       const Text(
                         'Filter & Urutkan',
                         style: TextStyle(
+                          fontFamily: 'Poppins',
                           fontSize: 18,
                           fontWeight: FontWeight.w700,
-                          color: WijiBumiColors.textPrimary,
+                          color: Colors.white,
                         ),
                       ),
                       GestureDetector(
@@ -974,9 +1222,10 @@ class HomeView extends StatelessWidget {
                         child: const Text(
                           'Reset',
                           style: TextStyle(
+                            fontFamily: 'Poppins',
                             fontSize: 13,
-                            fontWeight: FontWeight.w600,
-                            color: WijiBumiColors.freshLeaf,
+                            fontWeight: FontWeight.w700,
+                            color: Color(0xFFA7F3D0),
                           ),
                         ),
                       ),
@@ -986,9 +1235,10 @@ class HomeView extends StatelessWidget {
                   const Text(
                     'Kategori Produk',
                     style: TextStyle(
+                      fontFamily: 'Poppins',
                       fontSize: 14,
                       fontWeight: FontWeight.w600,
-                      color: WijiBumiColors.textSecondary,
+                      color: Color(0xFFC8DDD0),
                     ),
                   ),
                   const SizedBox(height: 10),
@@ -1037,9 +1287,10 @@ class HomeView extends StatelessWidget {
                   const Text(
                     'Ketersediaan Produk',
                     style: TextStyle(
+                      fontFamily: 'Poppins',
                       fontSize: 14,
                       fontWeight: FontWeight.w600,
-                      color: WijiBumiColors.textSecondary,
+                      color: Color(0xFFC8DDD0),
                     ),
                   ),
                   const SizedBox(height: 10),
@@ -1055,14 +1306,18 @@ class HomeView extends StatelessWidget {
                           const Text(
                             'Hanya Stok Tersedia (Ready)',
                             style: TextStyle(
+                              fontFamily: 'Poppins',
                               fontSize: 14,
                               fontWeight: FontWeight.w600,
-                              color: WijiBumiColors.textPrimary,
+                              color: Colors.white,
                             ),
                           ),
                           Switch(
                             value: inStock,
-                            activeColor: WijiBumiColors.freshLeaf,
+                            activeColor: const Color(0xFFA7F3D0),
+                            activeTrackColor: const Color(0xFF2E7D32),
+                            inactiveThumbColor: Colors.white70,
+                            inactiveTrackColor: Colors.white.withOpacity(0.15),
                             onChanged: (val) => controller.setFilterStock(val),
                           ),
                         ],
@@ -1118,22 +1373,23 @@ class HomeView extends StatelessWidget {
         decoration: BoxDecoration(
           color: isSelected
               ? const Color(0xFFA7F3D0)
-              : Colors.white.withOpacity(0.08),
+              : const Color(0xFF253A28).withOpacity(0.85),
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
             color: isSelected
                 ? const Color(0xFFA7F3D0)
-                : Colors.white.withOpacity(0.20),
+                : Colors.white.withOpacity(0.25),
             width: 1.0,
           ),
         ),
         child: Text(
           label,
           style: TextStyle(
+            fontFamily: 'Poppins',
             fontSize: 13,
             fontWeight: isSelected ? FontWeight.w800 : FontWeight.w600,
             color:
-                isSelected ? const Color(0xFF142117) : const Color(0xFFC8DDD0),
+                isSelected ? const Color(0xFF142117) : Colors.white,
           ),
         ),
       ),

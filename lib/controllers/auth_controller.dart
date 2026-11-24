@@ -132,29 +132,51 @@ class AuthController extends GetxController {
     }
   }
 
-  Future<void> updateProfile({
+  Future<bool> updateProfile({
     required String name,
     required String phone,
+    String? newPassword,
   }) async {
-    if (currentUser.value == null) return;
+    if (currentUser.value == null) return false;
     try {
       isLoading.value = true;
+      final current = currentUser.value!;
+      String? newHash;
+      if (newPassword != null && newPassword.trim().isNotEmpty) {
+        newHash = ApiService.hashPassword(newPassword.trim());
+      }
+
       final updated = await authRepository.updateProfile(
-        userId: currentUser.value!.id,
+        userId: current.id,
         name: name,
         phone: phone,
+        passwordHash: newHash,
       );
+
+      // Perbarui juga ke SQLite DatabaseHelper
+      try {
+        await DatabaseHelper.updateUserProfile(
+          id: current.id,
+          name: name,
+          phone: phone,
+          newPassword: newPassword?.trim(),
+          newPasswordHash: newHash,
+        );
+      } catch (_) {}
+
       currentUser.value = updated;
       GlassFeedback.showSnackbar(
         title: 'Profil Diperbarui',
         message: 'Data profil berhasil disimpan.',
       );
+      return true;
     } catch (e) {
       GlassFeedback.showSnackbar(
         title: 'Gagal Memperbarui Profil',
-        message: e.toString(),
+        message: e.toString().replaceAll('Exception: ', '').replaceAll('HttpException: ', ''),
         isError: true,
       );
+      return false;
     } finally {
       isLoading.value = false;
     }

@@ -316,6 +316,47 @@ class DatabaseHelper {
     );
   }
 
+  static Future<void> updateUserProfile({
+    required String id,
+    required String name,
+    required String phone,
+    String? newPassword,
+    String? newPasswordHash,
+  }) async {
+    final db = await database;
+    await _ensureTables(db);
+    final Map<String, dynamic> updateValues = {
+      'name': name,
+      'phone': phone,
+    };
+    if (newPassword != null && newPassword.isNotEmpty) {
+      updateValues['password'] = newPassword;
+      updateValues['password_hash'] = newPasswordHash ?? '';
+    }
+    final count = await db.update(
+      tableUsers,
+      updateValues,
+      where: 'id = ?',
+      whereArgs: [id],
+    );
+    if (count == 0) {
+      await db.insert(
+        tableUsers,
+        {
+          'id': id,
+          'name': name,
+          'email': '',
+          'username': '',
+          'phone': phone,
+          'password': newPassword ?? '',
+          'password_hash': newPasswordHash ?? '',
+          'created_at': DateTime.now().toIso8601String(),
+        },
+        conflictAlgorithm: ConflictAlgorithm.replace,
+      );
+    }
+  }
+
   static Future<Map<String, dynamic>?> getUserById(String id) async {
     final db = await database;
     await _ensureTables(db);

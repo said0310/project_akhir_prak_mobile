@@ -316,6 +316,33 @@ class AppTheme {
         ),
         behavior: SnackBarBehavior.floating,
       ),
+      chipTheme: ChipThemeData(
+        backgroundColor: const Color(0xFF253A28),
+        selectedColor: const Color(0xFFA7F3D0),
+        disabledColor: Colors.white.withOpacity(0.05),
+        labelStyle: const TextStyle(
+          color: Colors.white,
+          fontSize: 13,
+          fontWeight: FontWeight.w600,
+          fontFamily: 'Poppins',
+        ),
+        secondaryLabelStyle: const TextStyle(
+          color: Color(0xFF142117),
+          fontSize: 13,
+          fontWeight: FontWeight.w700,
+          fontFamily: 'Poppins',
+        ),
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+          side: BorderSide(
+            color: Colors.white.withOpacity(0.25),
+            width: 1.0,
+          ),
+        ),
+        checkmarkColor: const Color(0xFF142117),
+        brightness: Brightness.dark,
+      ),
     );
   }
 }

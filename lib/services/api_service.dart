@@ -310,6 +310,20 @@ class ApiService {
     await _checkSimulatedError();
     final index = _mockUsers.indexWhere((u) => u.id == userId);
     if (index == -1) {
+      final local = await DatabaseHelper.getUserById(userId);
+      if (local != null) {
+        final u = UserModel(
+          id: local['id']?.toString() ?? userId,
+          name: updateData['name']?.toString() ?? local['name']?.toString() ?? '',
+          email: local['email']?.toString() ?? '',
+          username: local['username']?.toString() ?? '',
+          passwordHash: updateData['passwordHash']?.toString() ?? local['password_hash']?.toString() ?? '',
+          phone: updateData['phone']?.toString() ?? local['phone']?.toString() ?? '',
+          photoUrl: updateData['photoUrl']?.toString() ?? local['photo_url']?.toString() ?? '',
+        );
+        _mockUsers.add(u);
+        return u;
+      }
       throw const HttpException('User tidak ditemukan');
     }
 
@@ -318,6 +332,7 @@ class ApiService {
       name: updateData['name']?.toString() ?? oldUser.name,
       phone: updateData['phone']?.toString() ?? oldUser.phone,
       photoUrl: updateData['photoUrl']?.toString() ?? oldUser.photoUrl,
+      passwordHash: updateData['passwordHash']?.toString() ?? oldUser.passwordHash,
     );
 
     _mockUsers[index] = updatedUser;
@@ -446,11 +461,18 @@ class AuthRepository {
     return user;
   }
 
-  Future<UserModel> updateProfile({required String userId, String? name, String? phone, String? photoUrl}) async {
+  Future<UserModel> updateProfile({
+    required String userId,
+    String? name,
+    String? phone,
+    String? photoUrl,
+    String? passwordHash,
+  }) async {
     return await apiService.updateUser(userId, {
       if (name != null) 'name': name,
       if (phone != null) 'phone': phone,
       if (photoUrl != null) 'photoUrl': photoUrl,
+      if (passwordHash != null) 'passwordHash': passwordHash,
     });
   }
 
