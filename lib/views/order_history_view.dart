@@ -451,4 +451,3 @@ class _OrderHistoryViewState extends State<OrderHistoryView> {
     );
   }
 }
-}
