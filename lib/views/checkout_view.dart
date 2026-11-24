@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
 import '../app.dart';
 import '../controllers/shop_controller.dart';
 import '../controllers/location_controller.dart';
+import '../models/models.dart';
 import '../widgets/custom_button.dart';
 import '../widgets/glass_feedback.dart';
 import '../widgets/google_map_widget.dart';
@@ -51,12 +51,6 @@ class _CheckoutViewState extends State<CheckoutView> {
     final locationController = Get.find<LocationController>();
     final orderController = Get.find<ShopController>();
 
-    final currencyFormatter = NumberFormat.currency(
-      locale: 'id_ID',
-      symbol: 'Rp ',
-      decimalDigits: 0,
-    );
-
     return Scaffold(
       backgroundColor: WijiBumiColors.backgroundCanvas,
       appBar: AppBar(
@@ -72,17 +66,22 @@ class _CheckoutViewState extends State<CheckoutView> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const Icon(Icons.remove_shopping_cart_outlined,
-                    size: 64, color: WijiBumiColors.textMuted),
+                const Icon(
+                  Icons.remove_shopping_cart_outlined,
+                  size: 64,
+                  color: WijiBumiColors.textMuted,
+                ),
                 const SizedBox(height: 12),
                 const Text(
                   'Keranjang belanja Anda kosong.',
                   style: TextStyle(
-                      fontSize: 15,
-                      fontWeight: FontWeight.w600,
-                      color: WijiBumiColors.textPrimary),
+                    fontFamily: 'Poppins',
+                    fontSize: 15,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.white,
+                  ),
                 ),
-                const SizedBox(height: 12),
+                const SizedBox(height: 16),
                 CustomButton(
                   text: 'Kembali Belanja',
                   width: 200,
@@ -93,578 +92,529 @@ class _CheckoutViewState extends State<CheckoutView> {
           );
         }
 
+        final shippingCost = locationController.currentShippingCost.value;
+        final total = subtotal + shippingCost;
+
         return SingleChildScrollView(
           physics: const BouncingScrollPhysics(),
           padding: const EdgeInsets.fromLTRB(16, 12, 16, 100),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // ==========================================
-              // KARTU 1: ALAMAT PENGIRIMAN & JARAK GPS (LBS)
-              // ==========================================
-              const Text(
-                'Alamat Pengiriman',
-                style: TextStyle(
-                  fontSize: 15,
-                  fontWeight: FontWeight.w700,
-                  color: WijiBumiColors.textPrimary,
-                ),
-              ),
+              // 1. Alamat Pengiriman & Jarak GPS (LBS)
+              _buildSectionHeader('Alamat Pengiriman'),
               const SizedBox(height: 8),
-              Container(
-                padding: const EdgeInsets.all(16),
-                decoration: DynamicGlassDecoration.cleanCard(radius: 14),
-                child: Obx(() {
-                  final address = locationController.selectedAddress.value;
-
-                  if (address == null) {
-                    return Column(
-                      children: [
-                        const Text(
-                          'Belum ada alamat pengiriman terpilih.',
-                          style: TextStyle(
-                              fontSize: 13, color: WijiBumiColors.textMuted),
-                        ),
-                        const SizedBox(height: 12),
-                        CustomButton(
-                          text: '+ Tambah / Pilih Alamat',
-                          variant: ButtonVariant.secondaryGlass,
-                          height: 40,
-                          onPressed: () {
-                            Get.toNamed(AppRoutes.ADDRESS);
-                          },
-                        ),
-                      ],
-                    );
-                  }
-
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          const Icon(Icons.location_on_rounded,
-                              color: Color.fromARGB(255, 197, 208, 198),
-                              size: 20),
-                          const SizedBox(width: 8),
-                          Expanded(
-                            child: Text(
-                              '${address.recipientName} (${address.phone})',
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: const TextStyle(
-                                fontSize: 13,
-                                fontWeight: FontWeight.bold,
-                                color: WijiBumiColors.textPrimary,
-                              ),
-                            ),
-                          ),
-                          TextButton(
-                            onPressed: () {
-                              Get.toNamed(AppRoutes.ADDRESS);
-                            },
-                            child: const Text(
-                              'Ganti Alamat',
-                              style: TextStyle(
-                                fontSize: 12,
-                                color: Color.fromARGB(255, 221, 228, 222),
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        address.fullAddress,
-                        maxLines: 3,
-                        overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(
-                          fontSize: 12,
-                          color: WijiBumiColors.textSecondary,
-                          height: 1.3,
-                        ),
-                      ),
-                      Text(
-                        '${address.district}, ${address.city}',
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(
-                          fontSize: 12,
-                          color: WijiBumiColors.textMuted,
-                        ),
-                      ),
-                      const Divider(height: 20),
-                      // ── Google Maps: Peta Lokasi Pengiriman & Pilihan Cabang Sleman/Bantul ──
-                      if (address.latitude != 0 || address.longitude != 0) ...[
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            const Text(
-                              '🗺️ Rute Cabang Toko',
-                              style: TextStyle(
-                                fontSize: 12,
-                                fontWeight: FontWeight.w700,
-                                color: Color.fromARGB(255, 206, 206, 206),
-                              ),
-                            ),
-                            const SizedBox(width: 8),
-                            Expanded(
-                              child: Obx(() => Text(
-                                    locationController.selectedStore.value.name,
-                                    textAlign: TextAlign.end,
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: const TextStyle(
-                                      fontSize: 11,
-                                      fontWeight: FontWeight.bold,
-                                      color: WijiBumiColors.freshLeaf,
-                                    ),
-                                  )),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 8),
-                        Obx(() => GoogleMapWidget(
-                              userLatitude: address.latitude,
-                              userLongitude: address.longitude,
-                              userMarkerTitle: 'Lokasi Pengiriman',
-                              userMarkerSnippet: address.fullAddress,
-                              height: 220,
-                              showStoreMarker: true,
-                              showPolyline: true,
-                              isPickerMode: false,
-                              selectedBranch:
-                                  locationController.selectedStore.value,
-                              onBranchChanged: (branch) {
-                                locationController.setStoreBranch(
-                                    branch, subtotal);
-                              },
-                            )),
-                        const SizedBox(height: 10),
-                      ],
-                      // Jarak GPS dan Estimasi Ongkir
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Expanded(
-                            child: Row(
-                              children: [
-                                const Icon(Icons.near_me_outlined,
-                                    size: 16, color: WijiBumiColors.freshLeaf),
-                                const SizedBox(width: 6),
-                                Expanded(
-                                  child: Obx(() {
-                                    final label =
-                                        locationController.distanceLabel.value;
-                                    final km =
-                                        locationController.distanceKm.value;
-                                    return Text(
-                                      label.isNotEmpty
-                                          ? '📍 $label'
-                                          : km > 0
-                                              ? 'Jarak Kebun: ${km.toStringAsFixed(1)} km'
-                                              : 'Jarak GPS: Standar Kota',
-                                      maxLines: 2,
-                                      overflow: TextOverflow.ellipsis,
-                                      style: const TextStyle(
-                                        fontSize: 11,
-                                        fontWeight: FontWeight.w600,
-                                        color: WijiBumiColors.textPrimary,
-                                      ),
-                                    );
-                                  }),
-                                ),
-                              ],
-                            ),
-                          ),
-                          const SizedBox(width: 8),
-                          FittedBox(
-                            fit: BoxFit.scaleDown,
-                            child: Text(
-                              locationController.currentShippingCost.value == 0
-                                  ? 'Gratis Ongkir'
-                                  : currencyFormatter.format(locationController
-                                      .currentShippingCost.value),
-                              style: TextStyle(
-                                fontSize: 12,
-                                fontWeight: FontWeight.bold,
-                                color: locationController
-                                            .currentShippingCost.value ==
-                                        0
-                                    ? WijiBumiColors.success
-                                    : Colors.white,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  );
-                }),
-              ),
+              _buildAddressSection(locationController, subtotal),
               const SizedBox(height: 20),
 
-              // ==========================================
-              // KARTU 2: DAFTAR ITEM TERPILIH
-              // ==========================================
-              Text(
-                'Ringkasan Produk (${selectedItems.length} Item)',
-                style: const TextStyle(
-                  fontSize: 15,
-                  fontWeight: FontWeight.w700,
-                  color: WijiBumiColors.textPrimary,
-                ),
-              ),
+              // 2. Daftar Item Terpilih
+              _buildSectionHeader('Ringkasan Produk (${selectedItems.length} Item)'),
               const SizedBox(height: 8),
-              Container(
-                padding: const EdgeInsets.all(14),
-                decoration: DynamicGlassDecoration.cleanCard(radius: 14),
-                child: selectedItems.isEmpty
-                    ? Column(
-                        children: [
-                          const Text('Belum ada produk yang dicentang.'),
-                          const SizedBox(height: 8),
-                          TextButton(
-                            onPressed: () {
-                              cartController.toggleSelectAll(true);
-                            },
-                            child: const Text('Centang Semua Produk'),
-                          ),
-                        ],
-                      )
-                    : ListView.separated(
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                        itemCount: selectedItems.length,
-                        separatorBuilder: (_, __) => const Divider(height: 16),
-                        itemBuilder: (context, index) {
-                          final item = selectedItems[index];
-                          return Row(
-                            children: [
-                              ClipRRect(
-                                borderRadius: BorderRadius.circular(8),
-                                child: _buildCheckoutItemImage(item.imageUrl),
-                              ),
-                              const SizedBox(width: 12),
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      item.name,
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
-                                      style: const TextStyle(
-                                        fontSize: 13,
-                                        fontWeight: FontWeight.w600,
-                                        color: WijiBumiColors.textPrimary,
-                                      ),
-                                    ),
-                                    Text(
-                                      '${item.quantity} ${item.unit} x ${currencyFormatter.format(item.price)}',
-                                      style: const TextStyle(
-                                        fontSize: 11,
-                                        color: WijiBumiColors.textMuted,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              Text(
-                                currencyFormatter.format(item.subtotal),
-                                style: const TextStyle(
-                                  fontSize: 13,
-                                  fontWeight: FontWeight.bold,
-                                  color: Color.fromARGB(255, 181, 191, 182),
-                                ),
-                              ),
-                            ],
-                          );
-                        },
-                      ),
-              ),
+              _buildProductSummarySection(selectedItems, cartController),
               const SizedBox(height: 20),
 
-              // ==========================================
-              // KARTU 3: METODE PEMBAYARAN & RINCIAN BIAYA
-              // ==========================================
-              const Text(
-                'Metode Pembayaran',
-                style: TextStyle(
-                  fontSize: 15,
-                  fontWeight: FontWeight.w700,
-                  color: WijiBumiColors.textPrimary,
-                ),
-              ),
+              // 3. Metode Pembayaran
+              _buildSectionHeader('Metode Pembayaran'),
               const SizedBox(height: 8),
-              Container(
-                padding: const EdgeInsets.all(14),
-                decoration: DynamicGlassDecoration.cleanCard(radius: 14),
-                child: Obx(
-                  () => Column(
-                    children:
-                        orderController.availablePaymentMethods.map((method) {
-                      final isSelected =
-                          orderController.selectedPaymentMethod.value == method;
-                      return InkWell(
-                        onTap: () {
-                          orderController.selectedPaymentMethod.value = method;
-                        },
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 6),
-                          child: Row(
-                            children: [
-                              Icon(
-                                isSelected
-                                    ? Icons.radio_button_checked
-                                    : Icons.radio_button_off,
-                                color: isSelected
-                                    ? const Color(0xFFA7F3D0)
-                                    : WijiBumiColors.textMuted,
-                                size: 18,
-                              ),
-                              const SizedBox(width: 10),
-                              Expanded(
-                                child: Text(
-                                  method,
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: TextStyle(
-                                    fontSize: 13,
-                                    fontWeight: isSelected
-                                        ? FontWeight.w700
-                                        : FontWeight.w500,
-                                    color: isSelected
-                                        ? const Color(0xFFA7F3D0)
-                                        : Colors.white,
-                                  ),
-                                ),
-                              ),
-                              if (method.startsWith('COD')) ...[
-                                const SizedBox(width: 6),
-                                Container(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 6, vertical: 2),
-                                  decoration: DynamicGlassDecoration.accentPill(
-                                    radius: 6,
-                                    fillColor: WijiBumiColors.lightMint,
-                                  ),
-                                  child: const Text(
-                                    'Langsung Proses',
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: TextStyle(
-                                        fontSize: 9,
-                                        fontWeight: FontWeight.bold,
-                                        color: Color(0xFFA7F3D0)),
-                                  ),
-                                ),
-                              ],
-                            ],
-                          ),
-                        ),
-                      );
-                    }).toList(),
-                  ),
-                ),
-              ),
+              _buildPaymentMethodSection(orderController),
               const SizedBox(height: 20),
 
-              // Rincian Pembayaran
-              const Text(
-                'Rincian Biaya',
-                style: TextStyle(
-                  fontSize: 15,
-                  fontWeight: FontWeight.w700,
-                  color: WijiBumiColors.textPrimary,
-                ),
-              ),
+              // 4. Rincian Biaya
+              _buildSectionHeader('Rincian Biaya'),
               const SizedBox(height: 8),
-              Container(
-                padding: const EdgeInsets.all(16),
-                decoration: DynamicGlassDecoration.cleanCard(radius: 14),
-                child: Obx(() {
-                  final shippingCost =
-                      locationController.currentShippingCost.value;
-                  final total = subtotal + shippingCost;
-
-                  return Column(
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          const Expanded(
-                            child: Text(
-                              'Subtotal Produk',
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: TextStyle(
-                                  fontSize: 13,
-                                  color: WijiBumiColors.textSecondary),
-                            ),
-                          ),
-                          const SizedBox(width: 8),
-                          FittedBox(
-                            fit: BoxFit.scaleDown,
-                            child: Text(
-                              currencyFormatter.format(subtotal),
-                              style: const TextStyle(
-                                  fontSize: 13,
-                                  fontWeight: FontWeight.w600,
-                                  color: Colors.white),
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 8),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          const Expanded(
-                            child: Text(
-                              'Ongkos Kirim',
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: TextStyle(
-                                  fontSize: 13,
-                                  color: WijiBumiColors.textSecondary),
-                            ),
-                          ),
-                          const SizedBox(width: 8),
-                          FittedBox(
-                            fit: BoxFit.scaleDown,
-                            child: Text(
-                              shippingCost == 0
-                                  ? 'Gratis'
-                                  : currencyFormatter.format(shippingCost),
-                              style: TextStyle(
-                                fontSize: 13,
-                                fontWeight: FontWeight.w600,
-                                color: shippingCost == 0
-                                    ? WijiBumiColors.success
-                                    : WijiBumiColors.textPrimary,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      if (subtotal >= 200000) ...[
-                        const SizedBox(height: 4),
-                        const Row(
-                          children: [
-                            Icon(Icons.check_circle_rounded,
-                                size: 14, color: WijiBumiColors.success),
-                            SizedBox(width: 4),
-                            Expanded(
-                              child: Text(
-                                'Promo Gratis Ongkir diterapkan (Subtotal ≥ Rp 200.000)',
-                                maxLines: 2,
-                                overflow: TextOverflow.ellipsis,
-                                style: TextStyle(
-                                    fontSize: 11,
-                                    color: WijiBumiColors.success,
-                                    fontWeight: FontWeight.w500),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                      const Divider(height: 20),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          const Expanded(
-                            child: Text(
-                              'Total Tagihan',
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: TextStyle(
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.w700,
-                                  color: Color.fromARGB(255, 209, 209, 209)),
-                            ),
-                          ),
-                          const SizedBox(width: 8),
-                          FittedBox(
-                            fit: BoxFit.scaleDown,
-                            child: Text(
-                              currencyFormatter.format(total),
-                              style: const TextStyle(
-                                  fontSize: 17,
-                                  fontWeight: FontWeight.w800,
-                                  color: Color.fromARGB(255, 190, 190, 190)),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  );
-                }),
-              ),
+              _buildCostBreakdownSection(subtotal, shippingCost, total),
               const SizedBox(height: 28),
 
-              // Tombol Buat Pesanan
-              Obx(
-                () => CustomButton(
-                  text: 'Buat Pesanan Sekarang',
-                  icon: Icons.check_circle_outline_rounded,
-                  isLoading: orderController.isSubmitting.value,
-                  onPressed: () async {
-                    // Pastikan ada item yang dipilih
-                    var itemsToBuy = cartController.items
-                        .where((i) => i.isSelected)
-                        .toList();
-                    if (itemsToBuy.isEmpty && cartController.items.isNotEmpty) {
-                      cartController.toggleSelectAll(true);
-                      itemsToBuy = cartController.items.toList();
-                    }
-
-                    if (itemsToBuy.isEmpty) {
-                      GlassFeedback.showSnackbar(
-                        title: 'Keranjang Kosong',
-                        message: 'Silakan pilih barang sebelum checkout.',
-                        isError: true,
-                      );
-                      return;
-                    }
-
-                    // Pastikan alamat telah terpilih
-                    var address = locationController.selectedAddress.value;
-                    if (address == null &&
-                        locationController.addresses.isNotEmpty) {
-                      address = locationController.addresses.first;
-                      locationController.selectedAddress.value = address;
-                    }
-
-                    if (address == null) {
-                      GlassFeedback.showSnackbar(
-                        title: 'Alamat Belum Terisi',
-                        message:
-                            'Silakan isi atau pilih alamat pengiriman Anda terlebih dahulu.',
-                        isError: true,
-                      );
-                      Get.toNamed(AppRoutes.ADDRESS);
-                      return;
-                    }
-
-                    final order = await orderController.placeOrder(
-                      address: address,
-                      selectedItems: itemsToBuy,
-                      shippingCost:
-                          locationController.currentShippingCost.value,
-                    );
-
-                    if (order != null) {
-                      Get.offNamed(AppRoutes.ORDER_SUCCESS, arguments: order);
-                    }
-                  },
-                ),
-              ),
+              // 5. Tombol Buat Pesanan
+              _buildCheckoutButton(cartController, locationController, orderController),
             ],
           ),
         );
       }),
+    );
+  }
+
+  Widget _buildSectionHeader(String title) {
+    return Text(
+      title,
+      style: const TextStyle(
+        fontFamily: 'Poppins',
+        fontSize: 15,
+        fontWeight: FontWeight.w700,
+        color: Colors.white,
+      ),
+    );
+  }
+
+  Widget _buildAddressSection(LocationController locationController, double subtotal) {
+    return LiquidGlassCard(
+      padding: const EdgeInsets.all(16),
+      radius: 14,
+      child: Obx(() {
+        final address = locationController.selectedAddress.value;
+
+        if (address == null) {
+          return Column(
+            children: [
+              const Text(
+                'Belum ada alamat pengiriman terpilih.',
+                style: TextStyle(
+                  fontFamily: 'Poppins',
+                  fontSize: 13,
+                  color: Color(0xFFC8DDD0),
+                ),
+              ),
+              const SizedBox(height: 12),
+              CustomButton(
+                text: '+ Tambah / Pilih Alamat',
+                variant: ButtonVariant.secondaryGlass,
+                height: 40,
+                onPressed: () => Get.toNamed(AppRoutes.ADDRESS),
+              ),
+            ],
+          );
+        }
+
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                const Icon(
+                  Icons.location_on_rounded,
+                  color: Color(0xFFA7F3D0),
+                  size: 20,
+                ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                    '${address.recipientName} (${address.phone})',
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(
+                      fontFamily: 'Poppins',
+                      fontSize: 13,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+                TextButton(
+                  onPressed: () => Get.toNamed(AppRoutes.ADDRESS),
+                  child: const Text(
+                    'Ganti Alamat',
+                    style: TextStyle(
+                      fontFamily: 'Poppins',
+                      fontSize: 12,
+                      color: Color(0xFFA7F3D0),
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 4),
+            Text(
+              address.fullAddress,
+              maxLines: 3,
+              overflow: TextOverflow.ellipsis,
+              style: const TextStyle(
+                fontFamily: 'Poppins',
+                fontSize: 12,
+                color: Color(0xFFC8DDD0),
+                height: 1.3,
+              ),
+            ),
+            Text(
+              '${address.district}, ${address.city}',
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: const TextStyle(
+                fontFamily: 'Poppins',
+                fontSize: 12,
+                color: Color(0xFFC8DDD0),
+              ),
+            ),
+            const Divider(height: 20),
+
+            // Peta Google Maps Rute Cabang Toko
+            if (address.latitude != 0 || address.longitude != 0) ...[
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text(
+                    '🗺️ Rute Cabang Toko',
+                    style: TextStyle(
+                      fontFamily: 'Poppins',
+                      fontSize: 12,
+                      fontWeight: FontWeight.w700,
+                      color: Colors.white,
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Obx(() => Text(
+                          locationController.selectedStore.value.name,
+                          textAlign: TextAlign.end,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(
+                            fontFamily: 'Poppins',
+                            fontSize: 11,
+                            fontWeight: FontWeight.bold,
+                            color: Color(0xFFA7F3D0),
+                          ),
+                        )),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 8),
+              Obx(() => GoogleMapWidget(
+                    userLatitude: address.latitude,
+                    userLongitude: address.longitude,
+                    userMarkerTitle: 'Lokasi Pengiriman',
+                    userMarkerSnippet: address.fullAddress,
+                    height: 220,
+                    showStoreMarker: true,
+                    showPolyline: true,
+                    isPickerMode: false,
+                    selectedBranch: locationController.selectedStore.value,
+                    onBranchChanged: (branch) {
+                      locationController.setStoreBranch(branch, subtotal);
+                    },
+                  )),
+              const SizedBox(height: 10),
+            ],
+
+            // Jarak GPS dan Estimasi Ongkir
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Expanded(
+                  child: Row(
+                    children: [
+                      const Icon(
+                        Icons.near_me_outlined,
+                        size: 16,
+                        color: Color(0xFFA7F3D0),
+                      ),
+                      const SizedBox(width: 6),
+                      Expanded(
+                        child: Obx(() {
+                          final label = locationController.distanceLabel.value;
+                          final km = locationController.distanceKm.value;
+                          return Text(
+                            label.isNotEmpty
+                                ? '📍 $label'
+                                : km > 0
+                                    ? 'Jarak Kebun: ${km.toStringAsFixed(1)} km'
+                                    : 'Jarak GPS: Standar Kota',
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(
+                              fontFamily: 'Poppins',
+                              fontSize: 11,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.white,
+                            ),
+                          );
+                        }),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(width: 8),
+                FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: Text(
+                    locationController.currentShippingCost.value == 0
+                        ? 'Gratis Ongkir'
+                        : WijiBumiFormat.currency(
+                            locationController.currentShippingCost.value),
+                    style: TextStyle(
+                      fontFamily: 'Poppins',
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold,
+                      color: locationController.currentShippingCost.value == 0
+                          ? const Color(0xFF4ADE80)
+                          : Colors.white,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        );
+      }),
+    );
+  }
+
+  Widget _buildProductSummarySection(
+      List<CartItemModel> selectedItems, ShopController cartController) {
+    return LiquidGlassCard(
+      padding: const EdgeInsets.all(14),
+      radius: 14,
+      child: selectedItems.isEmpty
+          ? Column(
+              children: [
+                const Text(
+                  'Belum ada produk yang dicentang.',
+                  style: TextStyle(fontFamily: 'Poppins', color: Color(0xFFC8DDD0)),
+                ),
+                const SizedBox(height: 8),
+                TextButton(
+                  onPressed: () => cartController.toggleSelectAll(true),
+                  child: const Text(
+                    'Centang Semua Produk',
+                    style: TextStyle(fontFamily: 'Poppins', color: Color(0xFFA7F3D0)),
+                  ),
+                ),
+              ],
+            )
+          : ListView.separated(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: selectedItems.length,
+              separatorBuilder: (_, __) => const Divider(height: 16),
+              itemBuilder: (context, index) {
+                final item = selectedItems[index];
+                return Row(
+                  children: [
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(8),
+                      child: _buildCheckoutItemImage(item.imageUrl),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            item.name,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(
+                              fontFamily: 'Poppins',
+                              fontSize: 13,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.white,
+                            ),
+                          ),
+                          Text(
+                            '${item.quantity} ${item.unit} x ${WijiBumiFormat.currency(item.price)}',
+                            style: const TextStyle(
+                              fontFamily: 'Poppins',
+                              fontSize: 11,
+                              color: Color(0xFFC8DDD0),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Text(
+                      WijiBumiFormat.currency(item.subtotal),
+                      style: const TextStyle(
+                        fontFamily: 'Poppins',
+                        fontSize: 13,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ],
+                );
+              },
+            ),
+    );
+  }
+
+  Widget _buildPaymentMethodSection(ShopController orderController) {
+    return LiquidGlassCard(
+      padding: const EdgeInsets.all(14),
+      radius: 14,
+      child: Obx(
+        () => Column(
+          children: orderController.availablePaymentMethods.map((method) {
+            final isSelected =
+                orderController.selectedPaymentMethod.value == method;
+            return InkWell(
+              onTap: () {
+                orderController.selectedPaymentMethod.value = method;
+              },
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 6),
+                child: Row(
+                  children: [
+                    Icon(
+                      isSelected
+                          ? Icons.radio_button_checked
+                          : Icons.radio_button_off,
+                      color: isSelected
+                          ? const Color(0xFFA7F3D0)
+                          : const Color(0xFFC8DDD0),
+                      size: 18,
+                    ),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: Text(
+                        method,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          fontFamily: 'Poppins',
+                          fontSize: 13,
+                          fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
+                          color: isSelected
+                              ? const Color(0xFFA7F3D0)
+                              : Colors.white,
+                        ),
+                      ),
+                    ),
+                    if (method.startsWith('COD')) ...[
+                      const SizedBox(width: 6),
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 6, vertical: 2),
+                        decoration: DynamicGlassDecoration.accentPill(
+                          radius: 6,
+                          fillColor: WijiBumiColors.lightMint,
+                        ),
+                        child: const Text(
+                          'Langsung Proses',
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            fontFamily: 'Poppins',
+                            fontSize: 9,
+                            fontWeight: FontWeight.bold,
+                            color: Color(0xFFA7F3D0),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ],
+                ),
+              ),
+            );
+          }).toList(),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildCostBreakdownSection(
+      double subtotal, double shippingCost, double total) {
+    return LiquidGlassCard(
+      padding: const EdgeInsets.all(14),
+      radius: 14,
+      child: Column(
+        children: [
+          CostDetailRow(
+            label: 'Subtotal Produk',
+            value: WijiBumiFormat.currency(subtotal),
+          ),
+          const SizedBox(height: 8),
+          CostDetailRow(
+            label: 'Ongkos Kirim',
+            value: shippingCost == 0
+                ? 'Gratis'
+                : WijiBumiFormat.currency(shippingCost),
+            valueColor: shippingCost == 0
+                ? const Color(0xFF4ADE80)
+                : Colors.white,
+          ),
+          if (subtotal >= 200000) ...[
+            const SizedBox(height: 6),
+            const Row(
+              children: [
+                Icon(
+                  Icons.check_circle_rounded,
+                  size: 14,
+                  color: Color(0xFF4ADE80),
+                ),
+                SizedBox(width: 4),
+                Expanded(
+                  child: Text(
+                    'Promo Gratis Ongkir diterapkan (Subtotal ≥ Rp 200.000)',
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      fontFamily: 'Poppins',
+                      fontSize: 11,
+                      color: Color(0xFF4ADE80),
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ],
+          const Divider(height: 20),
+          CostDetailRow(
+            label: 'Total Tagihan',
+            value: WijiBumiFormat.currency(total),
+            isBold: true,
+            fontSize: 16,
+            valueColor: const Color(0xFFA7F3D0),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildCheckoutButton(
+      ShopController cartController,
+      LocationController locationController,
+      ShopController orderController) {
+    return Obx(
+      () => CustomButton(
+        text: 'Buat Pesanan Sekarang',
+        icon: Icons.check_circle_outline_rounded,
+        isLoading: orderController.isSubmitting.value,
+        onPressed: () async {
+          var itemsToBuy =
+              cartController.items.where((i) => i.isSelected).toList();
+          if (itemsToBuy.isEmpty && cartController.items.isNotEmpty) {
+            cartController.toggleSelectAll(true);
+            itemsToBuy = cartController.items.toList();
+          }
+
+          if (itemsToBuy.isEmpty) {
+            GlassFeedback.showSnackbar(
+              title: 'Keranjang Kosong',
+              message: 'Silakan pilih barang sebelum checkout.',
+              isError: true,
+            );
+            return;
+          }
+
+          var address = locationController.selectedAddress.value;
+          if (address == null && locationController.addresses.isNotEmpty) {
+            address = locationController.addresses.first;
+            locationController.selectedAddress.value = address;
+          }
+
+          if (address == null) {
+            GlassFeedback.showSnackbar(
+              title: 'Alamat Belum Terisi',
+              message:
+                  'Silakan isi atau pilih alamat pengiriman Anda terlebih dahulu.',
+              isError: true,
+            );
+            Get.toNamed(AppRoutes.ADDRESS);
+            return;
+          }
+
+          final order = await orderController.placeOrder(
+            address: address,
+            selectedItems: itemsToBuy,
+            shippingCost: locationController.currentShippingCost.value,
+          );
+
+          if (order != null) {
+            Get.offNamed(AppRoutes.ORDER_SUCCESS, arguments: order);
+          }
+        },
+      ),
     );
   }
 
@@ -674,7 +624,7 @@ class _CheckoutViewState extends State<CheckoutView> {
       width: 44,
       height: 44,
       color: WijiBumiColors.lightMint,
-      child: const Icon(Icons.eco, size: 20, color: WijiBumiColors.freshLeaf),
+      child: const Icon(Icons.eco, size: 20, color: Color(0xFFA7F3D0)),
     );
 
     if (cleanUrl.isEmpty) return fallback;

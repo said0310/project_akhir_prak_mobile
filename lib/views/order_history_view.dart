@@ -5,6 +5,7 @@ import '../app.dart';
 import '../controllers/shop_controller.dart';
 import '../models/models.dart';
 import '../widgets/empty_state.dart';
+import '../widgets/glass_feedback.dart';
 
 class OrderHistoryView extends StatefulWidget {
   final bool isEmbedded;
@@ -51,58 +52,7 @@ class _OrderHistoryViewState extends State<OrderHistoryView> {
     });
   }
 
-  Color _getStatusColor(String status) {
-    switch (status) {
-      case 'Selesai':
-        return const Color(0xFFA7F3D0);
-      case 'Dikirim':
-        return const Color(0xFF68D391);
-      case 'Diproses':
-      case 'Dikemas':
-        return const Color(0xFF81E6D9);
-      case 'Menunggu Pembayaran':
-        return const Color(0xFFFFD166);
-      case 'Dibatalkan':
-        return const Color(0xFFFF6B6B);
-      default:
-        return const Color(0xFFC8DDD0);
-    }
-  }
-
-  Color _getStatusBg(String status) {
-    switch (status) {
-      case 'Selesai':
-        return const Color(0xFFA7F3D0).withOpacity(0.16);
-      case 'Dikirim':
-      case 'Diproses':
-      case 'Dikemas':
-        return Colors.white.withOpacity(0.12);
-      case 'Menunggu Pembayaran':
-        return const Color(0xFFFFD166).withOpacity(0.15);
-      case 'Dibatalkan':
-        return const Color(0xFFFF6B6B).withOpacity(0.16);
-      default:
-        return Colors.white.withOpacity(0.10);
-    }
-  }
-
-  IconData _getStatusIcon(String status) {
-    switch (status) {
-      case 'Selesai':
-        return Icons.check_circle_rounded;
-      case 'Dikirim':
-        return Icons.local_shipping_rounded;
-      case 'Diproses':
-      case 'Dikemas':
-        return Icons.inventory_2_rounded;
-      case 'Menunggu Pembayaran':
-        return Icons.schedule_rounded;
-      case 'Dibatalkan':
-        return Icons.cancel_rounded;
-      default:
-        return Icons.receipt_long_rounded;
-    }
-  }
+  IconData _getStatusIcon(String status) => OrderStatusBadge.statusIcon(status);
 
   @override
   Widget build(BuildContext context) {
@@ -249,38 +199,7 @@ class _OrderHistoryViewState extends State<OrderHistoryView> {
                                       ),
                                     ),
                                     const SizedBox(width: 8),
-                                    Container(
-                                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                                      decoration: BoxDecoration(
-                                        color: _getStatusBg(order.status),
-                                        borderRadius: BorderRadius.circular(8),
-                                        border: Border.all(
-                                          color: _getStatusColor(order.status).withOpacity(0.4),
-                                          width: 1.0,
-                                        ),
-                                      ),
-                                      child: Row(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          Icon(
-                                            _getStatusIcon(order.status),
-                                            size: 13,
-                                            color: _getStatusColor(order.status),
-                                          ),
-                                          const SizedBox(width: 4),
-                                          Text(
-                                            order.status,
-                                            maxLines: 1,
-                                            overflow: TextOverflow.ellipsis,
-                                            style: TextStyle(
-                                              fontSize: 11,
-                                              fontWeight: FontWeight.bold,
-                                              color: _getStatusColor(order.status),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
+                                    OrderStatusBadge(status: order.status),
                                   ],
                                 ),
                                 const SizedBox(height: 8),
@@ -531,4 +450,5 @@ class _OrderHistoryViewState extends State<OrderHistoryView> {
       ),
     );
   }
+}
 }
