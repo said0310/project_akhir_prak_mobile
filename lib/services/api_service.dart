@@ -18,6 +18,7 @@ class PrefService {
   static const String prefSessionToken = 'session_token';
   static const String prefThemeMode = 'theme_mode';
   static const String prefNotifEnabled = 'notif_enabled';
+  static const String prefSelectedStoreId = 'selected_store_id';
 
   late SharedPreferences _prefs;
 
@@ -47,6 +48,9 @@ class PrefService {
 
   bool get isNotifEnabled => _prefs.getBool(prefNotifEnabled) ?? true;
   Future<void> setNotifEnabled(bool enabled) async => await _prefs.setBool(prefNotifEnabled, enabled);
+
+  String get selectedStoreId => _prefs.getString(prefSelectedStoreId) ?? 'sleman';
+  Future<void> setSelectedStoreId(String storeId) async => await _prefs.setString(prefSelectedStoreId, storeId);
 }
 
 /// ============================================================================

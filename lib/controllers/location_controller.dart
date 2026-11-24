@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import '../models/models.dart';
+import '../services/api_service.dart';
 import '../services/database_helper.dart';
 import '../services/location_service.dart';
 import '../services/map_service.dart';
@@ -25,7 +26,7 @@ class LocationController extends GetxController {
 
   /// Cabang Toko Terpilih (Sleman atau Bantul)
   final Rx<StoreBranch> selectedStore = StoreBranch.sleman.obs;
-  final RxBool autoSelectNearestStore = true.obs;
+  final RxBool autoSelectNearestStore = false.obs;
 
   /// Jarak spesifik ke masing-masing cabang toko
   final RxDouble distanceToSlemanKm = 0.0.obs;
@@ -60,6 +61,16 @@ class LocationController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+    try {
+      if (Get.isRegistered<PrefService>()) {
+        final saved = Get.find<PrefService>().selectedStoreId;
+        if (saved == 'bantul') {
+          selectedStore.value = StoreBranch.bantul;
+        } else {
+          selectedStore.value = StoreBranch.sleman;
+        }
+      }
+    } catch (_) {}
     loadAddresses();
   }
 
@@ -214,6 +225,11 @@ class LocationController extends GetxController {
   void setStoreBranch(StoreBranch branch, double subtotal) {
     autoSelectNearestStore.value = false;
     selectedStore.value = branch;
+    try {
+      if (Get.isRegistered<PrefService>()) {
+        Get.find<PrefService>().setSelectedStoreId(branch.id);
+      }
+    } catch (_) {}
     if (selectedAddress.value != null) {
       updateDistanceAndShipping(selectedAddress.value!, subtotal);
     }

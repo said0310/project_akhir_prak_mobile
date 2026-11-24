@@ -836,7 +836,7 @@ class StoreBranch {
 
   static const StoreBranch sleman = StoreBranch(
     id: 'sleman',
-    name: 'Wiji Bumi Cabang Sleman',
+    name: 'Toko Wijibumi Sleman',
     city: 'Sleman',
     address: 'Jl. Padjajaran No. 88, Condongcatur, Sleman, DIY',
     latitude: -7.7600,
@@ -845,7 +845,7 @@ class StoreBranch {
 
   static const StoreBranch bantul = StoreBranch(
     id: 'bantul',
-    name: 'Wiji Bumi Cabang Bantul',
+    name: 'Toko Wijibumi Cabang Bantul',
     city: 'Bantul',
     address: 'Jl. Bantul Km 7.5, Pendowoharjo, Sewon, Bantul, DIY',
     latitude: -7.8750,

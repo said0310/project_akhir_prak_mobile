@@ -427,7 +427,7 @@ class AppBinding extends Bindings {
     );
 
     // 4. Feature Controllers untuk Izin GPS & Notifikasi
-    Get.lazyPut<LocationController>(() => LocationController(addressRepository: addressRepo), fenix: true);
+    Get.put<LocationController>(LocationController(addressRepository: addressRepo), permanent: true);
     Get.lazyPut<NotificationController>(() => NotificationController(), fenix: true);
   }
 }

@@ -316,5 +316,29 @@ FLW001;Mawar Merah;FLW001.jpg;bunga;30000;ikat;40;"Mawar merah, indah";Lembang;1
       expect(order.items.length, 1);
       expect(order.items.first.productId, 'p1');
     });
+
+    test('Cabang Toko & Pilihan Dropdown Toko Sleman dan Bantul', () {
+      expect(StoreBranch.sleman.name, 'Toko Wijibumi Sleman');
+      expect(StoreBranch.bantul.name, 'Toko Wijibumi Cabang Bantul');
+      expect(StoreBranch.branches.length, 2);
+
+      // Lokasi user dekat Bantul (-7.8800, 110.3500)
+      final distToBantul = LocationService.calculateDistanceKm(
+        startLatitude: -7.8800,
+        startLongitude: 110.3500,
+        endLatitude: StoreBranch.bantul.latitude,
+        endLongitude: StoreBranch.bantul.longitude,
+      );
+      final distToSleman = LocationService.calculateDistanceKm(
+        startLatitude: -7.8800,
+        startLongitude: 110.3500,
+        endLatitude: StoreBranch.sleman.latitude,
+        endLongitude: StoreBranch.sleman.longitude,
+      );
+
+      expect(distToBantul < distToSleman, isTrue);
+      expect(distToBantul < 2.0, isTrue);
+      expect(distToSleman > 10.0, isTrue);
+    });
   });
 }

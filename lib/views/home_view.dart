@@ -4,7 +4,10 @@ import 'package:get/get.dart';
 import '../app.dart';
 import '../controllers/auth_controller.dart';
 import '../controllers/shop_controller.dart';
+import '../controllers/location_controller.dart';
 import '../controllers/notification_controller.dart';
+import '../models/models.dart';
+import '../widgets/glass_feedback.dart';
 import '../widgets/product_card.dart';
 import '../widgets/category_card.dart';
 
@@ -30,6 +33,7 @@ class _HomeViewState extends State<HomeView> {
     final productController = Get.find<ShopController>();
     final cartController = productController;
     final authController = Get.find<AuthController>();
+    final locationController = Get.find<LocationController>();
 
     return Scaffold(
       backgroundColor: WijiBumiColors.backgroundCanvas,
@@ -156,7 +160,11 @@ class _HomeViewState extends State<HomeView> {
                                 ],
                               ),
                             ),
-                            const SizedBox(width: 12),
+                            const SizedBox(width: 8),
+
+                            // Menu Dropdown Pilihan Toko (Sleman / Bantul)
+                            _buildStoreDropdown(context, locationController, cartController),
+                            const SizedBox(width: 8),
 
                             // Tombol Notifikasi Liquid Glass 48 x 48 px dengan Specular Border
                             Obx(() {
@@ -1413,5 +1421,171 @@ class _HomeViewState extends State<HomeView> {
       default:
         return fallback;
     }
+  }
+
+  /// Menu Dropdown Pilihan Cabang Toko (Sleman & Bantul)
+  Widget _buildStoreDropdown(
+    BuildContext context,
+    LocationController locationController,
+    ShopController cartController,
+  ) {
+    return Obx(() {
+      final selectedStore = locationController.selectedStore.value;
+
+      return ClipRRect(
+        borderRadius: BorderRadius.circular(14),
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 14, sigmaY: 14),
+          child: Container(
+            height: 48,
+            padding: const EdgeInsets.symmetric(horizontal: 8),
+            decoration: DynamicGlassDecoration.liquidGlassDark(radius: 14),
+            child: DropdownButtonHideUnderline(
+              child: DropdownButton<StoreBranch>(
+                value: selectedStore,
+                dropdownColor: const Color(0xFF1E2F21),
+                borderRadius: BorderRadius.circular(16),
+                isDense: true,
+                menuWidth: 260,
+                icon: const Icon(
+                  Icons.keyboard_arrow_down_rounded,
+                  color: Colors.white70,
+                  size: 18,
+                ),
+                elevation: 12,
+                selectedItemBuilder: (BuildContext context) {
+                  return StoreBranch.branches.map<Widget>((StoreBranch branch) {
+                    return ConstrainedBox(
+                      constraints: const BoxConstraints(maxWidth: 130),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const Icon(
+                            Icons.storefront_rounded,
+                            size: 18,
+                            color: Color(0xFFA7F3D0),
+                          ),
+                          const SizedBox(width: 6),
+                          Flexible(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const Text(
+                                  'Pilih Toko',
+                                  style: TextStyle(
+                                    fontFamily: 'Poppins',
+                                    fontSize: 8.5,
+                                    fontWeight: FontWeight.w500,
+                                    color: Color(0xFFC8DDD0),
+                                    height: 1.1,
+                                  ),
+                                ),
+                                Text(
+                                  branch.name,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: const TextStyle(
+                                    fontFamily: 'Poppins',
+                                    fontSize: 11,
+                                    fontWeight: FontWeight.w700,
+                                    color: Colors.white,
+                                    height: 1.2,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  }).toList();
+                },
+                items: StoreBranch.branches.map((StoreBranch branch) {
+                  final isSelected = branch.id == selectedStore.id;
+                  return DropdownMenuItem<StoreBranch>(
+                    value: branch,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 4),
+                      child: Row(
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.all(6),
+                            decoration: BoxDecoration(
+                              color: isSelected
+                                  ? const Color(0xFFA7F3D0).withOpacity(0.2)
+                                  : Colors.white.withOpacity(0.08),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: Icon(
+                              Icons.storefront_rounded,
+                              size: 16,
+                              color: isSelected
+                                  ? const Color(0xFFA7F3D0)
+                                  : Colors.white70,
+                            ),
+                          ),
+                          const SizedBox(width: 10),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  branch.name,
+                                  style: TextStyle(
+                                    fontFamily: 'Poppins',
+                                    fontSize: 12,
+                                    fontWeight: isSelected
+                                        ? FontWeight.w700
+                                        : FontWeight.w500,
+                                    color: isSelected
+                                        ? const Color(0xFFA7F3D0)
+                                        : Colors.white,
+                                  ),
+                                ),
+                                const SizedBox(height: 2),
+                                Text(
+                                  branch.city == 'Sleman'
+                                      ? 'Condongcatur, Sleman'
+                                      : 'Sewon, Bantul',
+                                  style: const TextStyle(
+                                    fontFamily: 'Poppins',
+                                    fontSize: 10,
+                                    color: Color(0xFFC8DDD0),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          if (isSelected)
+                            const Icon(
+                              Icons.check_circle_rounded,
+                              size: 18,
+                              color: Color(0xFFA7F3D0),
+                            ),
+                        ],
+                      ),
+                    ),
+                  );
+                }).toList(),
+                onChanged: (StoreBranch? newBranch) {
+                  if (newBranch != null) {
+                    locationController.setStoreBranch(
+                      newBranch,
+                      cartController.getTotalPrice(),
+                    );
+                    GlassFeedback.showSnackbar(
+                      title: 'Toko Berhasil Dipilih',
+                      message: 'Pesanan akan dikirim dari ${newBranch.name}',
+                    );
+                  }
+                },
+              ),
+            ),
+          ),
+        ),
+      );
+    });
   }
 }
